@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "959387283847",
+    "firebase_url": "https://mrblogger-44b81.firebaseio.com",
+    "project_id": "mrblogger-44b81",
+    "storage_bucket": "mrblogger-44b81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959387283847:android:f0b8d6caa743dfa74ba322",
+        "android_client_info": {
+          "package_name": "com.example.mr_blogger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959387283847-pgv437ctrv404cjc1rvp5t4d6thq2lur.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhWv9NtehFBk2IZDbUsj23tYxbAuNDNrQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959387283847-pgv437ctrv404cjc1rvp5t4d6thq2lur.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
