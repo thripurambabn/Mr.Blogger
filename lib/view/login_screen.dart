@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +29,9 @@ class LoginScreen extends StatelessWidget {
   TextEditingController passCntrlr = TextEditingController();
   LoginBloc loginBloc;
   UserService userService;
-
+  double _sigmaX = 3.0; // from 0-10
+  double _sigmaY = 3.0; // from 0-10
+  double _opacity = 0.1;
   LoginScreen({@required this.userService});
 
   @override
@@ -38,122 +41,131 @@ class LoginScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        // appBar: AppBar(
-        //   // title: Text("Login"),
-        //   // centerTitle: true,
-        //   automaticallyImplyLeading: false,
-        // ),
         body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/background.jpeg"),
-              fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/background.jpg"),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(5.0),
-                child: BlocListener<LoginBloc, LoginState>(
-                  listener: (context, state) {
-                    if (state is LoginLoadedState) {
-                      navigateToHomeScreen(context, state.user);
-                    }
-                  },
-                  child: BlocBuilder<LoginBloc, LoginState>(
-                    builder: (context, state) {
-                      if (state is LoginInitialState) {
-                        return buildInitialUi();
-                      } else if (state is LoginLoadingState) {
-                        return buildLoadingUi();
-                      } else if (state is LoginErrorState) {
-                        return buildFailureUi(state.message);
-                      } else if (state is LoginLoadedState) {
-                        emailCntrlr.text = "";
-                        passCntrlr.text = "";
-                        return Container();
-                      }
-                    },
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(5.0),
-                child: TextField(
-                  controller: emailCntrlr,
-                  decoration: InputDecoration(
-                    errorStyle: TextStyle(color: Colors.white),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(),
-                    labelText: "E-mail",
-                    hintText: "E-mail",
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(5.0),
-                child: TextField(
-                  controller: passCntrlr,
-                  decoration: InputDecoration(
-                    errorStyle: TextStyle(color: Colors.white),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(),
-                    labelText: "Password",
-                    hintText: "Password",
-                  ),
-                  keyboardType: TextInputType.visiblePassword,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    child: RaisedButton(
-                      color: Colors.cyan,
-                      child: Text("Login"),
-                      textColor: Colors.white,
-                      onPressed: () {
-                        loginBloc.add(
-                          LoginSuccessEvent(
-                            email: emailCntrlr.text,
-                            password: passCntrlr.text,
+            child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: _sigmaX, sigmaY: _sigmaY),
+                child: Container(
+                  color: Colors.black.withOpacity(_opacity),
+                  height: 800.0,
+                  width: 800.0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(5.0),
+                        child: BlocListener<LoginBloc, LoginState>(
+                          listener: (context, state) {
+                            if (state is LoginLoadedState) {
+                              navigateToHomeScreen(context, state.user);
+                            }
+                          },
+                          child: BlocBuilder<LoginBloc, LoginState>(
+                            builder: (context, state) {
+                              if (state is LoginInitialState) {
+                                return buildInitialUi();
+                              } else if (state is LoginLoadingState) {
+                                return buildLoadingUi();
+                              } else if (state is LoginErrorState) {
+                                return buildFailureUi(state.message);
+                              } else if (state is LoginLoadedState) {
+                                print(
+                                    '${emailCntrlr.text} and ${passCntrlr.text}');
+                                emailCntrlr.text = "";
+                                passCntrlr.text = "";
+                                return Container();
+                              }
+                            },
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(5.0),
+                        child: TextField(
+                          controller: emailCntrlr,
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue[100]),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              icon: new Icon(Icons.person),
+                              border: InputBorder.none,
+                              hintText: 'Enter your name'),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(5.0),
+                        child: TextField(
+                          controller: passCntrlr,
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              icon: new Icon(Icons.lock),
+                              border: InputBorder.none,
+                              hintText: 'Enter your password'),
+                        ),
+                      ),
+                      Container(
+                        child: SizedBox(
+                          width: 300,
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.white)),
+                            color: Colors.brown[900],
+                            child: Text("Login"),
+                            textColor: Colors.white,
+                            onPressed: () {
+                              print(
+                                  'email ${emailCntrlr.text},password ${passCntrlr.text}');
+                              loginBloc.add(
+                                LoginSuccessEvent(
+                                  email: emailCntrlr.text,
+                                  password: passCntrlr.text,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                          child: Text("New User?SignUp here",
+                              style: TextStyle(
+                                  // backgroundColor: Colors.brown,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 20.0,
+                                  color: Colors.brown[900])),
+                          onTap: () {
+                            navigateToSignUpScreen(context);
+                          })
+                    ],
                   ),
-                  Container(
-                    child: RaisedButton(
-                      color: Colors.cyan,
-                      child: Text("Sign Up Now"),
-                      textColor: Colors.white,
-                      onPressed: () {
-                        navigateToSignUpScreen(context);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+                ))),
       ),
     );
   }
 
   Widget buildInitialUi() {
     return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.all(5.0),
       child: Text(
-        "Mr.blogger Login ",
+        "Login",
         style: TextStyle(
-          fontSize: 30.0,
-          color: Colors.teal,
-        ),
+            fontSize: 40.0,
+            color: Colors.brown[900],
+            fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -183,14 +195,12 @@ class LoginScreen extends StatelessWidget {
   void navigateToHomeScreen(BuildContext context, FirebaseUser user) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return HomeScreen();
-      //return HomePage(user: user, userService: userService);
     }));
   }
 
   void navigateToSignUpScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return RegScreen();
-      //return SignUpPageParent(userRepository: userRepository);
     }));
   }
 }

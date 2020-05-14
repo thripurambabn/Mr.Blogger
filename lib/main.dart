@@ -5,6 +5,7 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
+import 'package:mr_blogger/view/initial_screen.dart';
 import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/splash_scren.dart';
 
@@ -56,7 +57,7 @@ class Appp extends StatelessWidget {
           return HomeScreen();
         } else if (state is AppErrorState) {
           print('error state $state');
-          return LoginPage(
+          return InitialPage(
             userService: userService,
           );
         }
