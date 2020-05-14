@@ -58,6 +58,17 @@ class InitialScreen extends StatelessWidget {
                           backgroundImage: ExactAssetImage('assets/logo.png'),
                           minRadius: 70,
                           maxRadius: 70,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Mr.Blogger',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
                         )
                       ],
                     ),
