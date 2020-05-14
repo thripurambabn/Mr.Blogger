@@ -17,14 +17,9 @@ class UserService {
   }
 
   Future<FirebaseUser> signIn(String email, String password) async {
-    // try{
     var result = await firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     return result.user;
-    // }
-    // catch(e){
-
-    // }
   }
 
   Future<void> signOut() async {
@@ -37,6 +32,7 @@ class UserService {
   }
 
   Future<FirebaseUser> getCuurentUser() async {
+    print('${firebaseAuth.currentUser()}');
     return await firebaseAuth.currentUser();
   }
 }

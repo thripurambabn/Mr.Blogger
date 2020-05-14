@@ -9,12 +9,10 @@ class RegBloc extends Bloc<RegEvent, RegState> {
     this.userService = UserService();
   }
   @override
-  // TODO: implement initialState
   RegState get initialState => RegloadingState();
 
   @override
   Stream<RegState> mapEventToState(RegEvent event) async* {
-    // TODO: implement mapEventToState
     try {
       if (event is SignUpEvent) {
         yield RegloadingState();

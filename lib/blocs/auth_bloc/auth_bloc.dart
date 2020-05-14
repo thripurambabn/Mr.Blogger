@@ -1,31 +1,32 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/service/user_service.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   UserService userService;
-  AuthBloc() {
-    this.userService = UserService();
+
+  AuthBloc({@required UserService userService}) {
+    this.userService = userService;
   }
   @override
-  // TODO: implement initialState
-  AuthState get initialState => throw ApploadingState();
+  AuthState get initialState => ApploadingState();
 
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
-    // TODO: implement mapEventToState
     if (event is ApploadingEvent) {
       try {
         var isSignedIn = await userService.isSignedIn();
         if (isSignedIn) {
           var user = await userService.getCuurentUser();
-          yield AppLoadedState(user: user);
+          print('user in authbloc${userService.getCuurentUser()}');
+          yield AppLoadedState(user);
         } else {
-          yield AppErrorstate();
+          yield AppErrorState();
         }
       } catch (e) {
-        yield AppErrorstate();
+        yield AppErrorState();
       }
     }
   }

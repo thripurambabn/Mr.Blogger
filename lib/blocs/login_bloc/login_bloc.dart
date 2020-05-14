@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_event.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
@@ -5,16 +6,14 @@ import 'package:mr_blogger/service/user_service.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserService userService;
-  LoginBloc() {
+  LoginBloc({@required UserService userService}) {
     this.userService = UserService();
   }
   @override
-  // TODO: implement initialState
-  LoginState get initialState => LoginIntialState();
+  LoginState get initialState => LoginInitialState();
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    // TODO: implement mapEventToState
     if (event is LoginSuccessEvent) {
       try {
         yield LoginLoadingState();

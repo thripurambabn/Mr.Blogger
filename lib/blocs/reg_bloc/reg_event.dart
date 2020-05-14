@@ -7,6 +7,5 @@ class SignUpEvent extends RegEvent {
   String email, password;
   SignUpEvent({@required this.email, this.password});
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }

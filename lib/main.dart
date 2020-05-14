@@ -1,63 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
+import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
+import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
+import 'package:mr_blogger/service/user_service.dart';
+import 'package:mr_blogger/view/home_screen.dart';
+import 'package:mr_blogger/view/login_screen.dart';
+import 'package:mr_blogger/view/splash_scren.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  UserService userService = UserService();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: new Container(
+          // decoration: new BoxDecoration(
+          //   image: new DecorationImage(
+          //     image: AssetImage('assets/background.jpeg'),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          child: BlocProvider(
+            create: (context) =>
+                AuthBloc(userService: userService)..add(ApploadingEvent()),
+            child: Appp(
+              userService: userService,
+            ),
+          ),
+        ));
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class Appp extends StatelessWidget {
+  UserService userService;
 
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  Appp({@required UserService userService});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        print('state $state');
+        if (state is ApploadingState) {
+          print('loading state $state');
+          return SplashPage();
+        } else if (state is AppLoadedState) {
+          print('loaded state $state');
+          return HomeScreen();
+        } else if (state is AppErrorState) {
+          print('error state $state');
+          return LoginPage(
+            userService: userService,
+          );
+        }
+      },
     );
   }
 }
