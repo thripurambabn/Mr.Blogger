@@ -29,9 +29,7 @@ class LoginScreen extends StatelessWidget {
   TextEditingController passCntrlr = TextEditingController();
   LoginBloc loginBloc;
   UserService userService;
-  double _sigmaX = 3.0; // from 0-10
-  double _sigmaY = 3.0; // from 0-10
-  double _opacity = 0.1;
+
   LoginScreen({@required this.userService});
 
   @override
@@ -39,132 +37,226 @@ class LoginScreen extends StatelessWidget {
     loginBloc = BlocProvider.of<LoginBloc>(context);
 
     return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        body: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/background.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: _sigmaX, sigmaY: _sigmaY),
-                child: Container(
-                  color: Colors.black.withOpacity(_opacity),
-                  height: 800.0,
-                  width: 800.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(5.0),
-                        child: BlocListener<LoginBloc, LoginState>(
-                          listener: (context, state) {
-                            if (state is LoginLoadedState) {
-                              navigateToHomeScreen(context, state.user);
-                            }
-                          },
-                          child: BlocBuilder<LoginBloc, LoginState>(
-                            builder: (context, state) {
-                              if (state is LoginInitialState) {
-                                return buildInitialUi();
-                              } else if (state is LoginLoadingState) {
-                                return buildLoadingUi();
-                              } else if (state is LoginErrorState) {
-                                return buildFailureUi(state.message);
-                              } else if (state is LoginLoadedState) {
-                                print(
-                                    '${emailCntrlr.text} and ${passCntrlr.text}');
-                                emailCntrlr.text = "";
-                                passCntrlr.text = "";
-                                return Container();
-                              }
-                            },
+        onWillPop: () async => false,
+        child: Scaffold(
+            body: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        colors: [
+                          Colors.purple[400],
+                          Colors.purple[300],
+                          Colors.purple[900]
+                        ],
+                        end: FractionalOffset.topCenter),
+                    color: Colors.purpleAccent),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 80,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Login",
+                            style: TextStyle(color: Colors.white, fontSize: 40),
                           ),
-                        ),
+                        ],
                       ),
-                      Container(
-                        padding: EdgeInsets.all(5.0),
-                        child: TextField(
-                          controller: emailCntrlr,
-                          decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.blue[100]),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(
+                        child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(60),
+                              topRight: Radius.circular(60))),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            child: BlocListener<LoginBloc, LoginState>(
+                              listener: (context, state) {
+                                if (state is LoginLoadedState) {
+                                  navigateToHomeScreen(context, state.user);
+                                }
+                              },
+                              child: BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  if (state is LoginInitialState) {
+                                    SizedBox(
+                                      height: 30,
+                                    );
+                                    return buildInitialUi();
+                                  } else if (state is LoginLoadingState) {
+                                    return buildLoadingUi();
+                                  } else if (state is LoginErrorState) {
+                                    return buildFailureUi(state.message);
+                                  } else if (state is LoginLoadedState) {
+                                    print(
+                                        '${emailCntrlr.text} and ${passCntrlr.text}');
+                                    emailCntrlr.text = "";
+                                    passCntrlr.text = "";
+                                    return Container();
+                                  }
+                                },
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              icon: new Icon(Icons.person),
-                              border: InputBorder.none,
-                              hintText: 'Enter your name'),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(5.0),
-                        child: TextField(
-                          controller: passCntrlr,
-                          decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              icon: new Icon(Icons.lock),
-                              border: InputBorder.none,
-                              hintText: 'Enter your password'),
-                        ),
-                      ),
-                      Container(
-                        child: SizedBox(
-                          width: 300,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(color: Colors.white)),
-                            color: Colors.brown[900],
-                            child: Text("Login"),
-                            textColor: Colors.white,
-                            onPressed: () {
-                              print(
-                                  'email ${emailCntrlr.text},password ${passCntrlr.text}');
-                              loginBloc.add(
-                                LoginSuccessEvent(
-                                  email: emailCntrlr.text,
-                                  password: passCntrlr.text,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          Container(
+                            height: 50,
+                            padding: EdgeInsets.all(15.0),
+                            child: TextField(
+                              controller: emailCntrlr,
+                              decoration: InputDecoration(
+                                icon: new Icon(
+                                  Icons.person,
+                                  color: Colors.purple,
+                                  size: 30,
                                 ),
-                              );
-                            },
+                                hintText: 'Enter your name',
+                                hintStyle: TextStyle(
+                                  color: Colors.purple[100],
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 50,
+                            padding: EdgeInsets.all(15.0),
+                            child: TextField(
+                              controller: emailCntrlr,
+                              decoration: InputDecoration(
+                                // filled: true,
+                                icon: new Icon(
+                                  Icons.lock,
+                                  color: Colors.purple,
+                                  size: 30,
+                                ),
+                                hintText: 'Enter your password',
+                                hintStyle: TextStyle(
+                                  color: Colors.purple[100],
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50,
+                            width: 290,
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              child: Text('Forgot password?',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.purple[700])),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              height: 50,
+                              width: 300,
+                              child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  // /side: BorderSide(color: Colors.white)
+                                ),
+                                color: Colors.purple[800],
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print(
+                                      'email ${emailCntrlr.text},password ${passCntrlr.text}');
+                                  loginBloc.add(
+                                    LoginSuccessEvent(
+                                      email: emailCntrlr.text,
+                                      password: passCntrlr.text,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              height: 50,
+                              width: 300,
+                              child: RaisedButton.icon(
+                                onPressed: () {},
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                label: Text(
+                                  'Login with Gmail',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                icon: Icon(
+                                  Icons.mail,
+                                  color: Colors.white,
+                                ),
+                                textColor: Colors.white,
+                                color: Colors.purple[800],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          GestureDetector(
+                              child: Text("New User?SignUp here",
+                                  style: TextStyle(
+                                      // backgroundColor: Colors.brown,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 22.0,
+                                      color: Colors.purple[400])),
+                              onTap: () {
+                                navigateToSignUpScreen(context);
+                              })
+                        ],
                       ),
-                      GestureDetector(
-                          child: Text("New User?SignUp here",
-                              style: TextStyle(
-                                  // backgroundColor: Colors.brown,
-                                  decoration: TextDecoration.underline,
-                                  fontSize: 20.0,
-                                  color: Colors.brown[900])),
-                          onTap: () {
-                            navigateToSignUpScreen(context);
-                          })
-                    ],
-                  ),
-                ))),
-      ),
-    );
+                    ))
+                  ],
+                ))
+            //),
+            ));
   }
 
   Widget buildInitialUi() {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(5.0),
+      padding: EdgeInsets.only(top: 50.0),
       child: Text(
-        "Login",
+        "Welocme back",
         style: TextStyle(
             fontSize: 40.0,
-            color: Colors.brown[900],
+            color: Colors.purple[700],
             fontWeight: FontWeight.bold),
       ),
     );
