@@ -63,7 +63,10 @@ class LoginScreen extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             "Login",
-                            style: TextStyle(color: Colors.white, fontSize: 40),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                                fontFamily: 'Paficico'),
                           ),
                         ],
                       ),
@@ -111,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            height: 50,
+                            height: 30,
                           ),
                           Container(
                             height: 50,
@@ -183,7 +186,9 @@ class LoginScreen extends StatelessWidget {
                                 color: Colors.purple[800],
                                 child: Text(
                                   "Login",
-                                  style: TextStyle(fontSize: 20.0),
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                  ),
                                 ),
                                 textColor: Colors.white,
                                 onPressed: () {
@@ -255,6 +260,7 @@ class LoginScreen extends StatelessWidget {
       child: Text(
         "Welocme back",
         style: TextStyle(
+            fontFamily: 'Paficico',
             fontSize: 40.0,
             color: Colors.purple[700],
             fontWeight: FontWeight.bold),
@@ -292,7 +298,9 @@ class LoginScreen extends StatelessWidget {
 
   void navigateToSignUpScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return RegScreen();
+      return RegScreen(
+        userService: userService,
+      );
     }));
   }
 }

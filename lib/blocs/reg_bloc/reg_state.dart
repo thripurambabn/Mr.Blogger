@@ -16,14 +16,14 @@ class RegloadingState extends RegState {
 
 class RegLoadedState extends RegState {
   FirebaseUser user;
-  RegLoadedState({@required this.user});
+  RegLoadedState(this.user);
   @override
   List<Object> get props => null;
 }
 
 class RegerrorState extends RegState {
   String message;
-  RegerrorState({@required this.message});
+  RegerrorState(this.message);
   @override
   List<Object> get props => null;
 }

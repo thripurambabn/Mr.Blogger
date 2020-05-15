@@ -69,8 +69,11 @@ flutter:
   #         weight: 700
   #
   fonts:
-    - family: Dancing Script
+    - family: Paficico
       fonts:
-        - asset: assets/fonts/DancingScript-VariableFont_wght.ttf
+        - asset: assets/fonts/Pacifico-Regular.ttf
+    # - family: DancingScript
+    #   fonts:
+    #     - asset: assets/fonts/DancingScript-Regular.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

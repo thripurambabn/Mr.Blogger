@@ -47,12 +47,12 @@ class InitialScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 50,
+                    height: 30,
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(30),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         CircleAvatar(
                           backgroundImage: ExactAssetImage('assets/logo.png'),
@@ -66,7 +66,8 @@ class InitialScreen extends StatelessWidget {
                           'Mr.Blogger',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 30,
+                              fontFamily: 'Paficico',
+                              fontSize: 40,
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
                         )
@@ -74,7 +75,7 @@ class InitialScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 60,
+                    height: 30,
                   ),
                   Expanded(
                       child: Container(
@@ -97,7 +98,8 @@ class InitialScreen extends StatelessWidget {
                                     "Welcome to the directory of wonderful things",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 20.0,
+                                      fontFamily: 'Paficico',
+                                      fontSize: 30.0,
                                       color: Colors.purple[900],
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -159,7 +161,9 @@ class InitialScreen extends StatelessWidget {
 
   void navigateToSignUpScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return RegScreen();
+      return RegScreen(
+        userService: userService,
+      );
     }));
   }
 }
