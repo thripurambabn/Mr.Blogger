@@ -1,11 +1,63 @@
+// import 'package:equatable/equatable.dart';
+// import 'package:flutter/material.dart';
+
+// abstract class RegEvent extends Equatable {}
+
+// class SignUpEvent extends RegEvent {
+//   String email, password;
+//   SignUpEvent({@required this.email, @required this.password});
+
+//   @override
+//   List<Object> get props => null;
+// }
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-abstract class RegEvent extends Equatable {}
+abstract class RegisterEvent extends Equatable {
+  const RegisterEvent();
 
-class SignUpEvent extends RegEvent {
-  String email, password;
-  SignUpEvent({@required this.email, this.password});
   @override
-  List<Object> get props => null;
+  List<Object> get props => [];
+}
+
+class RegisterEmailChanged extends RegisterEvent {
+  final String email;
+
+  const RegisterEmailChanged({@required this.email});
+
+  @override
+  List<Object> get props => [email];
+
+  @override
+  String toString() => 'EmailChanged { email :$email }';
+}
+
+class RegisterPasswordChanged extends RegisterEvent {
+  final String password;
+
+  const RegisterPasswordChanged({@required this.password});
+
+  @override
+  List<Object> get props => [password];
+
+  @override
+  String toString() => 'PasswordChanged { password: $password }';
+}
+
+class RegisterSubmitted extends RegisterEvent {
+  final String email;
+  final String password;
+
+  const RegisterSubmitted({
+    @required this.email,
+    @required this.password,
+  });
+
+  @override
+  List<Object> get props => [email, password];
+
+  @override
+  String toString() {
+    return 'Submitted { email: $email, password: $password }';
+  }
 }

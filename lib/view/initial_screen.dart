@@ -8,6 +8,9 @@ import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
 import 'package:mr_blogger/service/user_service.dart';
 
 import 'package:mr_blogger/view/login_screen.dart';
+import 'package:mr_blogger/view/login_screen.dart';
+import 'package:mr_blogger/view/login_screen.dart';
+import 'package:mr_blogger/view/reg_screen.dart';
 import 'package:mr_blogger/view/reg_screen.dart';
 
 class InitialPage extends StatelessWidget {
@@ -140,7 +143,9 @@ class InitialScreen extends StatelessWidget {
                                     color: Colors.purple[900],
                                     child: Text("Signup"),
                                     textColor: Colors.white,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      return navigateToSignUpScreen(context);
+                                    },
                                   ),
                                 )),
                               ]),
@@ -155,13 +160,13 @@ class InitialScreen extends StatelessWidget {
 
   void navigateTologinScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return LoginPage(userService: userService);
+      return LoginScreen(userService: userService);
     }));
   }
 
   void navigateToSignUpScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return RegScreen(
+      return RegisterScreen(
         userService: userService,
       );
     }));
