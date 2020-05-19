@@ -68,6 +68,7 @@ class RegisterState {
   }
 
   factory RegisterState.failure() {
+    print('failure');
     return RegisterState(
       isEmailValid: true,
       isPasswordValid: true,
@@ -78,6 +79,7 @@ class RegisterState {
   }
 
   factory RegisterState.success() {
+    print('register success');
     return RegisterState(
       isEmailValid: true,
       isPasswordValid: true,

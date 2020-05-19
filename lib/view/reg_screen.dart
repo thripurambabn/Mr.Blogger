@@ -372,10 +372,28 @@ class _RegisterFormState extends State<RegisterForm> {
             child: Form(
               child: ListView(
                 children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "You are stranger only once",
+                      style: TextStyle(
+                        fontFamily: 'Paficico',
+                        fontSize: 30.0,
+                        color: Colors.purple[700],
+                        //fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.email),
+                      icon: Icon(
+                        Icons.email,
+                        color: Colors.purple[800],
+                      ),
                       labelText: 'Email',
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -385,10 +403,16 @@ class _RegisterFormState extends State<RegisterForm> {
                       return !state.isEmailValid ? 'Invalid Email' : null;
                     },
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
+                      icon: Icon(
+                        Icons.lock,
+                        color: Colors.purple[800],
+                      ),
                       labelText: 'Password',
                     ),
                     obscureText: true,
@@ -398,14 +422,23 @@ class _RegisterFormState extends State<RegisterForm> {
                       return !state.isPasswordValid ? 'Invalid Password' : null;
                     },
                   ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 50,
+                    width: 80,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text('SignUp',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 20.0)),
+                      onPressed: isRegisterButtonEnabled(state)
+                          ? _onFormSubmitted
+                          : null,
                     ),
-                    child: Text('Register'),
-                    onPressed: isRegisterButtonEnabled(state)
-                        ? _onFormSubmitted
-                        : null,
                   ),
                 ],
               ),
@@ -456,13 +489,62 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
-      body: Center(
-        child: BlocProvider<RegisterBloc>(
-          create: (context) => RegisterBloc(userService: _userService),
-          child: RegisterForm(),
-        ),
+        body: SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Container(
+              height: 759,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      colors: [
+                        Colors.purple[400],
+                        Colors.purple[300],
+                        Colors.purple[900]
+                      ],
+                      end: FractionalOffset.topCenter),
+                  color: Colors.purpleAccent),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 70,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Text(
+                      "SignUp",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 40,
+                          fontFamily: 'Paficico'),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 545,
+                      alignment: Alignment.bottomCenter,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(60),
+                              topRight: Radius.circular(60))),
+                      child: BlocProvider<RegisterBloc>(
+                        create: (context) =>
+                            RegisterBloc(userService: _userService),
+                        child: RegisterForm(),
+                      ),
+                    ),
+                  )
+                ],
+              )),
+        ],
       ),
-    );
+    ));
   }
 }

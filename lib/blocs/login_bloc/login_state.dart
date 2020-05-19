@@ -69,6 +69,7 @@ class LoginState {
   }
 
   factory LoginState.failure() {
+    print('login failure');
     return LoginState(
       isEmailValid: true,
       isPasswordValid: true,
@@ -79,6 +80,7 @@ class LoginState {
   }
 
   factory LoginState.success() {
+    print('login success');
     return LoginState(
       isEmailValid: true,
       isPasswordValid: true,
