@@ -4,11 +4,12 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child:
-            //     child: Image(
-            //   image: NetworkImage(
-            //       'https://i.pinimg.com/originals/88/c4/d6/88c4d666eb484b6d6dd71faa5c479368.gif'),
-            // )
-            Text('splash screen'));
+        //child:
+        child: Image(
+      image: NetworkImage(
+          'https://www.zestcarrental.com/blog/wp-content/uploads/2016/10/travel-blog-somegirl-min.jpg'),
+    )
+        // Text('splash screen')
+        );
   }
 }

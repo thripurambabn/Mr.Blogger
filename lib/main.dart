@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
-import 'package:mr_blogger/view/initial_screen.dart';
+
 import 'package:mr_blogger/view/login_screen.dart';
-import 'package:mr_blogger/view/login_screen.dart';
+
 import 'package:mr_blogger/view/splash_scren.dart';
 
 void main() {
