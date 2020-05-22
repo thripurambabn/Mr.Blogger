@@ -45,7 +45,7 @@ class App extends StatelessWidget {
             );
           }
           if (state is AuthenticationSuccess) {
-            return HomeScreen(name: state.displayName);
+            return HomeScreen();
           }
           return SplashPage();
         },

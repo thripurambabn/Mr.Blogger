@@ -6,9 +6,9 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  final String name;
+  //final String name;
 
-  HomeScreen({Key key, @required this.name}) : super(key: key);
+  // HomeScreen({Key key, @required this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
