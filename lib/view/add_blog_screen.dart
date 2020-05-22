@@ -1,8 +1,10 @@
 import 'dart:io';
-
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class AddBlogScreen extends StatefulWidget {
   @override
@@ -15,6 +17,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   File sampleImage;
   final formKey = new GlobalKey<FormState>();
   String _myvalue;
+  String category;
+  String url;
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -107,7 +111,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               ),
               color: Colors.purple[800],
               onPressed: () {
-                validateandSave;
+                validateandSave();
               },
             )
           ],
