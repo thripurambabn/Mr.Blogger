@@ -20,6 +20,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   final formKey = new GlobalKey<FormState>();
   String _myvalue;
   String category;
+  String likes;
   String url;
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -62,7 +63,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     print('navigating to homescreen');
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return new HomeScreen();
+        return new Homepage();
       },
     ));
   }
@@ -77,24 +78,25 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       String date = formatdate.format(dbkey);
       String time = formattime.format(dbkey);
 
-      // DatabaseReference databaseReference =
-      //     FirebaseDatabase.instance.reference();
-      // var data = {
-      //   'iamge': url,
-      //   'catergory': category,
-      //   'Description': _myvalue,
-      //   'date': date,
-      //   'time': time
-      // };
-      // databaseReference.child('blogs').push().set(data);
-      // print('saving to DB in the end');
-      Firestore.instance.collection("blogs").document(time).setData({
+      DatabaseReference databaseReference =
+          FirebaseDatabase.instance.reference();
+      var data = {
         'iamge': url,
         'catergory': category,
         'Description': _myvalue,
         'date': date,
         'time': time
-      });
+      };
+      databaseReference.child('blogs').push().set(data);
+      print('saving to DB in the end');
+      // Firestore.instance.collection("blogs").document(time).setData({
+      //   'iamge': url,
+      //   'catergory': category,
+      //   'Description': _myvalue,
+      //   'date': date,
+      //   'time': time,
+      //   'likes': likes,
+      // });
     } catch (e) {
       print('error in saving db ${e.toString()}');
     }
