@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -76,17 +77,24 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       String date = formatdate.format(dbkey);
       String time = formattime.format(dbkey);
 
-      DatabaseReference databaseReference =
-          FirebaseDatabase.instance.reference();
-      var data = {
+      // DatabaseReference databaseReference =
+      //     FirebaseDatabase.instance.reference();
+      // var data = {
+      //   'iamge': url,
+      //   'catergory': category,
+      //   'Description': _myvalue,
+      //   'date': date,
+      //   'time': time
+      // };
+      // databaseReference.child('blogs').push().set(data);
+      // print('saving to DB in the end');
+      Firestore.instance.collection("blogs").document(time).setData({
         'iamge': url,
         'catergory': category,
         'Description': _myvalue,
         'date': date,
         'time': time
-      };
-      databaseReference.child('blogs').push().set(data);
-      print('saving to DB in the end');
+      });
     } catch (e) {
       print('error in saving db ${e.toString()}');
     }
@@ -103,7 +111,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         ),
       ),
       body: new Center(
-        child: sampleImage == null ? Text('select an iamge') : enableUplaod(),
+        child: sampleImage == null
+            ? Text(
+                'select an image',
+                style: TextStyle(color: Colors.purple[200]),
+              )
+            : enableUplaod(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: getImage,
@@ -114,7 +127,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   Widget enableUplaod() {
-    // String dropdownValue = 'One';
+    String dropdownValue;
     return new Container(
       child: new Form(
         key: formKey,
@@ -122,36 +135,53 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           children: <Widget>[
             Image.file(sampleImage, height: 310.0, width: 600),
             SizedBox(
-              height: 15.0,
+              height: 30.0,
             ),
-            // DropdownButton<String>(
-            //   value: dropdownValue,
-            //   icon: Icon(FontAwesomeIcons.dropbox),
-            //   iconSize: 24,
-            //   elevation: 16,
-            //   style: TextStyle(color: Colors.deepPurple),
-            //   underline: Container(
-            //     height: 2,
-            //     color: Colors.deepPurpleAccent,
-            //   ),
-            //   onChanged: (String newValue) {
-            //     setState(() {
-            //       dropdownValue = newValue;
-            //     });
-            //   },
-            //   items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
-            //       .map<DropdownMenuItem<String>>((String value) {
-            //     return DropdownMenuItem<String>(
-            //       value: value,
-            //       child: Text(value),
-            //     );
-            //   }).toList(),
-            // ),
+            DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                hint: Text(
+                  "Select category",
+                  style: TextStyle(color: Colors.purple[200]),
+                ),
+                isDense: true,
+                value: dropdownValue,
+                icon: Icon(FontAwesomeIcons.sortDown),
+                iconSize: 30,
+                elevation: 16,
+                style: TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String newValue) {
+                  setState(() {
+                    print(
+                        'before new value $dropdownValue new value $newValue');
+                    dropdownValue = newValue;
+                    print('new value $dropdownValue new value $newValue');
+                  });
+                },
+                items: <String>[
+                  'Pets',
+                  'Travel',
+                  'Books',
+                  'Lifestyle',
+                  'Movies'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
             SizedBox(
-              height: 15.0,
+              height: 30.0,
             ),
             TextFormField(
-              decoration: new InputDecoration(labelText: 'Description'),
+              decoration: new InputDecoration(
+                  hintText: 'Description',
+                  hintStyle: TextStyle(color: Colors.purple[200])),
               validator: (value) {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
@@ -160,11 +190,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               },
             ),
             SizedBox(
-              height: 15.0,
+              height: 30.0,
             ),
             RaisedButton(
               child: Text(
-                'upload blog',
+                'Upload blog',
                 style: TextStyle(color: Colors.white),
               ),
               color: Colors.purple[800],

@@ -1,14 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DatabaseService {
-  final String uid;
-  DatabaseService({this.uid});
-  final CollectionReference userCollection =
-      Firestore.instance.collection('users');
-  Future UserCollection(String email, String password) async {
-    return await userCollection.document(uid).setData({
-      'email': email,
-      'password': password,
-    });
-  }
-}
+// class DatabaseService {
+//   final String uid;
+//   DatabaseService({this.uid});
+//   final CollectionReference userCollection =
+//       Firestore.instance.collection('users');
+//   Future UserCollection(String email, String password) async {
+//     return await userCollection.document(uid).setData({
+//       'email': email,
+//       'password': password,
+//     });
+//   }
+// }

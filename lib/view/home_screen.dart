@@ -5,11 +5,12 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
 
+class Blogs {
+  String image, description, likes, date, time;
+  Blogs(this.image, this.description, this.date, this.likes, this.time);
+}
+
 class HomeScreen extends StatelessWidget {
-  //final String name;
-
-  // HomeScreen({Key key, @required this.name}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,12 +29,7 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          //  Center(child: Text('Welcome $name!')),
-        ],
-      ),
+      //  body: List<Blogs> blogsList=[],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
