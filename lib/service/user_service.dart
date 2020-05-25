@@ -45,17 +45,21 @@ class UserService {
           .collection("users")
           .document(email)
           .setData({'email': email, 'password': password, 'Blogs': false});
-      // await
-      // FirebaseDatabase.instance.reference().child('blogs').push().set(data);
+      // await FirebaseDatabase.instance
+      //     .reference()
+      //     .child('blogs')
+      //     .push()
+      //     .set(email);
       // print('saving to DB in the end');
 
-      // return result.user;
+      return result.user;
     } catch (e) {
       print('failure');
     }
   }
 
   Future<void> signOut() async {
+    print('calling signout');
     return Future.wait([
       _firebaseAuth.signOut(),
       _googleSignIn.signOut(),

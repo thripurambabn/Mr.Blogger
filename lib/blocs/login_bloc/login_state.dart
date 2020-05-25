@@ -1,33 +1,4 @@
-// import 'package:equatable/equatable.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-
-// abstract class LoginState extends Equatable {}
-
-// class LoginInitialState extends LoginState {
-//   @override
-//   List<Object> get props => null;
-// }
-
-// class LoginLoadingState extends LoginState {
-//   @override
-//   List<Object> get props => null;
-// }
-
-// class LoginLoadedState extends LoginState {
-//   FirebaseUser user;
-//   LoginLoadedState({@required this.user});
-//   @override
-//   List<Object> get props => null;
-// }
-
-// class LoginErrorState extends LoginState {
-//   String message;
-//   LoginErrorState({@required this.message});
-//   @override
-//   List<Object> get props => null;
-// }
-
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -130,4 +101,16 @@ class LoginState {
       isFailure: $isFailure,
     }''';
   }
+}
+
+class LogOutInitial extends LoginState {
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}
+
+class LogOutSuccessState extends LoginState {
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }

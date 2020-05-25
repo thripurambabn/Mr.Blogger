@@ -1,32 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:mr_blogger/blocs/login_bloc/login_event.dart';
-// import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
-// import 'package:mr_blogger/service/user_service.dart';
-
-// class LoginBloc extends Bloc<LoginEvent, LoginState> {
-//   UserService userService;
-//   LoginBloc({@required UserService userService}) {
-//     this.userService = UserService();
-//   }
-//   @override
-//   LoginState get initialState => LoginInitialState();
-
-//   @override
-//   Stream<LoginState> mapEventToState(LoginEvent event) async* {
-//     if (event is LoginSuccessEvent) {
-//       try {
-//         yield LoginLoadingState();
-//         var user = await userService.signIn(event.email, event.password);
-//         yield LoginLoadedState(user: user);
-//       } catch (e) {
-//         yield LoginErrorState(message: e.toString());
-//         print('login error ${e.toString()}');
-//       }
-//     }
-//   }
-// }
-
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -77,6 +48,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: event.email,
         password: event.password,
       );
+    } else if (event is LogOutEvent) {
+      yield* _mapLogoutEvent();
     }
   }
 
@@ -112,5 +85,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } catch (_) {
       yield LoginState.failure();
     }
+  }
+
+  @override
+  Stream<LoginState> _mapLogoutEvent() async* {
+    _userService.signOut();
+    yield LogOutSuccessState();
   }
 }

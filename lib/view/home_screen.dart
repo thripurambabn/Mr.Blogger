@@ -46,6 +46,7 @@ class _HomepageState extends State<Homepage> {
           IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
+              print('pressed signout');
               BlocProvider.of<AuthenticationBloc>(context).add(
                 AuthenticationLoggedOut(),
               );
@@ -53,7 +54,22 @@ class _HomepageState extends State<Homepage> {
           )
         ],
       ),
-      body: Container(),
+      body: Container(
+        child: blogsList.length == 0
+            ? Text('no blogs available')
+            : new ListView.builder(
+                itemCount: blogsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  print('${blogsList[index].image}');
+                  return BlogsUi(
+                      blogsList[index].image,
+                      blogsList[index].description,
+                      blogsList[index].likes,
+                      blogsList[index].date,
+                      blogsList[index].time);
+                },
+              ),
+      ),
       floatingActionButton: RaisedButton(
         color: Colors.purple[800],
         onPressed: () {
@@ -64,6 +80,48 @@ class _HomepageState extends State<Homepage> {
         child: Text(
           'Upload Your Blog',
           style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget BlogsUi(String image, String description, String likes, String date,
+      String time) {
+    return new Card(
+      elevation: 10.0,
+      margin: EdgeInsets.all(15.0),
+      child: new Container(
+        padding: EdgeInsets.all(15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                new Text(
+                  date,
+                  style: Theme.of(context).textTheme.subtitle1,
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  time,
+                  style: Theme.of(context).textTheme.subtitle1,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            new Image.network(image, fit: BoxFit.cover),
+            Icon(
+              Icons.favorite_border,
+              color: Colors.red,
+            ),
+            new Text(
+              description,
+              style: Theme.of(context).textTheme.subtitle1,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

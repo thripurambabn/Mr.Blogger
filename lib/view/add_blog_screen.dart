@@ -81,9 +81,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.reference();
       var data = {
-        'iamge': url,
+        'image': url,
         'catergory': category,
-        'Description': _myvalue,
+        'description': _myvalue,
         'date': date,
         'time': time
       };
