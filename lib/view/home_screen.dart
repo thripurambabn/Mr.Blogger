@@ -4,7 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
+import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
+import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
+import 'package:mr_blogger/view/login_screen.dart';
 
 class Homepage extends StatefulWidget {
   Homepage({Key key}) : super(key: key);
@@ -14,6 +17,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  UserService userService;
   List<Blogs> blogsList = [];
   @override
   void initState() {
@@ -35,6 +39,14 @@ class _HomepageState extends State<Homepage> {
     super.initState();
   }
 
+  void navigateToSignUpPage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return LoginScreen(
+        userService: userService,
+      );
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +58,13 @@ class _HomepageState extends State<Homepage> {
           IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
+              // BlocListener(
+              //   listener: (context, state) {
+              //     if (state is LogOutSuccessState) {
+              //       navigateToSignUpPage(context);
+              //     }
+              //   },
+              // );
               print('pressed signout');
               BlocProvider.of<AuthenticationBloc>(context).add(
                 AuthenticationLoggedOut(),
@@ -111,7 +130,9 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
             SizedBox(height: 10.0),
-            new Image.network(image, fit: BoxFit.cover),
+            Container(
+              child: Image.network(image, fit: BoxFit.cover),
+            ),
             Icon(
               Icons.favorite_border,
               color: Colors.red,

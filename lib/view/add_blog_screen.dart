@@ -22,6 +22,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String category;
   String likes;
   String url;
+  bool isbuttondisabled = false;
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -112,85 +113,34 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
         ),
       ),
-      body: new Center(
-        child: sampleImage == null
-            ? Text(
-                'select an image',
-                style: TextStyle(color: Colors.purple[200]),
-              )
-            : enableUplaod(),
+      body: SingleChildScrollView(
+        child: new Center(
+          child: sampleImage == null ? beforeUpload() : enableUplaod(),
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
-        child: Icon(FontAwesomeIcons.upload, color: Colors.white),
-        backgroundColor: Colors.purple[800],
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: getImage,
+      //   child: Icon(FontAwesomeIcons.upload, color: Colors.white),
+      //   backgroundColor: Colors.purple[800],
+      // ),
     );
   }
 
   Widget enableUplaod() {
-    String dropdownValue;
     return new Container(
       child: new Form(
         key: formKey,
         child: Column(
           children: <Widget>[
-            Image.file(sampleImage, height: 310.0, width: 600),
+            Image.file(sampleImage, height: 300.0, width: 350),
             SizedBox(
               height: 30.0,
             ),
-            DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                hint: Text(
-                  "Select category",
-                  style: TextStyle(color: Colors.purple[200]),
-                ),
-                isDense: true,
-                value: dropdownValue,
-                icon: Icon(FontAwesomeIcons.sortDown),
-                iconSize: 30,
-                elevation: 16,
-                style: TextStyle(color: Colors.deepPurple),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
-                ),
-                onChanged: (String newValue) {
-                  setState(() {
-                    print(
-                        'before new value $dropdownValue new value $newValue');
-                    dropdownValue = newValue;
-                    print('new value $dropdownValue new value $newValue');
-                  });
-                },
-                items: <String>[
-                  'Pets',
-                  'Travel',
-                  'Books',
-                  'Lifestyle',
-                  'Movies'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
+            dropbox(),
             SizedBox(
               height: 30.0,
             ),
-            TextFormField(
-              decoration: new InputDecoration(
-                  hintText: 'Description',
-                  hintStyle: TextStyle(color: Colors.purple[200])),
-              validator: (value) {
-                return value.isEmpty ? 'blog decription is required' : null;
-              },
-              onSaved: (value) {
-                _myvalue = value;
-              },
-            ),
+            descriptionfield(),
             SizedBox(
               height: 30.0,
             ),
@@ -200,12 +150,129 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               color: Colors.purple[800],
-              onPressed: () {
-                print('upload blog pressed');
-                uploadImage();
-              },
+              onPressed: isbuttondisabled
+                  ? null
+                  : () {
+                      setState(() => isbuttondisabled = !isbuttondisabled);
+                      print('${isbuttondisabled}');
+                      print('upload blog pressed');
+                      uploadImage();
+                    },
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  beforeUpload() {
+    return new Container(
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                color: Colors.purple[300]),
+            padding: EdgeInsets.all(50.0),
+            alignment: Alignment.center,
+            height: 300,
+            child: IconButton(
+              icon: Icon(
+                FontAwesomeIcons.solidImages,
+              ),
+              tooltip: 'Add photo',
+              iconSize: 50,
+              color: Colors.white,
+              splashColor: Colors.purple,
+              onPressed: getImage,
+            ),
+            width: 350,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          dropbox(),
+          SizedBox(
+            height: 20,
+          ),
+          descriptionfield()
+        ],
+      ),
+    );
+  }
+
+  dropbox() {
+    String dropdownValue;
+    return Container(
+      alignment: Alignment.bottomLeft,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          hint: Text(
+            "Select category",
+            style: TextStyle(color: Colors.purple[200]),
+          ),
+          isDense: true,
+          value: dropdownValue,
+          icon: Icon(FontAwesomeIcons.sortDown),
+          iconSize: 30,
+          elevation: 16,
+          style: TextStyle(color: Colors.deepPurple),
+          underline: Container(
+            height: 2,
+            color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String newValue) {
+            setState(() {
+              print('before new value $dropdownValue new value $newValue');
+              dropdownValue = newValue;
+              print('new value $dropdownValue new value $newValue');
+            });
+          },
+          items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  descriptionfield() {
+    return Container(
+      child: new Scrollbar(
+        child: SingleChildScrollView(
+          child: TextFormField(
+            textAlign: TextAlign.left,
+            keyboardType: TextInputType.multiline,
+            maxLines: 10,
+            minLines: 5,
+            decoration: new InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                    borderSide:
+                        BorderSide(width: 1, color: Colors.purple[300])),
+                focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: Colors.purple, width: 1.0),
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                hintText: 'Description',
+                hintStyle: TextStyle(color: Colors.purple[200])),
+            validator: (value) {
+              return value.isEmpty ? 'blog decription is required' : null;
+            },
+            onSaved: (value) {
+              _myvalue = value;
+            },
+          ),
         ),
       ),
     );
