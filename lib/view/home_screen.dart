@@ -106,6 +106,8 @@ class _HomepageState extends State<Homepage> {
 
   Widget BlogsUi(String image, String description, String likes, String date,
       String time) {
+    final String _description = description;
+    print('${description.length},length');
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.all(15.0),
@@ -115,33 +117,49 @@ class _HomepageState extends State<Homepage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                new Text(
-                  date,
-                  style: Theme.of(context).textTheme.subtitle1,
-                  textAlign: TextAlign.center,
-                ),
-                new Text(
-                  time,
-                  style: Theme.of(context).textTheme.subtitle1,
-                  textAlign: TextAlign.center,
-                ),
+                new Text('TITLE'),
               ],
             ),
             SizedBox(height: 10.0),
+            Image.network(
+              image,
+              fit: BoxFit.cover,
+              height: 300,
+              width: 350,
+              loadingBuilder: (context, child, progress) {
+                return progress == null
+                    ? child
+                    : Container(
+                        color: Colors.purple[50],
+                        height: 300,
+                        width: 350,
+                      );
+              },
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('By:AuthorName'),
+                  new Text(
+                    date,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.right,
+                  ),
+                ]),
+            SizedBox(
+              height: 10,
+            ),
             Container(
-              child: Image.network(image, fit: BoxFit.cover),
-            ),
-            Icon(
-              Icons.favorite_border,
-              color: Colors.red,
-            ),
-            new Text(
-              description,
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
-            ),
+              child: new Text(
+                description.substring(0, 75) + '....',
+                style: Theme.of(context).textTheme.subtitle1,
+                textAlign: TextAlign.left,
+              ),
+            )
           ],
         ),
       ),

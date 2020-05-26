@@ -23,6 +23,63 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String likes;
   String url;
   bool isbuttondisabled = false;
+  @override
+  Widget build(BuildContext context) {
+    return new WillPopScope(
+      onWillPop: _onWillPop,
+      child: new Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.purple[800],
+          title: Text(
+            'Add blog',
+            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: new Center(
+            child: sampleImage == null ? beforeUpload() : enableUplaod(),
+          ),
+        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: getImage,
+        //   child: Icon(FontAwesomeIcons.upload, color: Colors.white),
+        //   backgroundColor: Colors.purple[800],
+        // ),
+      ),
+    );
+  }
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            content: new Text('Are you sure you want to go back?',
+                style: TextStyle(color: Colors.purple[500])),
+            actions: <Widget>[
+              Container(
+                  child: new OutlineButton(
+                    color: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(false),
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(0.0)),
+                    child: new Text('Cancel',
+                        style: TextStyle(color: Colors.purple[500])),
+                  ),
+                  width: 80),
+              Container(
+                child: new RaisedButton(
+                  color: Colors.purple[500],
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: new Text('Yes', style: TextStyle(color: Colors.white)),
+                ),
+                width: 80,
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -103,29 +160,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple[800],
-        title: Text(
-          'Add blog',
-          style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: new Center(
-          child: sampleImage == null ? beforeUpload() : enableUplaod(),
-        ),
-      ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: getImage,
-      //   child: Icon(FontAwesomeIcons.upload, color: Colors.white),
-      //   backgroundColor: Colors.purple[800],
-      // ),
-    );
-  }
-
   Widget enableUplaod() {
     return new Container(
       child: new Form(
@@ -173,12 +207,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             height: 20,
           ),
           Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                color: Colors.purple[300]),
+            color: Colors.purple[300],
             padding: EdgeInsets.all(50.0),
             alignment: Alignment.center,
-            height: 300,
+            height: 240,
             child: IconButton(
               icon: Icon(
                 FontAwesomeIcons.solidImages,
@@ -189,7 +221,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               splashColor: Colors.purple,
               onPressed: getImage,
             ),
-            width: 350,
+            width: 330,
           ),
           SizedBox(
             height: 20,
@@ -207,6 +239,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   dropbox() {
     String dropdownValue;
     return Container(
+      padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
       alignment: Alignment.bottomLeft,
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -247,6 +280,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     return Container(
       child: new Scrollbar(
         child: SingleChildScrollView(
+            child: Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: TextFormField(
             textAlign: TextAlign.left,
             keyboardType: TextInputType.multiline,
@@ -254,15 +289,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             minLines: 5,
             decoration: new InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    ),
                     borderSide:
                         BorderSide(width: 1, color: Colors.purple[300])),
                 focusedBorder: OutlineInputBorder(
                   borderSide:
                       const BorderSide(color: Colors.purple, width: 1.0),
-                  borderRadius: BorderRadius.circular(25.0),
                 ),
                 hintText: 'Description',
                 hintStyle: TextStyle(color: Colors.purple[200])),
@@ -273,7 +304,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               _myvalue = value;
             },
           ),
-        ),
+        )),
       ),
     );
   }
