@@ -31,15 +31,17 @@ import 'package:meta/meta.dart';
 
 @immutable
 class RegisterState {
+  final bool isUsernameValid;
   final bool isEmailValid;
   final bool isPasswordValid;
   final bool isSubmitting;
   final bool isSuccess;
   final bool isFailure;
 
-  bool get isFormValid => isEmailValid && isPasswordValid;
+  bool get isFormValid => isEmailValid && isPasswordValid && isUsernameValid;
 
   RegisterState({
+    @required this.isUsernameValid,
     @required this.isEmailValid,
     @required this.isPasswordValid,
     @required this.isSubmitting,
@@ -49,6 +51,7 @@ class RegisterState {
 
   factory RegisterState.initial() {
     return RegisterState(
+      isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isSubmitting: false,
@@ -59,6 +62,7 @@ class RegisterState {
 
   factory RegisterState.loading() {
     return RegisterState(
+      isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isSubmitting: true,
@@ -70,6 +74,7 @@ class RegisterState {
   factory RegisterState.failure() {
     print('failure');
     return RegisterState(
+      isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isSubmitting: false,
@@ -81,6 +86,7 @@ class RegisterState {
   factory RegisterState.success() {
     print('register success');
     return RegisterState(
+      isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
       isSubmitting: false,
@@ -90,10 +96,12 @@ class RegisterState {
   }
 
   RegisterState update({
+    bool isUsernameValid,
     bool isEmailValid,
     bool isPasswordValid,
   }) {
     return copyWith(
+      isUsernameValid: isUsernameValid,
       isEmailValid: isEmailValid,
       isPasswordValid: isPasswordValid,
       isSubmitting: false,
@@ -103,6 +111,7 @@ class RegisterState {
   }
 
   RegisterState copyWith({
+    bool isUsernameValid,
     bool isEmailValid,
     bool isPasswordValid,
     bool isSubmitEnabled,
@@ -111,6 +120,7 @@ class RegisterState {
     bool isFailure,
   }) {
     return RegisterState(
+      isUsernameValid: isUsernameValid ?? this.isUsernameValid,
       isEmailValid: isEmailValid ?? this.isEmailValid,
       isPasswordValid: isPasswordValid ?? this.isPasswordValid,
       isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -122,6 +132,7 @@ class RegisterState {
   @override
   String toString() {
     return '''RegisterState {
+      isUsernameValid:$isEmailValid,
       isEmailValid: $isEmailValid,
       isPasswordValid: $isPasswordValid,      
       isSubmitting: $isSubmitting,

@@ -24,11 +24,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) {
     final nonDebounceStream = events.where((event) {
       return (event is! RegisterEmailChanged &&
-          event is! RegisterPasswordChanged);
+          event is! RegisterPasswordChanged &&
+          event is! RegisterusernameChanged);
     });
     final debounceStream = events.where((event) {
       return (event is RegisterEmailChanged ||
-          event is RegisterPasswordChanged);
+          event is RegisterPasswordChanged ||
+          event is RegisterusernameChanged);
     }).debounceTime(Duration(milliseconds: 300));
     return super.transformEvents(
       nonDebounceStream.mergeWith([debounceStream]),
@@ -44,8 +46,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield* _mapRegisterEmailChangedToState(event.email);
     } else if (event is RegisterPasswordChanged) {
       yield* _mapRegisterPasswordChangedToState(event.password);
+    } else if (event is RegisterusernameChanged) {
+      yield* _mapRegisterUsernameToState(event.username);
     } else if (event is RegisterSubmitted) {
-      yield* _mapRegisterSubmittedToState(event.email, event.password);
+      yield* _mapRegisterSubmittedToState(
+          event.email, event.password, event.username);
     }
   }
 
@@ -62,15 +67,23 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     );
   }
 
+  Stream<RegisterState> _mapRegisterUsernameToState(String username) async* {
+    yield state.update(
+      isUsernameValid: Validators.isValidUsername(username),
+    );
+  }
+
   Stream<RegisterState> _mapRegisterSubmittedToState(
     String email,
     String password,
+    String username,
   ) async* {
     yield RegisterState.loading();
     try {
       await _userService.signUp(
         email: email,
         password: password,
+        username: username,
       );
       yield RegisterState.success();
     } catch (_) {

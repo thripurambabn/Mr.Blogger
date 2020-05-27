@@ -19,7 +19,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   File sampleImage;
   final formKey = new GlobalKey<FormState>();
   String _myvalue;
+  String _mytitlevalue;
   String category;
+  String uid;
+
   String likes;
   String url;
   bool isbuttondisabled = false;
@@ -40,11 +43,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             child: sampleImage == null ? beforeUpload() : enableUplaod(),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: getImage,
-        //   child: Icon(FontAwesomeIcons.upload, color: Colors.white),
-        //   backgroundColor: Colors.purple[800],
-        // ),
       ),
     );
   }
@@ -53,8 +51,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     return (await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-            content: new Text('Are you sure you want to go back?',
-                style: TextStyle(color: Colors.purple[500])),
+            content: new Text(
+              'Are you sure you want to go back?',
+              style:
+                  TextStyle(color: Colors.purple[500], fontFamily: 'Paficico'),
+            ),
             actions: <Widget>[
               Container(
                   child: new OutlineButton(
@@ -62,15 +63,20 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                     onPressed: () => Navigator.of(context).pop(false),
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(0.0)),
-                    child: new Text('Cancel',
-                        style: TextStyle(color: Colors.purple[500])),
+                    child: new Text(
+                      'Cancel',
+                      style: TextStyle(
+                          color: Colors.purple[500], fontFamily: 'Paficico'),
+                    ),
                   ),
                   width: 80),
               Container(
                 child: new RaisedButton(
                   color: Colors.purple[500],
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: new Text('Yes', style: TextStyle(color: Colors.white)),
+                  child: new Text('Yes',
+                      style: TextStyle(
+                          color: Colors.white, fontFamily: 'Paficico')),
                 ),
                 width: 80,
               ),
@@ -139,8 +145,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.reference();
       var data = {
+        'uid': uid,
         'image': url,
         'catergory': category,
+        'title': _mytitlevalue,
         'description': _myvalue,
         'date': date,
         'time': time
@@ -166,22 +174,33 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         key: formKey,
         child: Column(
           children: <Widget>[
-            Image.file(sampleImage, height: 300.0, width: 350),
             SizedBox(
-              height: 30.0,
+              height: 10,
             ),
             dropbox(),
+            title(),
             SizedBox(
-              height: 30.0,
+              height: 20,
+            ),
+            InkWell(
+              child: Image.file(
+                sampleImage,
+                height: 255.0,
+                width: 340,
+              ),
+              onTap: getImage,
+            ),
+            SizedBox(
+              height: 10.0,
             ),
             descriptionfield(),
             SizedBox(
-              height: 30.0,
+              height: 10.0,
             ),
             RaisedButton(
               child: Text(
                 'Upload blog',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
               ),
               color: Colors.purple[800],
               onPressed: isbuttondisabled
@@ -204,31 +223,46 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       child: Column(
         children: <Widget>[
           SizedBox(
-            height: 20,
-          ),
-          Container(
-            color: Colors.purple[300],
-            padding: EdgeInsets.all(50.0),
-            alignment: Alignment.center,
-            height: 240,
-            child: IconButton(
-              icon: Icon(
-                FontAwesomeIcons.solidImages,
-              ),
-              tooltip: 'Add photo',
-              iconSize: 50,
-              color: Colors.white,
-              splashColor: Colors.purple,
-              onPressed: getImage,
-            ),
-            width: 330,
-          ),
-          SizedBox(
-            height: 20,
+            height: 10,
           ),
           dropbox(),
+          title(),
           SizedBox(
             height: 20,
+          ),
+          InkWell(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+              color: Colors.purple[300],
+              alignment: Alignment.center,
+              height: 240,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.solidImages,
+                    ),
+                    tooltip: 'Add photo',
+                    iconSize: 50,
+                    color: Colors.white,
+                    splashColor: Colors.purple,
+                    onPressed: getImage,
+                  ),
+                  Text(
+                    'Add Photo',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: Colors.purple, fontFamily: 'Paficico'),
+                  )
+                ],
+              ),
+              width: 340,
+            ),
+            onTap: getImage,
+          ),
+          SizedBox(
+            height: 10,
           ),
           descriptionfield()
         ],
@@ -239,10 +273,13 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   dropbox() {
     String dropdownValue;
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+      width: 340,
+      padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+      decoration: BoxDecoration(border: Border.all(color: Colors.purple[400])),
       alignment: Alignment.bottomLeft,
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          isExpanded: true,
           hint: Text(
             "Select category",
             style: TextStyle(color: Colors.purple[200]),
@@ -278,34 +315,89 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
   descriptionfield() {
     return Container(
-      child: new Scrollbar(
-        child: SingleChildScrollView(
-            child: Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Column(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Description:',
+            style: TextStyle(
+                fontFamily: 'Paficico',
+                color: Colors.purple[500],
+                fontSize: 18),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        new Scrollbar(
+          child: SingleChildScrollView(
+              child: Container(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: TextFormField(
+              textAlign: TextAlign.left,
+              keyboardType: TextInputType.multiline,
+              maxLines: 10,
+              minLines: 5,
+              decoration: new InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.purple[300])),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Colors.purple, width: 1.0),
+                  ),
+                  hintText: 'Write Something...',
+                  hintStyle: TextStyle(color: Colors.purple[200])),
+              validator: (value) {
+                return value.isEmpty ? 'blog decription is required' : null;
+              },
+              onSaved: (value) {
+                _myvalue = value;
+              },
+            ),
+          )),
+        ),
+      ],
+    ));
+  }
+
+  title() {
+    return Container(
+      child: Column(children: <Widget>[
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'TITLE:',
+            style: TextStyle(fontFamily: 'Paficico', color: Colors.purple[500]),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: TextFormField(
             textAlign: TextAlign.left,
-            keyboardType: TextInputType.multiline,
-            maxLines: 10,
-            minLines: 5,
+            //   keyboardType: TextInputType.multiline,
+            maxLines: 4,
+            minLines: 1,
             decoration: new InputDecoration(
                 border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(width: 1, color: Colors.purple[300])),
+                    borderSide: BorderSide(width: 1, color: Colors.purple)),
                 focusedBorder: OutlineInputBorder(
                   borderSide:
                       const BorderSide(color: Colors.purple, width: 1.0),
                 ),
-                hintText: 'Description',
+                hintText: 'Enter your title',
                 hintStyle: TextStyle(color: Colors.purple[200])),
             validator: (value) {
-              return value.isEmpty ? 'blog decription is required' : null;
+              return value.isEmpty ? 'Title for your blog is required' : null;
             },
             onSaved: (value) {
-              _myvalue = value;
+              _mytitlevalue = value;
             },
           ),
-        )),
-      ),
+        )
+      ]),
     );
   }
 }

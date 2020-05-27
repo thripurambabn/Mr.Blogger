@@ -28,8 +28,14 @@ class _HomepageState extends State<Homepage> {
       var data = snapshot.value;
       blogsList.clear();
       for (var key in refkey) {
-        Blogs blog = new Blogs(data[key]['image'], data[key]['description'],
-            data[key]['date'], data[key]['likes'], data[key]['time']);
+        Blogs blog = new Blogs(
+            data[key]['uid'],
+            data[key]['image'],
+            data[key]['title'],
+            data[key]['description'],
+            data[key]['date'],
+            data[key]['likes'],
+            data[key]['time']);
         blogsList.add(blog);
       }
       setState(() {
@@ -52,7 +58,7 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple[800],
-        title: Text('Home',
+        title: Text('Mr.Blogger',
             style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
         actions: <Widget>[
           IconButton(
@@ -81,7 +87,9 @@ class _HomepageState extends State<Homepage> {
                 itemBuilder: (BuildContext context, int index) {
                   print('${blogsList[index].image}');
                   return BlogsUi(
+                      blogsList[index].uid,
                       blogsList[index].image,
+                      blogsList[index].title,
                       blogsList[index].description,
                       blogsList[index].likes,
                       blogsList[index].date,
@@ -98,16 +106,18 @@ class _HomepageState extends State<Homepage> {
         },
         child: Text(
           'Upload Your Blog',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
         ),
       ),
     );
   }
 
-  Widget BlogsUi(String image, String description, String likes, String date,
-      String time) {
+  Widget BlogsUi(String uid, String image, String title, String description,
+      String likes, String date, String time) {
     final String _description = description;
     print('${description.length},length');
+    print('${title.length}-----title length');
+    print('${uid}-------uid');
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.all(15.0),
@@ -118,7 +128,15 @@ class _HomepageState extends State<Homepage> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                new Text('TITLE'),
+                Text(
+                  title.substring(0, 9) + '....',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Paficico',
+                      color: Colors.purple),
+                  textAlign: TextAlign.left,
+                ),
               ],
             ),
             SizedBox(height: 10.0),
@@ -145,7 +163,7 @@ class _HomepageState extends State<Homepage> {
                 children: <Widget>[
                   Text('By:AuthorName'),
                   new Text(
-                    date,
+                    uid,
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.right,
                   ),
@@ -168,6 +186,7 @@ class _HomepageState extends State<Homepage> {
 }
 
 class Blogs {
-  String image, description, likes, date, time;
-  Blogs(this.image, this.description, this.date, this.likes, this.time);
+  String uid, image, title, description, likes, date, time;
+  Blogs(this.uid, this.image, this.title, this.description, this.date,
+      this.likes, this.time);
 }

@@ -13,12 +13,15 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   RegisterBloc _registerBloc;
 
   bool get isPopulated =>
-      _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+      _emailController.text.isNotEmpty &&
+      _passwordController.text.isNotEmpty &&
+      _usernameController.text.isEmpty;
 
   bool isRegisterButtonEnabled(RegisterState state) {
     return state.isFormValid && isPopulated && !state.isSubmitting;
@@ -30,6 +33,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc = BlocProvider.of<RegisterBloc>(context);
     _emailController.addListener(_onEmailChanged);
     _passwordController.addListener(_onPasswordChanged);
+    _usernameController.addListener(_onUserNameChanged);
   }
 
   @override
@@ -96,6 +100,24 @@ class _RegisterFormState extends State<RegisterForm> {
                     height: 20,
                   ),
                   TextFormField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.person,
+                        color: Colors.purple[800],
+                      ),
+                      labelText: 'Username',
+                    ),
+                    autocorrect: false,
+                    autovalidate: true,
+                    validator: (_) {
+                      return !state.isPasswordValid ? 'Invalid username' : null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       icon: Icon(
@@ -137,16 +159,17 @@ class _RegisterFormState extends State<RegisterForm> {
                     height: 50,
                     width: 80,
                     child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Text('SignUp',
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 20.0)),
-                      onPressed: isRegisterButtonEnabled(state)
-                          ? _onFormSubmitted
-                          : null,
-                    ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Text('SignUp',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20.0)),
+                        onPressed: //isRegisterButtonEnabled(state)
+                            //?
+                            _onFormSubmitted
+                        //: null,
+                        ),
                   ),
                 ],
               ),
@@ -161,6 +184,7 @@ class _RegisterFormState extends State<RegisterForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -176,11 +200,18 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
+  void _onUserNameChanged() {
+    _registerBloc.add(
+      RegisterusernameChanged(username: _usernameController.text),
+    );
+  }
+
   void _onFormSubmitted() {
     _registerBloc.add(
       RegisterSubmitted(
         email: _emailController.text,
         password: _passwordController.text,
+        username: _usernameController.text,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserService {
@@ -30,7 +31,7 @@ class UserService {
     );
   }
 
-  Future<void> signUp({String email, String password}) async {
+  Future<void> signUp({String email, String password, String username}) async {
     try {
       final FirebaseAuth firebaseAuth1 = FirebaseAuth.instance;
       print('firbase instance${firebaseAuth1}');
@@ -39,19 +40,35 @@ class UserService {
         email: email,
         password: password,
       );
-      print('${result.user}');
-      await Firestore.instance
-          .collection("users")
-          .document(email)
-          .setData({'email': email, 'password': password, 'Blogs': false});
-      // await FirebaseDatabase.instance
-      //     .reference()
-      //     .child('blogs')
-      //     .push()
-      //     .set(email);
-      // print('saving to DB in the end');
+      final FirebaseUser user = await firebaseAuth1.currentUser();
+      print('user-${user},result-${result},UID-${user.uid},');
+      var addusername = UserUpdateInfo();
+      addusername.displayName = username;
+      await user.updateProfile(addusername);
+      await user.reload();
 
-      return result.user;
+      print('${result.user}');
+
+      // await Firestore.instance.collection("users").document(email).setData({
+      //   'username': username,
+      //   'email': email,
+      //   'password': password,
+      //   'Blogs': false
+      // });
+      var data = {
+        'username': username,
+        'email': email,
+        'password': password,
+        // 'Blogs': false
+      };
+      await FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .push()
+          .set(data);
+      print('saving to DB in the end');
+      return user.uid;
+      //  return result.user;
     } catch (e) {
       print('failure');
     }
@@ -71,6 +88,6 @@ class UserService {
   }
 
   Future<String> getUser() async {
-    return (await _firebaseAuth.currentUser()).email;
+    return (await _firebaseAuth.currentUser()).displayName;
   }
 }
