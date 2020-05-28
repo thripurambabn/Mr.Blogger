@@ -1,0 +1,161 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:mr_blogger/view/home_screen.dart';
+
+class DetailPage extends StatefulWidget {
+  final Blogs blogs;
+
+  DetailPage({Key key, this.blogs}) : super(key: key);
+
+  @override
+  _DetailPageState createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.purple[800],
+          title: Text('Mr.Blogger',
+              style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              // Container(
+              //     width: double.infinity,
+              //     decoration: BoxDecoration(
+              //         gradient: LinearGradient(
+              //             begin: Alignment.bottomCenter,
+              //             colors: [
+              //               Colors.purple[400],
+              //               Colors.purple[300],
+              //               Colors.purple[900]
+              //             ],
+              //             end: FractionalOffset.topCenter),
+              //         color: Colors.purpleAccent),
+              //     child: Column(
+              //       children: <Widget>[
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Container(
+              //   alignment: Alignment.topLeft,
+              //   padding: EdgeInsets.symmetric(vertical: 20),
+              //   child: Text(
+              //     widget.blogs.title,
+              //     style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 20,
+              //         fontWeight: FontWeight.bold,
+              //         fontFamily: 'Paficico'),
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  // alignment: Alignment.bottomCenter,
+                  // decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     borderRadius: BorderRadius.only(
+                  //         topLeft: Radius.circular(60),
+                  //         topRight: Radius.circular(60))),
+                  child: Container(
+                    child: Column(children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        widget.blogs.title,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: Colors.purple,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Paficico'),
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.all(15.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(60),
+                                topRight: Radius.circular(60))),
+                        child: Image.network(
+                          widget.blogs.image,
+                          fit: BoxFit.cover,
+                          height: 300,
+                          width: 350,
+                          loadingBuilder: (context, child, progress) {
+                            return progress == null
+                                ? child
+                                : Container(
+                                    color: Colors.purple[50],
+                                    height: 300,
+                                    width: 350,
+                                  );
+                          },
+                        ),
+                      ),
+                      // Row(
+                      //     mainAxisAlignment:
+                      //         MainAxisAlignment.spaceBetween,
+                      //     children: <Widget>[
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        child: Text(
+                          'By:AuthorName',
+                          style: TextStyle(
+                            color: Colors.purple,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        child: new Text(
+                          widget.blogs.date,
+                          style: TextStyle(
+                            color: Colors.purple,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          // Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      // ]),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        child: new Text(
+                          widget.blogs.description,
+                          style: Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.left,
+                        ),
+                      )
+                    ]),
+                  ),
+                ),
+              )
+              //   ],
+              // )),
+            ],
+          ),
+        )
+        //child: ListTile(title: Text(widget.blogs.title)),
+
+        );
+  }
+}

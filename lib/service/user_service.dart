@@ -47,7 +47,7 @@ class UserService {
       await user.updateProfile(addusername);
       await user.reload();
 
-      print('${result.user}');
+      print('result---------${result.user}');
 
       // await Firestore.instance.collection("users").document(email).setData({
       //   'username': username,
@@ -56,6 +56,7 @@ class UserService {
       //   'Blogs': false
       // });
       var data = {
+        'uid': user.uid,
         'username': username,
         'email': email,
         'password': password,
@@ -66,11 +67,11 @@ class UserService {
           .child('users')
           .push()
           .set(data);
-      print('saving to DB in the end');
+      print('saving to DB in the end,${user}');
       return user.uid;
       //  return result.user;
     } catch (e) {
-      print('failure');
+      print('failure in saving it ro the db');
     }
   }
 
@@ -88,6 +89,9 @@ class UserService {
   }
 
   Future<String> getUser() async {
-    return (await _firebaseAuth.currentUser()).displayName;
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final userid = user.uid;
+    print('uid in service----${userid}');
+    return userid;
   }
 }

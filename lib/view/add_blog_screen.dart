@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
 class AddBlogScreen extends StatefulWidget {
@@ -21,8 +22,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String _myvalue;
   String _mytitlevalue;
   String category;
-  String uid;
-
   String likes;
   String url;
   bool isbuttondisabled = false;
@@ -107,7 +106,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     if (validateandSave()) {
       final StorageReference iamgeref =
           FirebaseStorage.instance.ref().child("Blog images");
-
+      UserService userService;
+      var uid = userService.getUser();
+      print('uid--------------${uid}');
       var timekey = new DateTime.now();
       final StorageUploadTask uploadImage =
           iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
@@ -137,7 +138,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       print('saving to DB');
       var dbkey = new DateTime.now();
       var formatdate = new DateFormat('MMM d,yyyy');
-
+      UserService userService;
+      final username = userService.getUser().toString();
+      print('username-------$username');
       var formattime = new DateFormat('EEEE, hh:mm aaa');
       String date = formatdate.format(dbkey);
       String time = formattime.format(dbkey);
@@ -145,7 +148,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.reference();
       var data = {
-        'uid': uid,
         'image': url,
         'catergory': category,
         'title': _mytitlevalue,
