@@ -38,7 +38,7 @@ class _DetailPageState extends State<DetailPage> {
                           widget.blogs.title,
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Colors.purple,
+                            color: Colors.purple[800],
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -76,7 +76,7 @@ class _DetailPageState extends State<DetailPage> {
                               child: Text(
                                 'AuthorName',
                                 style: TextStyle(
-                                  color: Colors.black87,
+                                  color: Colors.black54,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -105,9 +105,9 @@ class _DetailPageState extends State<DetailPage> {
                         child: new Text(
                           widget.blogs.description,
                           style: TextStyle(
-                            color: Colors.black54,
+                            color: Colors.black87,
                             fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w300,
                           ),
                           textAlign: TextAlign.left,
                         ),

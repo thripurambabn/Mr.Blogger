@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
@@ -10,6 +11,7 @@ import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/login_screen.dart';
+import 'package:mr_blogger/view/profile_screen.dart';
 
 class Homepage extends StatefulWidget {
   Homepage({Key key}) : super(key: key);
@@ -67,6 +69,12 @@ class _HomepageState extends State<Homepage> {
     }));
   }
 
+  void navigateToProfilePage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return new ProfilePage();
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,21 +84,18 @@ class _HomepageState extends State<Homepage> {
             style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
         actions: <Widget>[
           IconButton(
+            icon: Icon(FontAwesomeIcons.userCircle),
+            onPressed: navigateToProfilePage,
+          ),
+          IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
-              // BlocListener(
-              //   listener: (context, state) {
-              //     if (state is LogOutSuccessState) {
-              //       navigateToSignUpPage(context);
-              //     }
-              //   },
-              // );
               print('pressed signout');
               BlocProvider.of<AuthenticationBloc>(context).add(
                 AuthenticationLoggedOut(),
               );
             },
-          )
+          ),
         ],
       ),
       body: InkWell(
