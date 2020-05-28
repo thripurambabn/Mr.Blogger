@@ -23,63 +23,27 @@ class _DetailPageState extends State<DetailPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              // Container(
-              //     width: double.infinity,
-              //     decoration: BoxDecoration(
-              //         gradient: LinearGradient(
-              //             begin: Alignment.bottomCenter,
-              //             colors: [
-              //               Colors.purple[400],
-              //               Colors.purple[300],
-              //               Colors.purple[900]
-              //             ],
-              //             end: FractionalOffset.topCenter),
-              //         color: Colors.purpleAccent),
-              //     child: Column(
-              //       children: <Widget>[
-              // SizedBox(
-              //   height: 20,
-              // ),
-              // Container(
-              //   alignment: Alignment.topLeft,
-              //   padding: EdgeInsets.symmetric(vertical: 20),
-              //   child: Text(
-              //     widget.blogs.title,
-              //     style: TextStyle(
-              //         color: Colors.white,
-              //         fontSize: 20,
-              //         fontWeight: FontWeight.bold,
-              //         fontFamily: 'Paficico'),
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 20,
-              // ),
-
               Container(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  // alignment: Alignment.bottomCenter,
-                  // decoration: BoxDecoration(
-                  //     color: Colors.white,
-                  //     borderRadius: BorderRadius.only(
-                  //         topLeft: Radius.circular(60),
-                  //         topRight: Radius.circular(60))),
                   child: Container(
                     child: Column(children: <Widget>[
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        widget.blogs.title,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
+                      Container(
+                        padding: EdgeInsets.fromLTRB(14, 0, 0, 0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.blogs.title,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
                             color: Colors.purple,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            fontFamily: 'Paficico'),
+                          ),
+                        ),
                       ),
-
                       Container(
                         margin: const EdgeInsets.all(15.0),
                         decoration: BoxDecoration(
@@ -103,37 +67,36 @@ class _DetailPageState extends State<DetailPage> {
                           },
                         ),
                       ),
-                      // Row(
-                      //     mainAxisAlignment:
-                      //         MainAxisAlignment.spaceBetween,
-                      //     children: <Widget>[
-                      Container(
-                        alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                        child: Text(
-                          'By:AuthorName',
-                          style: TextStyle(
-                            color: Colors.purple,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                        child: new Text(
-                          widget.blogs.date,
-                          style: TextStyle(
-                            color: Colors.purple,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          // Theme.of(context).textTheme.subtitle1,
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      // ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.bottomLeft,
+                              padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                              child: Text(
+                                'AuthorName',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 15),
+                            Container(
+                              alignment: Alignment.bottomLeft,
+                              padding: EdgeInsets.fromLTRB(12, 0, 15, 0),
+                              child: new Text(
+                                widget.blogs.date,
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ]),
                       SizedBox(
                         height: 10,
                       ),
@@ -141,7 +104,11 @@ class _DetailPageState extends State<DetailPage> {
                         padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
                         child: new Text(
                           widget.blogs.description,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
                           textAlign: TextAlign.left,
                         ),
                       )
@@ -153,9 +120,6 @@ class _DetailPageState extends State<DetailPage> {
               // )),
             ],
           ),
-        )
-        //child: ListTile(title: Text(widget.blogs.title)),
-
-        );
+        ));
   }
 }
