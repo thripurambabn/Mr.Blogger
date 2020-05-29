@@ -39,6 +39,8 @@ class _HomepageState extends State<Homepage> {
   Future getblogs() async {
     var userid = await userService.getUser();
     print('userdata in home----- ${userid}');
+    var username = await userService.getUserName();
+    print('username in home----- ${username}');
     DatabaseReference blogsref =
         FirebaseDatabase.instance.reference().child('blogs');
     blogsref.once().then((DataSnapshot snapshot) {
@@ -49,6 +51,7 @@ class _HomepageState extends State<Homepage> {
         Blogs blog = new Blogs(
             data[key]['image'],
             data[key]['uid'],
+            data[key]['authorname'],
             data[key]['title'],
             data[key]['description'],
             data[key]['date'],
@@ -148,6 +151,7 @@ class _HomepageState extends State<Homepage> {
                         title: blogsUi(
                             blogsList[index].image,
                             blogsList[index].uid,
+                            blogsList[index].authorname,
                             blogsList[index].title,
                             blogsList[index].description,
                             blogsList[index].likes,
@@ -177,8 +181,9 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget blogsUi(String image, String uid, String title, String description,
-      String likes, String date, String time) {
+  Widget blogsUi(String image, String uid, String authorname, String title,
+      String description, String likes, String date, String time) {
+    print('authorname in home ${authorname}');
     print('uid in homeUI---${uid}');
     print('${description.length},length');
     print('${title.length}-----title length');
@@ -225,10 +230,18 @@ class _HomepageState extends State<Homepage> {
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('By:AuthorName'),
+                  Text(
+                    'By: ' + authorname,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.right,
+                  ),
                   new Text(
                     date,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey[350],
+                    ),
                     textAlign: TextAlign.right,
                   ),
                 ]),
@@ -252,7 +265,7 @@ class _HomepageState extends State<Homepage> {
 }
 
 class Blogs {
-  String image, uid, title, description, likes, date, time;
-  Blogs(this.image, this.uid, this.title, this.description, this.date,
-      this.likes, this.time);
+  String image, uid, authorname, title, description, likes, date, time;
+  Blogs(this.image, this.uid, this.authorname, this.title, this.description,
+      this.date, this.likes, this.time);
 }

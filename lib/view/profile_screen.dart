@@ -21,7 +21,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future getUserdata() async {
     var userid = await userService.getUser();
     print('userdata----- ${userid}');
-
     DatabaseReference userref =
         FirebaseDatabase.instance.reference().child('users');
     userref

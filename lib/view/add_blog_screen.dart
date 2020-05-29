@@ -140,11 +140,13 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       String date = formatdate.format(dbkey);
       String time = formattime.format(dbkey);
       var userid = await userService.getUser();
+      var username = await userService.getUserName();
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.reference();
       var data = {
         'image': url,
         'uid': userid,
+        'authorname': username,
         'catergory': category,
         'title': _mytitlevalue,
         'description': _myvalue,
