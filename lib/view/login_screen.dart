@@ -94,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      "Welocme back",
+                      "Welcome back",
                       style: TextStyle(
                           fontFamily: 'Paficico',
                           fontSize: 40.0,

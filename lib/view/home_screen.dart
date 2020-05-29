@@ -132,7 +132,9 @@ class _HomepageState extends State<Homepage> {
             future: _data,
             builder: (_, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: Text('Loading...'));
+                return Center(
+                    child: Image.network(
+                        'https://i.pinimg.com/originals/2c/bb/5e/2cbb5e95b97aa2b496f6eaec84b9240d.gif'));
               } else {
                 return new ListView.builder(
                     itemCount: blogsList.length,
