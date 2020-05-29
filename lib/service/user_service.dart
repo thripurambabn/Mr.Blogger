@@ -67,7 +67,7 @@ class UserService {
           .child('users')
           .push()
           .set(data);
-      print('saving to DB in the end,${user}');
+      print('saving to DB in the end,${user},${data}');
       return user.uid;
       //  return result.user;
     } catch (e) {
@@ -85,11 +85,12 @@ class UserService {
 
   Future<bool> isSignedIn() async {
     final currentUser = await _firebaseAuth.currentUser();
+    // print('current user ${currentUser.email}');
     return currentUser != null;
   }
 
   Future<String> getUser() async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final user = await _firebaseAuth.currentUser();
     final userid = user.uid;
     print('uid in service----${userid}');
     return userid;

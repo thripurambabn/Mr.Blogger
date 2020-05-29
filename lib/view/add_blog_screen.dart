@@ -25,6 +25,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String likes;
   String url;
   bool isbuttondisabled = false;
+  var userService = UserService();
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -106,15 +107,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     if (validateandSave()) {
       final StorageReference iamgeref =
           FirebaseStorage.instance.ref().child("Blog images");
-      UserService userService;
-      var uid = userService.getUser();
-      print('uid--------------${uid}');
       var timekey = new DateTime.now();
       final StorageUploadTask uploadImage =
           iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
       var imageurl = await (await uploadImage.onComplete).ref.getDownloadURL();
       url = imageurl.toString();
-      print("image url ${url}");
+      //  print("image url ${url}");
       navigateToHomePage();
       try {
         saveToDatabase(url);
@@ -133,22 +131,20 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     ));
   }
 
-  void saveToDatabase(String url) {
+  void saveToDatabase(String url) async {
     try {
       print('saving to DB');
       var dbkey = new DateTime.now();
       var formatdate = new DateFormat('MMM d,yyyy');
-      UserService userService;
-      final username = userService.getUser().toString();
-      print('username-------$username');
       var formattime = new DateFormat('EEEE, hh:mm aaa');
       String date = formatdate.format(dbkey);
       String time = formattime.format(dbkey);
-
+      var userid = await userService.getUser();
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.reference();
       var data = {
         'image': url,
+        'uid': userid,
         'catergory': category,
         'title': _mytitlevalue,
         'description': _myvalue,

@@ -21,16 +21,24 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  UserService userService;
+  var userService = UserService();
   List<Blogs> blogsList = [];
   Future _data;
+  // Future _userdata;
   @override
   void initState() {
     _data = getblogs();
+    // _userdata = getUserdata();
     super.initState();
   }
 
-  Future getblogs() {
+  // Future getUserdata() async {
+
+  // }
+
+  Future getblogs() async {
+    var userid = await userService.getUser();
+    print('userdata in home----- ${userid}');
     DatabaseReference blogsref =
         FirebaseDatabase.instance.reference().child('blogs');
     blogsref.once().then((DataSnapshot snapshot) {
@@ -40,6 +48,7 @@ class _HomepageState extends State<Homepage> {
       for (var key in refkey) {
         Blogs blog = new Blogs(
             data[key]['image'],
+            data[key]['uid'],
             data[key]['title'],
             data[key]['description'],
             data[key]['date'],
@@ -70,6 +79,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void navigateToProfilePage() {
+    print('navigating to proilepage');
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new ProfilePage();
     }));
@@ -133,10 +143,11 @@ class _HomepageState extends State<Homepage> {
                       //       blogsList[index].date,
                       //       blogsList[index].time);
                       // },
-                      print('calling detail screen');
+                      //  print('calling detail screen');
                       return ListTile(
-                        title: BlogsUi(
+                        title: blogsUi(
                             blogsList[index].image,
+                            blogsList[index].uid,
                             blogsList[index].title,
                             blogsList[index].description,
                             blogsList[index].likes,
@@ -166,9 +177,9 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget BlogsUi(String image, String title, String description, String likes,
-      String date, String time) {
-    // final String _description = description;
+  Widget blogsUi(String image, String uid, String title, String description,
+      String likes, String date, String time) {
+    print('uid in homeUI---${uid}');
     print('${description.length},length');
     print('${title.length}-----title length');
     return new Card(
@@ -241,7 +252,7 @@ class _HomepageState extends State<Homepage> {
 }
 
 class Blogs {
-  String image, title, description, likes, date, time;
-  Blogs(this.image, this.title, this.description, this.date, this.likes,
-      this.time);
+  String image, uid, title, description, likes, date, time;
+  Blogs(this.image, this.uid, this.title, this.description, this.date,
+      this.likes, this.time);
 }

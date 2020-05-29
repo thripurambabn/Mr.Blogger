@@ -101,7 +101,7 @@ class _DetailPageState extends State<DetailPage> {
                         height: 10,
                       ),
                       Container(
-                        padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(12, 0, 13, 0),
                         child: new Text(
                           widget.blogs.description,
                           style: TextStyle(
