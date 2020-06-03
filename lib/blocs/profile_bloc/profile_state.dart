@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();
@@ -19,11 +18,16 @@ class ProfileLoading extends ProfileState {
 class ProfileLoaded extends ProfileState {
   final List<Blogs> blogs;
 
-  const ProfileLoaded([this.blogs = const []]);
+  const ProfileLoaded(this.blogs);
 
   @override
   List<Object> get props => [blogs];
 
   @override
   String toString() => 'Profile';
+}
+
+class ProfileNotLoaded extends ProfileState {
+  @override
+  String toString() => 'profilenotloaded';
 }

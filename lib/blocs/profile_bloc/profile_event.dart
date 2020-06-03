@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
@@ -12,9 +8,9 @@ abstract class ProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadProfileDetails extends ProfileEvent {
+class LoadingProfileDetails extends ProfileEvent {
   @override
-  String toString() => 'loadBlogs ';
+  String toString() => 'loadprofile ';
 }
 
 class LoadedProfileDeatils extends ProfileEvent {
@@ -24,17 +20,5 @@ class LoadedProfileDeatils extends ProfileEvent {
   List<Object> get props => [];
 
   @override
-  String toString() => 'Loadedblog';
-}
-
-class ProfileLoadedBlog extends ProfileEvent {
-  final List<Blogs> blogslist;
-
-  const ProfileLoadedBlog(this.blogslist);
-
-  @override
-  List<Object> get props => [blogslist];
-
-  @override
-  String toString() => 'Loadedblog { blog: $blogslist }';
+  String toString() => 'Loadedprofile';
 }

@@ -93,24 +93,25 @@ class _HomepageState extends State<Homepage> {
           child: BlocBuilder<BlogsBloc, BlogsState>(
             bloc: _blog,
             builder: (context, state) {
-              print('state before if in homescreen ${state}');
               if (state is BlogsLoading) {
                 return Text('blogs loading...${state}');
               } else if (state is BlogsLoaded) {
                 return ListView.builder(
                   itemCount: state.blogs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    print(
-                        'list tile value in blocbuilder ${state.blogs[index].authorname},${index}');
-                    return blogsUi(
-                        state.blogs[index].image,
-                        state.blogs[index].uid,
-                        state.blogs[index].authorname,
-                        state.blogs[index].title,
-                        state.blogs[index].description,
-                        state.blogs[index].likes,
-                        state.blogs[index].date,
-                        state.blogs[index].time);
+                    // print(
+                    //     'list tile value in blocbuilder ${state.blogs[index].authorname},${index}');
+                    return ListTile(
+                        onTap: () => navigateToDetailPage(state.blogs[index]),
+                        title: blogsUi(
+                            state.blogs[index].image,
+                            state.blogs[index].uid,
+                            state.blogs[index].authorname,
+                            state.blogs[index].title,
+                            state.blogs[index].description,
+                            state.blogs[index].likes,
+                            state.blogs[index].date,
+                            state.blogs[index].time));
                   },
                 );
               } else if (state is BlogsNotLoaded) {
@@ -139,10 +140,10 @@ class _HomepageState extends State<Homepage> {
 
   Widget blogsUi(String image, String uid, String authorname, String title,
       String description, String likes, String date, String time) {
-    print('authorname in home ${authorname}');
-    print('uid in homeUI---${uid}');
-    print('${description.length},length');
-    print('${title.length}-----title length');
+    // print('authorname in home ${authorname}');
+    // print('uid in homeUI---${uid}');
+    // print('${description.length},length');
+    // print('${title.length}-----title length');
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.all(15.0),

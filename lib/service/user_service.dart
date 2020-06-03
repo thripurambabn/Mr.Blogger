@@ -89,7 +89,14 @@ class UserService {
     return currentUser != null;
   }
 
-  Future<String> getUser() async {
+  Future<FirebaseUser> getUser() async {
+    final user = await _firebaseAuth.currentUser();
+    final userid = user.uid;
+    // print('uid in service----${userid}');
+    return user;
+  }
+
+  Future<String> getUserID() async {
     final user = await _firebaseAuth.currentUser();
     final userid = user.uid;
     // print('uid in service----${userid}');
