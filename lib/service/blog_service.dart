@@ -107,11 +107,6 @@ class BlogsService {
     url = imageurl1.toString();
     print("image url ${url}");
     print('navigating to homescreen');
-    // Navigator.push(ctx, MaterialPageRoute(
-    //   builder: (ctx) {
-    //     return new Homepage();
-    //   },
-    // ));
 
     try {
       saveToDatabase(

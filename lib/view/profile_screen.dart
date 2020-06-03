@@ -31,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
     // _data = profileService.getblogs();
     // print('userdata in init state ${_userdata}');
     // super.initState();
-
     print('in profile initial state');
 
     _profile.add(
@@ -75,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             Container(
               child: BlocBuilder<BlogsBloc, BlogsState>(
-                bloc: BlogsBloc(blogsService: _blogsService),
+                // bloc: _profile,
                 builder: (context, state) {
                   print(
                       '---------------------------${state}------------------');
