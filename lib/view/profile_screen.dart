@@ -1,5 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
+import 'package:mr_blogger/service/Profile_Service.dart';
+import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
@@ -10,80 +17,29 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   List<Users> userlist = [];
   var userService = UserService();
+  static BlogsService _blogsService = BlogsService();
+  static ProfileService _profileService = ProfileService();
+  var _profile =
+      ProfileBloc(profileService: _profileService, blogsService: _blogsService);
   Future _userdata;
   Future _data;
   List<Blogs> blogsList = [];
   @override
   void initState() {
-    _userdata = getUserdata();
-    _data = getblogs();
-    print('userdata in init state ${_userdata}');
+    // _userdata = profileService.getUserdata();
+    // _data = profileService.getblogs();
+    // print('userdata in init state ${_userdata}');
+    // super.initState();
+
+    print('in profile initial state');
+
+    _profile.add(
+      LoadedProfileDeatils(),
+    );
     super.initState();
   }
 
-  Future getUserdata() async {
-    var userid = await userService.getUser();
-    print('userdata----- ${userid}');
-    DatabaseReference userref =
-        FirebaseDatabase.instance.reference().child('users');
-    userref
-        .orderByChild('uid')
-        .equalTo(userid)
-        .once()
-        .then((DataSnapshot snapshot) {
-      print('snapshot in userprofile values---${snapshot.value}');
-      print('snapshot in userprofile keys---${snapshot.key}');
-      var refkey = snapshot.value.keys;
-      var data = snapshot.value;
-      userlist.clear();
-      for (var key in refkey) {
-        Users user = new Users(
-          data[key]['username'],
-          data[key]['email'],
-        );
-        userlist.add(user);
-        print('user ------${userlist[0].email},${userlist[0].username}');
-      }
-      setState(() {
-        print('total number of users ${userlist.length}');
-      });
-    });
-  }
-
-  Future getblogs() async {
-    var userid = await userService.getUser();
-    print('userdata in profile----- ${userid}');
-    var username = await userService.getUserName();
-    print('username in profile----- ${username}');
-    DatabaseReference blogsref =
-        FirebaseDatabase.instance.reference().child('blogs');
-    blogsref
-        .orderByChild('uid')
-        .equalTo(userid)
-        .once()
-        .then((DataSnapshot snapshot) {
-      var refkey = snapshot.value.keys;
-      var data = snapshot.value;
-      blogsList.clear();
-      for (var key in refkey) {
-        Blogs blog = new Blogs(
-            data[key]['image'],
-            data[key]['uid'],
-            data[key]['authorname'],
-            data[key]['title'],
-            data[key]['description'],
-            data[key]['date'],
-            data[key]['likes'],
-            data[key]['time']);
-        blogsList.add(blog);
-      }
-      setState(() {
-        print('total number of blogs in profile ${blogsList.length}');
-      });
-    });
-  }
-
-  Widget build(BuildContext cx) {
+  Widget build(BuildContext ctx) {
     return new Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
@@ -95,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
         body: SingleChildScrollView(
             child: Container(
           child: Column(children: <Widget>[
-            profileUi(userlist[0].username, userlist[0].email),
+            //    profileUi(userlist[0].username, userlist[0].email),
             SizedBox(
               height: 30,
             ),
@@ -116,46 +72,22 @@ class _ProfilePageState extends State<ProfilePage> {
               thickness: 5,
               color: Colors.purple,
             ),
-            InkWell(
-              child: Container(
-                child: FutureBuilder(
-                  future: _data,
-                  builder: (ctx, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      print('loading');
-                      return Center(
-                        child: Image.network(
-                            'https://i.pinimg.com/originals/2c/bb/5e/2cbb5e95b97aa2b496f6eaec84b9240d.gif'),
-                      );
-                    } else {
-                      return SingleChildScrollView(
-                        child: Expanded(
-                          child: SizedBox(
-                            child: new ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: blogsList.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  print('${blogsList[index].title}');
-                                  return ListTile(
-                                    title: blogsUi(
-                                        blogsList[index].image,
-                                        blogsList[index].uid,
-                                        blogsList[index].authorname,
-                                        blogsList[index].title,
-                                        blogsList[index].description,
-                                        blogsList[index].likes,
-                                        blogsList[index].date,
-                                        blogsList[index].time),
-                                  );
-                                }),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
+            Container(
+              child: BlocBuilder<BlogsBloc, BlogsState>(
+                bloc: BlogsBloc(blogsService: _blogsService),
+                builder: (context, state) {
+                  print(
+                      '---------------------------${state}------------------');
+                  if (state is BlogsLoaded) {
+                    return Text('blogs are here ${state.blogs}');
+                  } else if (state is BlogsNotLoaded) {
+                    return Text('Not loaded');
+                  } else if (state is BlogsLoading) {
+                    return Text('blogs loading...');
+                  }
+                },
               ),
-            )
+            ),
           ]),
         )));
   }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
+import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
@@ -15,22 +16,30 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserService userService = UserService();
+  final BlogsService blogsService = BlogsService();
   runApp(
     BlocProvider(
       create: (context) => AuthenticationBloc(
         userService: userService,
       )..add(AuthenticationStarted()),
-      child: App(userService: userService),
+      child: App(
+        userService: userService,
+        blogsService: blogsService,
+      ),
     ),
   );
 }
 
 class App extends StatelessWidget {
   final UserService _userService;
-
-  App({Key key, @required UserService userService})
+  final BlogsService _blogsService;
+  App(
+      {Key key,
+      @required UserService userService,
+      @required BlogsService blogsService})
       : assert(userService != null),
         _userService = userService,
+        _blogsService = blogsService,
         super(key: key);
 
   @override

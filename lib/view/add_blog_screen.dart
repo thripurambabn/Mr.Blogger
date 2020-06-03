@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
+import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
@@ -26,6 +26,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String url;
   bool isbuttondisabled = false;
   var userService = UserService();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  static BlogsService _blogsServcie = BlogsService();
+  var _blog = BlogsBloc(blogsService: _blogsServcie);
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -88,7 +93,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-
+    print('$tempImage');
     setState(() {
       sampleImage = tempImage;
     });
@@ -102,26 +107,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     }
   }
 
-  void uploadImage() async {
-    print('inside uploadImage');
-    if (validateandSave()) {
-      final StorageReference iamgeref =
-          FirebaseStorage.instance.ref().child("Blog images");
-      var timekey = new DateTime.now();
-      final StorageUploadTask uploadImage =
-          iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
-      var imageurl = await (await uploadImage.onComplete).ref.getDownloadURL();
-      url = imageurl.toString();
-      //  print("image url ${url}");
-      navigateToHomePage();
-      try {
-        saveToDatabase(url);
-      } catch (e) {
-        print(e.toString());
-      }
-    }
-  }
-
   void navigateToHomePage() {
     print('navigating to homescreen');
     Navigator.push(context, MaterialPageRoute(
@@ -129,43 +114,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         return new Homepage();
       },
     ));
-  }
-
-  void saveToDatabase(String url) async {
-    try {
-      print('saving to DB');
-      var dbkey = new DateTime.now();
-      var formatdate = new DateFormat('MMM d,yyyy');
-      var formattime = new DateFormat('EEEE, hh:mm aaa');
-      String date = formatdate.format(dbkey);
-      String time = formattime.format(dbkey);
-      var userid = await userService.getUser();
-      var username = await userService.getUserName();
-      DatabaseReference databaseReference =
-          FirebaseDatabase.instance.reference();
-      var data = {
-        'image': url,
-        'uid': userid,
-        'authorname': username,
-        'catergory': category,
-        'title': _mytitlevalue,
-        'description': _myvalue,
-        'date': date,
-        'time': time
-      };
-      databaseReference.child('blogs').push().set(data);
-      print('saving to DB in the end');
-      // Firestore.instance.collection("blogs").document(time).setData({
-      //   'iamge': url,
-      //   'catergory': category,
-      //   'Description': _myvalue,
-      //   'date': date,
-      //   'time': time,
-      //   'likes': likes,
-      // });
-    } catch (e) {
-      print('error in saving db ${e.toString()}');
-    }
   }
 
   Widget enableUplaod() {
@@ -207,9 +155,20 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                   ? null
                   : () {
                       setState(() => isbuttondisabled = !isbuttondisabled);
-                      print('${isbuttondisabled}');
-                      print('upload blog pressed');
-                      uploadImage();
+                      //print('${isbuttondisabled}');
+                      print(
+                          'upload blog pressed ${_titleController.text},${_descriptionController.text},${url},${sampleImage}');
+                      _blog.add(
+                        UploadImage(
+                          url: url,
+                          image: sampleImage,
+                          title: _titleController.text,
+                          description: _descriptionController.text,
+                          category: category,
+                        ),
+                      );
+                      //   _blog.add(
+                      //       SaveToDatabaseEvent(url, _myvalue, _mytitlevalue));
                     },
             )
           ],
@@ -334,6 +293,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               child: Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: TextFormField(
+              controller: _descriptionController,
               textAlign: TextAlign.left,
               keyboardType: TextInputType.multiline,
               maxLines: 10,
@@ -352,6 +312,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
               onSaved: (value) {
+                print('_myvalue====${_myvalue}');
                 _myvalue = value;
               },
             ),
@@ -376,6 +337,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: TextFormField(
+            controller: _titleController,
             textAlign: TextAlign.left,
             //   keyboardType: TextInputType.multiline,
             maxLines: 4,
@@ -393,6 +355,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               return value.isEmpty ? 'Title for your blog is required' : null;
             },
             onSaved: (value) {
+              print('_myvalue====${_mytitlevalue}');
               _mytitlevalue = value;
             },
           ),

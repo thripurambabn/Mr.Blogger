@@ -1,12 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
-import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
@@ -22,47 +22,19 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   var userService = UserService();
+  static BlogsService _blogsServcie = BlogsService();
   List<Blogs> blogsList = [];
-  Future _data;
-  // Future _userdata;
+  Blogs blogs;
+  BlogsBloc _blog;
+  // var _blog = BlogsBloc(blogsService: _blogsServcie);
   @override
   void initState() {
-    _data = getblogs();
-    // _userdata = getUserdata();
+    print('in home initial state');
+    _blog = BlocProvider.of<BlogsBloc>(context);
+    // _blog.add(
+    //   LoadedBlog(blogsList),
+    // );
     super.initState();
-  }
-
-  // Future getUserdata() async {
-
-  // }
-
-  Future getblogs() async {
-    var userid = await userService.getUser();
-    print('userdata in home----- ${userid}');
-    var username = await userService.getUserName();
-    print('username in home----- ${username}');
-    DatabaseReference blogsref =
-        FirebaseDatabase.instance.reference().child('blogs');
-    blogsref.once().then((DataSnapshot snapshot) {
-      var refkey = snapshot.value.keys;
-      var data = snapshot.value;
-      blogsList.clear();
-      for (var key in refkey) {
-        Blogs blog = new Blogs(
-            data[key]['image'],
-            data[key]['uid'],
-            data[key]['authorname'],
-            data[key]['title'],
-            data[key]['description'],
-            data[key]['date'],
-            data[key]['likes'],
-            data[key]['time']);
-        blogsList.add(blog);
-      }
-      setState(() {
-        print('total number of blogs ${blogsList.length}');
-      });
-    });
   }
 
   void navigateToSignUpPage(BuildContext context) {
@@ -90,97 +62,68 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    // return BlocProvider<BlogsBloc>(
+    //   create: (context) => _blogsBloc,
+    // child:
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple[800],
-        title: Text('Mr.Blogger',
-            style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(FontAwesomeIcons.userCircle),
-            onPressed: navigateToProfilePage,
-          ),
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              print('pressed signout');
-              BlocProvider.of<AuthenticationBloc>(context).add(
-                AuthenticationLoggedOut(),
-              );
-            },
-          ),
-        ],
-      ),
-      body: InkWell(
-        child: Container(
-          // child: blogsList.length == 0
-          //     ? Text('no blogs available')
-          //     : new ListView.builder(
-          //         itemCount: blogsList.length,
-          //         itemBuilder: (BuildContext context, int index) {
-          //           print('${blogsList[index].image}');
-          //           return BlogsUi(
-          //               blogsList[index].image,
-          //               blogsList[index].title,
-          //               blogsList[index].description,
-          //               blogsList[index].likes,
-          //               blogsList[index].date,
-          //               blogsList[index].time);
-          //         },
-          //       ),
-          child: FutureBuilder(
-            future: _data,
-            builder: (_, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                    child: Image.network(
-                        'https://i.pinimg.com/originals/2c/bb/5e/2cbb5e95b97aa2b496f6eaec84b9240d.gif'));
-              } else {
-                return new ListView.builder(
-                    itemCount: blogsList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      print('${blogsList[index].title}');
-                      //   return BlogsUi(
-                      //       blogsList[index].image,
-                      //       blogsList[index].title,
-                      //       blogsList[index].description,
-                      //       blogsList[index].likes,
-                      //       blogsList[index].date,
-                      //       blogsList[index].time);
-                      // },
-                      //  print('calling detail screen');
-                      return ListTile(
-                        title: blogsUi(
-                            blogsList[index].image,
-                            blogsList[index].uid,
-                            blogsList[index].authorname,
-                            blogsList[index].title,
-                            blogsList[index].description,
-                            blogsList[index].likes,
-                            blogsList[index].date,
-                            blogsList[index].time),
-                        onTap: () => navigateToDetailPage(blogsList[index]),
-                      );
-                    });
+        appBar: AppBar(
+          backgroundColor: Colors.purple[800],
+          title: Text('Mr.Blogger',
+              style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(FontAwesomeIcons.userCircle),
+              onPressed: navigateToProfilePage,
+            ),
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                print('pressed signout');
+                BlocProvider.of<AuthenticationBloc>(context).add(
+                  AuthenticationLoggedOut(),
+                );
+              },
+            ),
+          ],
+        ),
+        // body: InkWell(
+        body: Container(
+          // child: BlocListener<BlogsBloc, BlogsState>(
+          //   listener: (context, state) {
+          //     if (state is BlogsNotLoaded) {
+          //       print('blogs are not loaded');
+          //     }
+          //   },
+          child: BlocBuilder<BlogsBloc, BlogsState>(
+            bloc: BlogsBloc(blogsService: _blogsServcie),
+            builder: (context, state) {
+              print('state before if in homescreen ${state}');
+              if (state is BlogsLoading) {
+                return Text('blogs loading...${state}');
+              } else if (state is BlogsLoaded) {
+                return Text('blogs are here ${state.blogs}');
+              } else if (state is BlogsNotLoaded) {
+                return Text('Not loaded');
               }
             },
           ),
         ),
-        //   onTap: () => navigateToDetailPage(snapshot.data['index']),
-      ),
-      floatingActionButton: RaisedButton(
-        color: Colors.purple[800],
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return new AddBlogScreen();
-          }));
-        },
-        child: Text(
-          'Upload Your Blog',
-          style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-        ),
-      ),
-    );
+        // ),
+        //onTap: () => navigateToDetailPage(snapshot.data['index']),
+        //   ),
+        floatingActionButton: RaisedButton(
+          color: Colors.purple[800],
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return new AddBlogScreen();
+            }));
+          },
+          child: Text(
+            'Upload Your Blog',
+            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+          ),
+        ));
+    //);
   }
 
   Widget blogsUi(String image, String uid, String authorname, String title,

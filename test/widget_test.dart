@@ -9,14 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mr_blogger/main.dart';
+import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 
 void main() {
   UserService userService;
+  BlogsService blogsService;
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(App(
       userService: userService,
+      blogsService: blogsService,
     ));
 
     // Verify that our counter starts at 0.
