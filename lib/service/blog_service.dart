@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 class BlogsService {
   var userService = UserService();
@@ -17,7 +14,7 @@ class BlogsService {
   Future<List<Blogs>> getblogs() async {
     List<Blogs> blogsList = [];
     var userid = await userService.getUser();
-    //  print('userdata in blogs service----- ${userid}');
+    // print('userdata in blogs service----- ${userid}');
     var username = await userService.getUserName();
     //print('username in blogs service----- ${username}');
     DatabaseReference blogsref =
@@ -26,7 +23,7 @@ class BlogsService {
     //blogsref.once().then((DataSnapshot snapshot) {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
-    //print('data ${data}');
+    //  print('data ${data}');
     // blogsList.clear();
     for (var key in refkey) {
       Blogs blog = new Blogs(
@@ -38,13 +35,13 @@ class BlogsService {
           data[key]['date'],
           data[key]['likes'],
           data[key]['time']);
-      print('blog--------${blog}');
+      // print('blog--------${blog}');
       blogsList.add(blog);
     }
-    // print('blogs length ${blogsList.length}');
-    //print('blogs in service ${blogsList}');
+    print('blogs length ${blogsList.length}');
+    print('blogs in service ${blogsList}');
     return blogsList;
-    //});
+    // });
   }
 
 //To save new blog to the firebase database

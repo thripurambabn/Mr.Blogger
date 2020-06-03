@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class BlogsState extends Equatable {
@@ -15,7 +16,8 @@ class BlogsLoading extends BlogsState {
   }
 }
 
-@override
+class BlogsEmpty extends BlogsState {}
+
 class BlogsLoaded extends BlogsState {
   final List<Blogs> blogs;
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
 class DetailPage extends StatefulWidget {

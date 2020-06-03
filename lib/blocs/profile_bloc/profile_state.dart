@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class ProfileState extends Equatable {

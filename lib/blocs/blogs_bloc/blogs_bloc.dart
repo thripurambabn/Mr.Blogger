@@ -1,17 +1,15 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 
 class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
-  BlogsService _blogsService;
-  // StreamSubscription _todosSubscription;
+  BlogsService _blogsService = new BlogsService();
 
   BlogsBloc({@required BlogsService blogsService});
-  // : assert(blogsService != null),
+  //   : assert(blogsService != null);
   //   _blogsService = blogsService;
 
   @override
@@ -19,10 +17,10 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   @override
   Stream<BlogsState> mapEventToState(BlogsEvent event) async* {
-    if (event is LoadBlogs) {
+    if (event is BlogsLoad) {
       yield* _mapLoadBlogsToState();
-    } else if (event is LoadedBlog) {
-      yield* _mapLoadedBlogsState();
+    } else if (event is FetchBlogs) {
+      yield* _mapLoadedBlogsState(event);
     } else if (event is AddBlog) {
       yield* _mapAddBlogState(event);
     } else if (event is UploadImage) {
@@ -33,12 +31,21 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     // }
   }
 
-  Stream<BlogsState> _mapLoadedBlogsState() async* {
-    // print('inside loaded blogs');
-    // var blogslist = await _blogsService.getblogs();
-    //print('inside after loaded blogs  ${blogslist[0].image}');
-
-    await _blogsService.getblogs();
+  Stream<BlogsState> _mapLoadedBlogsState(FetchBlogs event) async* {
+    print('${BlogsLoading()}');
+    yield BlogsLoading();
+    try {
+      print('inside _maploadedblogsState ');
+      List<Blogs> blogslist = await _blogsService.getblogs();
+      // print('kuch bhi ${_blogsService.getblogs()}');
+      print('inside after calling getblogs  ${blogslist[0].image}');
+      //  print('Blogsloaded ${BlogsLoaded(blogslist)}');
+      print('${BlogsLoaded(blogslist)}');
+      yield BlogsLoaded(blogslist);
+    } catch (_) {
+      print('BlogsNotLoaded');
+      yield BlogsNotLoaded();
+    }
   }
 
   Stream<BlogsState> _mapLoadBlogsToState() async* {
@@ -46,7 +53,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   }
 
   Stream<BlogsState> _mapAddBlogState(AddBlog event) async* {
-    await _blogsService.getblogs();
+    final List<Blogs> blog = await _blogsService.getblogs();
+    yield BlogsLoaded(blog);
   }
 
   Stream<BlogsState> _mapUploadImageToState(UploadImage event) async* {

@@ -1,366 +1,366 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
-import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/home_screen.dart';
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+// import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
+// import 'package:mr_blogger/service/blog_service.dart';
+// import 'package:mr_blogger/service/user_service.dart';
+// import 'package:mr_blogger/view/home_screen.dart';
 
-class AddBlogScreen extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _AddBlogScreenPage();
-  }
-}
+// class AddBlogScreen extends StatefulWidget {
+//   @override
+//   State<StatefulWidget> createState() {
+//     return _AddBlogScreenPage();
+//   }
+// }
 
-class _AddBlogScreenPage extends State<AddBlogScreen> {
-  File sampleImage;
-  final formKey = new GlobalKey<FormState>();
-  String _myvalue;
-  String _mytitlevalue;
-  String category;
-  String likes;
-  String url;
-  bool isbuttondisabled = false;
-  var userService = UserService();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+// class _AddBlogScreenPage extends State<AddBlogScreen> {
+//   File sampleImage;
+//   final formKey = new GlobalKey<FormState>();
+//   String _myvalue;
+//   String _mytitlevalue;
+//   String category;
+//   String likes;
+//   String url;
+//   bool isbuttondisabled = false;
+//   var userService = UserService();
+//   final TextEditingController _titleController = TextEditingController();
+//   final TextEditingController _descriptionController = TextEditingController();
 
-  static BlogsService _blogsServcie = BlogsService();
-  var _blog = BlogsBloc(blogsService: _blogsServcie);
-  @override
-  Widget build(BuildContext context) {
-    return new WillPopScope(
-      onWillPop: _onWillPop,
-      child: new Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.purple[800],
-          title: Text(
-            'Add blog',
-            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: new Center(
-            child: sampleImage == null ? beforeUpload() : enableUplaod(),
-          ),
-        ),
-      ),
-    );
-  }
+//   static BlogsService _blogsServcie = BlogsService();
+//   var _blog = BlogsBloc(blogsService: _blogsServcie);
+//   @override
+//   Widget build(BuildContext context) {
+//     return new WillPopScope(
+//       onWillPop: _onWillPop,
+//       child: new Scaffold(
+//         appBar: AppBar(
+//           backgroundColor: Colors.purple[800],
+//           title: Text(
+//             'Add blog',
+//             style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+//           ),
+//         ),
+//         body: SingleChildScrollView(
+//           child: new Center(
+//             child: sampleImage == null ? beforeUpload() : enableUplaod(),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-  Future<bool> _onWillPop() async {
-    return (await showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            content: new Text(
-              'Are you sure you want to go back?',
-              style:
-                  TextStyle(color: Colors.purple[500], fontFamily: 'Paficico'),
-            ),
-            actions: <Widget>[
-              Container(
-                  child: new OutlineButton(
-                    color: Colors.white,
-                    onPressed: () => Navigator.of(context).pop(false),
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(0.0)),
-                    child: new Text(
-                      'Cancel',
-                      style: TextStyle(
-                          color: Colors.purple[500], fontFamily: 'Paficico'),
-                    ),
-                  ),
-                  width: 80),
-              Container(
-                child: new RaisedButton(
-                  color: Colors.purple[500],
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: new Text('Yes',
-                      style: TextStyle(
-                          color: Colors.white, fontFamily: 'Paficico')),
-                ),
-                width: 80,
-              ),
-            ],
-          ),
-        )) ??
-        false;
-  }
+//   Future<bool> _onWillPop() async {
+//     return (await showDialog(
+//           context: context,
+//           builder: (context) => new AlertDialog(
+//             content: new Text(
+//               'Are you sure you want to go back?',
+//               style:
+//                   TextStyle(color: Colors.purple[500], fontFamily: 'Paficico'),
+//             ),
+//             actions: <Widget>[
+//               Container(
+//                   child: new OutlineButton(
+//                     color: Colors.white,
+//                     onPressed: () => Navigator.of(context).pop(false),
+//                     shape: new RoundedRectangleBorder(
+//                         borderRadius: new BorderRadius.circular(0.0)),
+//                     child: new Text(
+//                       'Cancel',
+//                       style: TextStyle(
+//                           color: Colors.purple[500], fontFamily: 'Paficico'),
+//                     ),
+//                   ),
+//                   width: 80),
+//               Container(
+//                 child: new RaisedButton(
+//                   color: Colors.purple[500],
+//                   onPressed: () => Navigator.of(context).pop(true),
+//                   child: new Text('Yes',
+//                       style: TextStyle(
+//                           color: Colors.white, fontFamily: 'Paficico')),
+//                 ),
+//                 width: 80,
+//               ),
+//             ],
+//           ),
+//         )) ??
+//         false;
+//   }
 
-  Future getImage() async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print('$tempImage');
-    setState(() {
-      sampleImage = tempImage;
-    });
-  }
+//   Future getImage() async {
+//     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+//     print('$tempImage');
+//     setState(() {
+//       sampleImage = tempImage;
+//     });
+//   }
 
-  bool validateandSave() {
-    final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-  }
+//   bool validateandSave() {
+//     final form = formKey.currentState;
+//     if (form.validate()) {
+//       form.save();
+//       return true;
+//     }
+//   }
 
-  void navigateToHomePage() {
-    print('navigating to homescreen');
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) {
-        return new Homepage();
-      },
-    ));
-  }
+//   void navigateToHomePage() {
+//     print('navigating to homescreen');
+//     Navigator.push(context, MaterialPageRoute(
+//       builder: (context) {
+//         return new Homepage();
+//       },
+//     ));
+//   }
 
-  Widget enableUplaod() {
-    return new Container(
-      child: new Form(
-        key: formKey,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            dropbox(),
-            title(),
-            SizedBox(
-              height: 20,
-            ),
-            InkWell(
-              child: Image.file(
-                sampleImage,
-                height: 255.0,
-                width: 340,
-              ),
-              onTap: getImage,
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            descriptionfield(),
-            SizedBox(
-              height: 10.0,
-            ),
-            RaisedButton(
-              child: Text(
-                'Upload blog',
-                style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-              ),
-              color: Colors.purple[800],
-              onPressed: isbuttondisabled
-                  ? null
-                  : () {
-                      setState(() => isbuttondisabled = !isbuttondisabled);
-                      //print('${isbuttondisabled}');
-                      print(
-                          'upload blog pressed ${_titleController.text},${_descriptionController.text},${url},${sampleImage}');
-                      _blog.add(
-                        UploadImage(
-                          url: url,
-                          image: sampleImage,
-                          title: _titleController.text,
-                          description: _descriptionController.text,
-                          category: category,
-                        ),
-                      );
-                      //   _blog.add(
-                      //       SaveToDatabaseEvent(url, _myvalue, _mytitlevalue));
-                    },
-            )
-          ],
-        ),
-      ),
-    );
-  }
+//   Widget enableUplaod() {
+//     return new Container(
+//       child: new Form(
+//         key: formKey,
+//         child: Column(
+//           children: <Widget>[
+//             SizedBox(
+//               height: 10,
+//             ),
+//             dropbox(),
+//             title(),
+//             SizedBox(
+//               height: 20,
+//             ),
+//             InkWell(
+//               child: Image.file(
+//                 sampleImage,
+//                 height: 255.0,
+//                 width: 340,
+//               ),
+//               onTap: getImage,
+//             ),
+//             SizedBox(
+//               height: 10.0,
+//             ),
+//             descriptionfield(),
+//             SizedBox(
+//               height: 10.0,
+//             ),
+//             RaisedButton(
+//               child: Text(
+//                 'Upload blog',
+//                 style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+//               ),
+//               color: Colors.purple[800],
+//               onPressed: isbuttondisabled
+//                   ? null
+//                   : () {
+//                       setState(() => isbuttondisabled = !isbuttondisabled);
+//                       //print('${isbuttondisabled}');
+//                       print(
+//                           'upload blog pressed ${_titleController.text},${_descriptionController.text},${url},${sampleImage}');
+//                       _blog.add(
+//                         UploadImage(
+//                           url: url,
+//                           image: sampleImage,
+//                           title: _titleController.text,
+//                           description: _descriptionController.text,
+//                           category: category,
+//                         ),
+//                       );
+//                       //   _blog.add(
+//                       //       SaveToDatabaseEvent(url, _myvalue, _mytitlevalue));
+//                     },
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 
-  beforeUpload() {
-    return new Container(
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 10,
-          ),
-          dropbox(),
-          title(),
-          SizedBox(
-            height: 20,
-          ),
-          InkWell(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-              color: Colors.purple[300],
-              alignment: Alignment.center,
-              height: 240,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.solidImages,
-                    ),
-                    tooltip: 'Add photo',
-                    iconSize: 50,
-                    color: Colors.white,
-                    splashColor: Colors.purple,
-                    onPressed: getImage,
-                  ),
-                  Text(
-                    'Add Photo',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(color: Colors.purple, fontFamily: 'Paficico'),
-                  )
-                ],
-              ),
-              width: 340,
-            ),
-            onTap: getImage,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          descriptionfield()
-        ],
-      ),
-    );
-  }
+//   beforeUpload() {
+//     return new Container(
+//       child: Column(
+//         children: <Widget>[
+//           SizedBox(
+//             height: 10,
+//           ),
+//           dropbox(),
+//           title(),
+//           SizedBox(
+//             height: 20,
+//           ),
+//           InkWell(
+//             child: Container(
+//               padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+//               color: Colors.purple[300],
+//               alignment: Alignment.center,
+//               height: 240,
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: <Widget>[
+//                   IconButton(
+//                     icon: Icon(
+//                       FontAwesomeIcons.solidImages,
+//                     ),
+//                     tooltip: 'Add photo',
+//                     iconSize: 50,
+//                     color: Colors.white,
+//                     splashColor: Colors.purple,
+//                     onPressed: getImage,
+//                   ),
+//                   Text(
+//                     'Add Photo',
+//                     textAlign: TextAlign.center,
+//                     style:
+//                         TextStyle(color: Colors.purple, fontFamily: 'Paficico'),
+//                   )
+//                 ],
+//               ),
+//               width: 340,
+//             ),
+//             onTap: getImage,
+//           ),
+//           SizedBox(
+//             height: 10,
+//           ),
+//           descriptionfield()
+//         ],
+//       ),
+//     );
+//   }
 
-  dropbox() {
-    String dropdownValue;
-    return Container(
-      width: 340,
-      padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
-      decoration: BoxDecoration(border: Border.all(color: Colors.purple[400])),
-      alignment: Alignment.bottomLeft,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          hint: Text(
-            "Select category",
-            style: TextStyle(color: Colors.purple[200]),
-          ),
-          isDense: true,
-          value: dropdownValue,
-          icon: Icon(FontAwesomeIcons.sortDown),
-          iconSize: 30,
-          elevation: 16,
-          style: TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (String newValue) {
-            setState(() {
-              print('before new value $dropdownValue new value $newValue');
-              dropdownValue = newValue;
-              print('new value $dropdownValue new value $newValue');
-            });
-          },
-          items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
+//   dropbox() {
+//     String dropdownValue;
+//     return Container(
+//       width: 340,
+//       padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+//       decoration: BoxDecoration(border: Border.all(color: Colors.purple[400])),
+//       alignment: Alignment.bottomLeft,
+//       child: DropdownButtonHideUnderline(
+//         child: DropdownButton<String>(
+//           isExpanded: true,
+//           hint: Text(
+//             "Select category",
+//             style: TextStyle(color: Colors.purple[200]),
+//           ),
+//           isDense: true,
+//           value: dropdownValue,
+//           icon: Icon(FontAwesomeIcons.sortDown),
+//           iconSize: 30,
+//           elevation: 16,
+//           style: TextStyle(color: Colors.deepPurple),
+//           underline: Container(
+//             height: 2,
+//             color: Colors.deepPurpleAccent,
+//           ),
+//           onChanged: (String newValue) {
+//             setState(() {
+//               print('before new value $dropdownValue new value $newValue');
+//               dropdownValue = newValue;
+//               print('new value $dropdownValue new value $newValue');
+//             });
+//           },
+//           items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
+//               .map<DropdownMenuItem<String>>((String value) {
+//             return DropdownMenuItem<String>(
+//               value: value,
+//               child: Text(value),
+//             );
+//           }).toList(),
+//         ),
+//       ),
+//     );
+//   }
 
-  descriptionfield() {
-    return Container(
-        child: Column(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Description:',
-            style: TextStyle(
-                fontFamily: 'Paficico',
-                color: Colors.purple[500],
-                fontSize: 18),
-            textAlign: TextAlign.left,
-          ),
-        ),
-        new Scrollbar(
-          child: SingleChildScrollView(
-              child: Container(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: TextFormField(
-              controller: _descriptionController,
-              textAlign: TextAlign.left,
-              keyboardType: TextInputType.multiline,
-              maxLines: 10,
-              minLines: 5,
-              decoration: new InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1, color: Colors.purple[300])),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.purple, width: 1.0),
-                  ),
-                  hintText: 'Write Something...',
-                  hintStyle: TextStyle(color: Colors.purple[200])),
-              validator: (value) {
-                return value.isEmpty ? 'blog decription is required' : null;
-              },
-              onSaved: (value) {
-                print('_myvalue====${_myvalue}');
-                _myvalue = value;
-              },
-            ),
-          )),
-        ),
-      ],
-    ));
-  }
+//   descriptionfield() {
+//     return Container(
+//         child: Column(
+//       children: <Widget>[
+//         Container(
+//           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+//           alignment: Alignment.centerLeft,
+//           child: Text(
+//             'Description:',
+//             style: TextStyle(
+//                 fontFamily: 'Paficico',
+//                 color: Colors.purple[500],
+//                 fontSize: 18),
+//             textAlign: TextAlign.left,
+//           ),
+//         ),
+//         new Scrollbar(
+//           child: SingleChildScrollView(
+//               child: Container(
+//             padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+//             child: TextFormField(
+//               controller: _descriptionController,
+//               textAlign: TextAlign.left,
+//               keyboardType: TextInputType.multiline,
+//               maxLines: 10,
+//               minLines: 5,
+//               decoration: new InputDecoration(
+//                   border: OutlineInputBorder(
+//                       borderSide:
+//                           BorderSide(width: 1, color: Colors.purple[300])),
+//                   focusedBorder: OutlineInputBorder(
+//                     borderSide:
+//                         const BorderSide(color: Colors.purple, width: 1.0),
+//                   ),
+//                   hintText: 'Write Something...',
+//                   hintStyle: TextStyle(color: Colors.purple[200])),
+//               validator: (value) {
+//                 return value.isEmpty ? 'blog decription is required' : null;
+//               },
+//               onSaved: (value) {
+//                 print('_myvalue====${_myvalue}');
+//                 _myvalue = value;
+//               },
+//             ),
+//           )),
+//         ),
+//       ],
+//     ));
+//   }
 
-  title() {
-    return Container(
-      child: Column(children: <Widget>[
-        Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'TITLE:',
-            style: TextStyle(fontFamily: 'Paficico', color: Colors.purple[500]),
-            textAlign: TextAlign.left,
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child: TextFormField(
-            controller: _titleController,
-            textAlign: TextAlign.left,
-            //   keyboardType: TextInputType.multiline,
-            maxLines: 4,
-            minLines: 1,
-            decoration: new InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(width: 1, color: Colors.purple)),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: Colors.purple, width: 1.0),
-                ),
-                hintText: 'Enter your title',
-                hintStyle: TextStyle(color: Colors.purple[200])),
-            validator: (value) {
-              return value.isEmpty ? 'Title for your blog is required' : null;
-            },
-            onSaved: (value) {
-              print('_myvalue====${_mytitlevalue}');
-              _mytitlevalue = value;
-            },
-          ),
-        )
-      ]),
-    );
-  }
-}
+//   title() {
+//     return Container(
+//       child: Column(children: <Widget>[
+//         Container(
+//           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+//           alignment: Alignment.centerLeft,
+//           child: Text(
+//             'TITLE:',
+//             style: TextStyle(fontFamily: 'Paficico', color: Colors.purple[500]),
+//             textAlign: TextAlign.left,
+//           ),
+//         ),
+//         Container(
+//           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+//           child: TextFormField(
+//             controller: _titleController,
+//             textAlign: TextAlign.left,
+//             //   keyboardType: TextInputType.multiline,
+//             maxLines: 4,
+//             minLines: 1,
+//             decoration: new InputDecoration(
+//                 border: OutlineInputBorder(
+//                     borderSide: BorderSide(width: 1, color: Colors.purple)),
+//                 focusedBorder: OutlineInputBorder(
+//                   borderSide:
+//                       const BorderSide(color: Colors.purple, width: 1.0),
+//                 ),
+//                 hintText: 'Enter your title',
+//                 hintStyle: TextStyle(color: Colors.purple[200])),
+//             validator: (value) {
+//               return value.isEmpty ? 'Title for your blog is required' : null;
+//             },
+//             onSaved: (value) {
+//               print('_myvalue====${_mytitlevalue}');
+//               _mytitlevalue = value;
+//             },
+//           ),
+//         )
+//       ]),
+//     );
+//   }
+// }

@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
