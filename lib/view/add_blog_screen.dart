@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,13 +108,28 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     }
   }
 
+  void addBlog() {
+    print('inside add in addscreen');
+    _blog.add(
+      UploadImage(
+        url: url,
+        image: sampleImage,
+        title: _titleController.text,
+        description: _descriptionController.text,
+        category: category,
+      ),
+    );
+  }
+
   void navigateToHomePage() {
     print('navigating to homescreen');
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) {
-        return new Homepage();
-      },
-    ));
+    Timer(Duration(seconds: 8), () {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return new Homepage();
+        },
+      ));
+    });
   }
 
   Widget enableUplaod() {
@@ -156,22 +172,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                   : () {
                       setState(() => isbuttondisabled = !isbuttondisabled);
                       //print('${isbuttondisabled}');
-                      print(
-                          'upload blog pressed ${_titleController.text},${_descriptionController.text},${url},${sampleImage}');
-                      _blog.add(
-                        UploadImage(
-                          url: url,
-                          image: sampleImage,
-                          title: _titleController.text,
-                          description: _descriptionController.text,
-                          category: category,
-                        ),
-                      );
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (ctx) {
-                          return new Homepage();
-                        },
-                      ));
+                      print('upload blog pressed');
+                      print('calling add blog');
+                      addBlog();
+                      print('calling homapge navigation');
+                      navigateToHomePage();
                       //   _blog.add(
                       //       SaveToDatabaseEvent(url, _myvalue, _mytitlevalue));
                     },
@@ -316,10 +321,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               validator: (value) {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
-              // onSaved: (value) {
-              //   print('_myvalue====${_myvalue}');
-              //   _myvalue = value;
-              // },
+              onSaved: (value) {
+                print('_myvalue====${_myvalue}');
+                _myvalue = value;
+              },
             ),
           )),
         ),
@@ -359,10 +364,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             validator: (value) {
               return value.isEmpty ? 'Title for your blog is required' : null;
             },
-            // onSaved: (value) {
-            //   print('_myvalue====${_mytitlevalue}');
-            //   _mytitlevalue = value;
-            // },
+            onSaved: (value) {
+              print('_myvalue====${_mytitlevalue}');
+              _mytitlevalue = value;
+            },
           ),
         )
       ]),

@@ -1,8 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
+import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -12,7 +11,7 @@ import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
-import 'package:mr_blogger/view/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   final Users user;
@@ -28,8 +27,12 @@ class _ProfilePageState extends State<ProfilePage> {
   var userService = UserService();
   static BlogsService _blogsService = BlogsService();
   static ProfileService _profileService = ProfileService();
+  static UserService _userService = UserService();
+  SharedPreferences sharedPreferences;
+  String email;
   var _profile =
       ProfileBloc(profileService: _profileService, blogsService: _blogsService);
+  var _login = LoginBloc(userService: _userService);
   Future _userdata;
   Future _data;
   List<Blogs> blogsList = [];
@@ -40,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _profile.add(
       LoadedProfileDeatils(),
     );
+
     super.initState();
   }
 
@@ -63,6 +67,21 @@ class _ProfilePageState extends State<ProfilePage> {
         body: SingleChildScrollView(
             child: Container(
           child: Column(children: <Widget>[
+            Container(
+              child: BlocBuilder<ProfileBloc, ProfileState>(
+                bloc: _profile,
+                builder: (context, state) {
+                  if (state is ProfileLoading) {
+                    return Image.network(
+                        'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                  } else if (state is ProfileLoaded) {
+                    return profileUi(state.displayName, state.email);
+                  } else if (state is ProfileNotLoaded) {
+                    return Text('Not loaded');
+                  }
+                },
+              ),
+            ),
             // profileUi(widget.user.displayName, widget.user.email),
             SizedBox(
               height: 30,

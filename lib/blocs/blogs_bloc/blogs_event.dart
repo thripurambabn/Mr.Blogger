@@ -7,6 +7,8 @@ import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class BlogsEvent extends Equatable {
   const BlogsEvent();
+  @override
+  List<Object> get props => [];
 }
 
 class BlogsLoad extends BlogsEvent {
@@ -29,7 +31,7 @@ class FetchBlogs extends BlogsEvent {
 }
 
 class AddBlog extends BlogsEvent {
-  final List<Blogs> blog;
+  final Blogs blog;
 
   const AddBlog(this.blog);
 
@@ -57,20 +59,7 @@ class UploadImage extends BlogsEvent {
   String toString() => 'ImageBlog { blog: $image }';
 }
 
-// class SaveToDatabaseEvent extends BlogsEvent {
-//   final String imageurl, title, description;
-
-//   const SaveToDatabaseEvent(this.description, this.imageurl, this.title);
-//   @override
-//   List<Object> get props => [imageurl, title, description];
-
-//   @override
-//   String toString() => 'savetodatabase event { blog: $imageurl }';
-// }
-
 class GetImage extends BlogsEvent {
   @override
   List<Object> get props => [];
 }
-
-//class SavingToDatabase extends BlogsEvent {}

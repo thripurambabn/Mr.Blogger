@@ -21,10 +21,13 @@ class BlogsEmpty extends BlogsState {}
 class BlogsLoaded extends BlogsState {
   final List<Blogs> blogs;
 
-  const BlogsLoaded(this.blogs);
+  const BlogsLoaded([this.blogs]);
 
   @override
-  List<Object> get props => [blogs];
+  List<Object> get props {
+    var list = [blogs];
+    return list;
+  }
 
   @override
   String toString() => 'blogsLoaded { blogs: $blogs }';

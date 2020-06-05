@@ -34,7 +34,9 @@ dependencies:
   firebase_database: ^3.1.5
   firebase_storage: ^3.1.5
   cloud_firestore: ^0.13.5
-  async_loader: ^0.1.2
+  shared_preferences: ^0.5.7+3
+  get_it: ^4.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

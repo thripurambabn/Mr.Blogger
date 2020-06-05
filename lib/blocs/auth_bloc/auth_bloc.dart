@@ -41,15 +41,15 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
-    print('mapping authenticate success state in bloc');
-    print('user service-----${_userService.getUser().toString()}');
-    print('user in bloc------${_userService.getUserName().toString()}');
+    // print('mapping authenticate success state in bloc');
+    // print('user service-----${_userService.getUser().toString()}');
+    // print('user in bloc------${_userService.getUserName().toString()}');
     yield AuthenticationSuccess(await _userService.getUser().toString());
   }
 
   Stream<AuthenticationState> _mapAuthenticationLoggedOutToState() async* {
     yield AuthenticationFailure();
-    print('calling signout in bloc');
+    //  print('calling signout in bloc');
     _userService.signOut();
   }
 }

@@ -58,7 +58,7 @@ class BlogsService {
       var formattime = new DateFormat('EEEE, hh:mm aaa');
       String date = formatdate.format(dbkey);
       String time = formattime.format(dbkey);
-      var userid = await userService.getUser();
+      var userid = await userService.getUserID();
       var username = await userService.getUserName();
       DatabaseReference databaseReference =
           FirebaseDatabase.instance.reference();
@@ -106,10 +106,8 @@ class BlogsService {
     var imageurl1 = await imageurl.ref.getDownloadURL();
     url = imageurl1.toString();
     print("image url ${url}");
-    print('navigating to homescreen');
-
     try {
-      saveToDatabase(
+      await saveToDatabase(
         url,
         mytitlevalue,
         myvalue,

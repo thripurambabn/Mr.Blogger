@@ -6,26 +6,26 @@ import 'package:mr_blogger/service/user_service.dart';
 class ProfileService {
   var userService = UserService();
   List<Blogs> blogsList = [];
-  //List<Users> userlist = [];
-  Future<Users> getUserdata() async {
-    var user = await userService.getUser();
-    // DatabaseReference userref =
-    //     FirebaseDatabase.instance.reference().child('users');
-    // final DataSnapshot snapshot =
-    //     await userref.orderByChild('uid').equalTo(user).once();
+  // //List<Users> userlist = [];
+  // Future<Users> getUserdata() async {
+  //   var user = await userService.getUser();
+  //   // DatabaseReference userref =
+  //   //     FirebaseDatabase.instance.reference().child('users');
+  //   // final DataSnapshot snapshot =
+  //   //     await userref.orderByChild('uid').equalTo(user).once();
 
-    // // var refkey = snapshot.value.keys;
-    // var data = snapshot.value;
-    // //userlist.clear();
-    // print('data in PS ${data}');
-    Users userData = new Users(
-      user.displayName,
-      user.email,
-    );
-    print('user in profile service${user.displayName}');
-    return userData;
-    //});
-  }
+  //   // // var refkey = snapshot.value.keys;
+  //   // var data = snapshot.value;
+  //   // //userlist.clear();
+  //   // print('data in PS ${data}');
+  //   Users userData = new Users(
+  //     user.displayName,
+  //     user.email,
+  //   );
+  //   print('user in profile service${user.displayName}');
+  //   return userData;
+  //   //});
+  // }
 
   Future getblogs() async {
     var userid = await userService.getUserID();

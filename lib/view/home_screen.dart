@@ -34,9 +34,14 @@ class _HomepageState extends State<Homepage> {
     print('in home initial state');
     super.initState();
     //  _blogsBloc = BlocProvider.of<BlogsBloc>(context);
-    _blog.add(
-      FetchBlogs(),
-    );
+    // _blog.add(
+    //   FetchBlogs(),
+    // );
+    getBlogs();
+  }
+
+  void getBlogs() async {
+    await _blog.add(FetchBlogs());
   }
 
   void navigateToSignUpPage(BuildContext context) {
@@ -96,6 +101,7 @@ class _HomepageState extends State<Homepage> {
               if (state is BlogsLoading) {
                 return Text('blogs loading...${state}');
               } else if (state is BlogsLoaded) {
+                print('state in homescreen ${state.blogs.length}');
                 return ListView.builder(
                   itemCount: state.blogs.length,
                   itemBuilder: (BuildContext context, int index) {

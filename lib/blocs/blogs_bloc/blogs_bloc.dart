@@ -2,7 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/blocs/navigation_bloc/navigation_bloc.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/routes/locator.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 
 class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
@@ -35,10 +37,10 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     print('${BlogsLoading()}');
     yield BlogsLoading();
     try {
-      print('inside _maploadedblogsState ');
+      // print('inside _maploadedblogsState ');
       List<Blogs> blogslist = await _blogsService.getblogs();
       // print('kuch bhi ${_blogsService.getblogs()}');
-      print('inside after calling getblogs  ${blogslist[0].image}');
+      //print('inside after calling getblogs  ${blogslist[0].image}');
       //  print('Blogsloaded ${BlogsLoaded(blogslist)}');
       print('${BlogsLoaded(blogslist)}');
       yield BlogsLoaded(blogslist);
@@ -69,6 +71,9 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         myvalue: event.description,
         category: event.category,
       );
+      final List<Blogs> blog = await _blogsService.getblogs();
+      yield BlogsLoaded(blog);
+      // locator<NavigationService>().navigateTo('home');
     } catch (e) {
       print('${e.toString()}');
     }

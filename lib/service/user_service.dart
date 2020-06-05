@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mr_blogger/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   final FirebaseAuth _firebaseAuth;
@@ -108,5 +110,28 @@ class UserService {
     final username = user.displayName;
     // print('username in service------${username}');
     return username;
+  }
+
+  Future<String> read() async {
+    final prefs = await SharedPreferences.getInstance();
+    final user = await _firebaseAuth.currentUser();
+    final userName = user.displayName;
+    final email = user.email;
+    print('user in read preferences ${userName}');
+    prefs.setString("displayname", userName);
+    prefs.setString("email", email);
+  }
+
+  Future<Users> save() async {
+    final prefs = await SharedPreferences.getInstance();
+    print('user in save preference ${prefs.getString("displayname")}');
+    Users user =
+        new Users(prefs.getString("displayname"), prefs.getString('email'));
+    prefs.getString(
+      "dispalyname",
+    );
+    prefs.getString("email");
+
+    return user;
   }
 }
