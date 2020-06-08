@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,7 +9,6 @@ import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_event.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
 import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 import 'package:mr_blogger/view/reg_screen.dart';
 
 class LoginForm extends StatefulWidget {
@@ -200,7 +198,6 @@ class _LoginFormState extends State<LoginForm> {
                         FlatButton(
                           child: Text('New User?SignUp here',
                               style: TextStyle(
-                                  // backgroundColor: Colors.brown,
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline,
                                   fontSize: 22.0,
@@ -233,18 +230,21 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+//calls LoginEmailChanged event
   void _onEmailChanged() {
     _loginBloc.add(
       LoginEmailChanged(email: _emailController.text),
     );
   }
 
+//calls LoginPasswordChanged event
   void _onPasswordChanged() {
     _loginBloc.add(
       LoginPasswordChanged(password: _passwordController.text),
     );
   }
 
+//calls LoginWithCrendentialPressed event
   void _onFormSubmitted() {
     _loginBloc.add(
       LoginWithCredentialsPressed(

@@ -9,7 +9,7 @@ import 'package:mr_blogger/service/user_service.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserService _userService;
-
+//constructor for authentication bloc
   AuthenticationBloc({@required UserService userService})
       : assert(userService != null),
         _userService = userService;
@@ -17,6 +17,7 @@ class AuthenticationBloc
   @override
   AuthenticationState get initialState => AuthenticationInitial();
 
+//mapping aunthentication events with authentication states
   @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
@@ -30,6 +31,7 @@ class AuthenticationBloc
     }
   }
 
+//mapping Authentication Started with authentication states
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
     final isSignedIn = await _userService.isSignedIn();
     if (isSignedIn) {
@@ -40,16 +42,15 @@ class AuthenticationBloc
     }
   }
 
+//mapping Authentication Logged In with authentication state
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
-    // print('mapping authenticate success state in bloc');
-    // print('user service-----${_userService.getUser().toString()}');
-    // print('user in bloc------${_userService.getUserName().toString()}');
     yield AuthenticationSuccess(await _userService.getUser().toString());
   }
 
+//mapping Authentication Failure with authentication state
   Stream<AuthenticationState> _mapAuthenticationLoggedOutToState() async* {
     yield AuthenticationFailure();
-    //  print('calling signout in bloc');
+
     _userService.signOut();
   }
 }

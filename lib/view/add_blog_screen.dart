@@ -26,12 +26,14 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String likes;
   String url;
   bool isbuttondisabled = false;
-  var userService = UserService();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  //instance of blog Service and User Service
+  var userService = UserService();
   static BlogsService _blogsServcie = BlogsService();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
+
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -53,6 +55,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     );
   }
 
+//Navigate back confirmation dialog box
   Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,
@@ -92,9 +95,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         false;
   }
 
+//fetch image from the gallery
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print('$tempImage');
+
     setState(() {
       sampleImage = tempImage;
     });
@@ -108,8 +112,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     }
   }
 
+//calls Upload Image event to add blog
   void addBlog() {
-    print('inside add in addscreen');
     _blog.add(
       UploadImage(
         url: url,
@@ -121,8 +125,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     );
   }
 
+//Navigate to homepage
   void navigateToHomePage() {
-    print('navigating to homescreen');
     Timer(Duration(seconds: 8), () {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
@@ -132,6 +136,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     });
   }
 
+//view after entering the blog details
   Widget enableUplaod() {
     return new Container(
       child: new Form(
@@ -171,14 +176,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                   ? null
                   : () {
                       setState(() => isbuttondisabled = !isbuttondisabled);
-                      //print('${isbuttondisabled}');
-                      print('upload blog pressed');
-                      print('calling add blog');
+
                       addBlog();
-                      print('calling homapge navigation');
+
                       navigateToHomePage();
-                      //   _blog.add(
-                      //       SaveToDatabaseEvent(url, _myvalue, _mytitlevalue));
                     },
             )
           ],
@@ -187,6 +188,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     );
   }
 
+//view before entering the blog details
   beforeUpload() {
     return new Container(
       child: Column(
@@ -265,9 +267,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           ),
           onChanged: (String newValue) {
             setState(() {
-              print('before new value $dropdownValue new value $newValue');
               dropdownValue = newValue;
-              print('new value $dropdownValue new value $newValue');
             });
           },
           items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
@@ -322,7 +322,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
               onSaved: (value) {
-                print('_myvalue====${_myvalue}');
                 _myvalue = value;
               },
             ),
@@ -365,7 +364,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               return value.isEmpty ? 'Title for your blog is required' : null;
             },
             onSaved: (value) {
-              print('_myvalue====${_mytitlevalue}');
               _mytitlevalue = value;
             },
           ),

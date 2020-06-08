@@ -2,67 +2,77 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
-import 'package:mr_blogger/blocs/navigation_bloc/navigation_bloc.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/routes/locator.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 
 class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   BlogsService _blogsService = new BlogsService();
-
+  //contructor for blogs bloc
   BlogsBloc({@required BlogsService blogsService});
-  //   : assert(blogsService != null);
-  //   _blogsService = blogsService;
 
   @override
   BlogsState get initialState => BlogsLoading();
 
+//mapping blogs events with blogs state
   @override
   Stream<BlogsState> mapEventToState(BlogsEvent event) async* {
-    if (event is BlogsLoad) {
+    if (event is BlogsLoad && !_hasReachedMax(state)) {
       yield* _mapLoadBlogsToState();
     } else if (event is FetchBlogs) {
-      yield* _mapLoadedBlogsState(event);
+      yield* _mapLoadedBlogsState(event, state);
     } else if (event is AddBlog) {
       yield* _mapAddBlogState(event);
     } else if (event is UploadImage) {
       yield* _mapUploadImageToState(event);
     }
-    //else if (event is SaveToDatabase) {
-    //   yield* _mapSaveToDatabaseState(event);
-    // }
   }
 
-  Stream<BlogsState> _mapLoadedBlogsState(FetchBlogs event) async* {
-    print('${BlogsLoading()}');
-    yield BlogsLoading();
+//mapping Fetch Blogs event with blogs state
+  Stream<BlogsState> _mapLoadedBlogsState(
+      FetchBlogs event, BlogsState state) async* {
     try {
-      // print('inside _maploadedblogsState ');
-      List<Blogs> blogslist = await _blogsService.getblogs();
-      // print('kuch bhi ${_blogsService.getblogs()}');
-      //print('inside after calling getblogs  ${blogslist[0].image}');
-      //  print('Blogsloaded ${BlogsLoaded(blogslist)}');
-      print('${BlogsLoaded(blogslist)}');
-      yield BlogsLoaded(blogslist);
+      if (state is BlogsLoading && !_hasReachedMax(state)) {
+        yield BlogsLoading();
+
+        List<Blogs> blogslist = await _blogsService.getblogs();
+
+        yield BlogsLoaded(blogs: blogslist, hasReachedMax: false);
+      } else if (state is BlogsLoaded && !_hasReachedMax(state)) {
+        List<Blogs> moreblogslist =
+            await _blogsService.getMoreBlogs(state.blogs);
+
+        final testlist = state.blogs + moreblogslist;
+        if (moreblogslist.length == 0) {
+          state.copyWith(hasReachedMax: true);
+          yield BlogsLoaded(blogs: state.blogs, hasReachedMax: true);
+        } else {
+          yield BlogsLoaded(blogs: testlist, hasReachedMax: false);
+        }
+      } else if (state is BlogsLoaded) {
+        yield BlogsLoaded(blogs: state.blogs, hasReachedMax: true);
+      }
     } catch (_) {
-      print('BlogsNotLoaded');
       yield BlogsNotLoaded();
     }
   }
 
+//reached end of the scroller
+  bool _hasReachedMax(BlogsState state) =>
+      state is BlogsLoaded && state.hasReachedMax;
+
+//mapping load Blog event with blogs state
   Stream<BlogsState> _mapLoadBlogsToState() async* {
     print('load blogs in blogs_bloc.dart');
   }
 
+//mapping add blog event with blogs state
   Stream<BlogsState> _mapAddBlogState(AddBlog event) async* {
     final List<Blogs> blog = await _blogsService.getblogs();
-    yield BlogsLoaded(blog);
+    yield BlogsLoaded(blogs: blog, hasReachedMax: false);
   }
 
+// mapping Upload Image event with blogs state
   Stream<BlogsState> _mapUploadImageToState(UploadImage event) async* {
-    print('inside blog upload image ${event.image} ${event.title} ');
-    //  final File image;
-    //  final String url, title, description, category;
     try {
       await _blogsService.uploadImage(
         url: event.url,
@@ -72,16 +82,9 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         category: event.category,
       );
       final List<Blogs> blog = await _blogsService.getblogs();
-      yield BlogsLoaded(blog);
-      // locator<NavigationService>().navigateTo('home');
+      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print('${e.toString()}');
     }
   }
 }
-
-// Stream<BlogsState> _mapSaveToDatabaseState(SaveToDatabaseEvent event) async* {
-//   print('inisde saving to database bloc ${event.imageurl}');
-//   // await _blogsService.saveToDatabase(imageurl)
-// }
-//}

@@ -13,7 +13,6 @@ import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
-import 'package:mr_blogger/widgets/blogsUi.dart';
 
 class Homepage extends StatefulWidget {
   Homepage({Key key}) : super(key: key);
@@ -23,27 +22,39 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  //instance of user Service
   var userService = UserService();
   static BlogsService _blogsServcie = BlogsService();
   List<Blogs> blogsList = [];
   Blogs blogs;
-  //BlogsBloc _blog;
+  final _scrollController = ScrollController();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
+  final _scrollThreshold = 200.0;
   @override
   void initState() {
-    print('in home initial state');
     super.initState();
-    //  _blogsBloc = BlocProvider.of<BlogsBloc>(context);
-    // _blog.add(
-    //   FetchBlogs(),
-    // );
+    //listener for scroll event
+    _scrollController.addListener(_onScroll);
+    //inital call for get blogs
     getBlogs();
   }
 
+//events on scroll for pagiantion
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    //get more blogs on scroll
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      _blog.add(FetchBlogs());
+    }
+  }
+
+//calls Fetch Blogs event
   void getBlogs() async {
     await _blog.add(FetchBlogs());
   }
 
+//navigate to sign Up page
   void navigateToSignUpPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return LoginScreen(
@@ -52,6 +63,7 @@ class _HomepageState extends State<Homepage> {
     }));
   }
 
+//navigate to detail page page
   void navigateToDetailPage(Blogs blog) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new DetailPage(
@@ -60,18 +72,31 @@ class _HomepageState extends State<Homepage> {
     }));
   }
 
+//navigate to profile page
   void navigateToProfilePage() {
-    print('navigating to proilepage');
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new ProfilePage();
     }));
   }
 
+//loading indicator while fetching more blogs
+  Widget bottomLoader() {
+    return Container(
+      alignment: Alignment.center,
+      child: Center(
+        child: SizedBox(
+          width: 33,
+          height: 33,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // return BlocProvider<BlogsBloc>(
-    //   create: (context) => _blogsBloc,
-    // child:
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
@@ -85,7 +110,6 @@ class _HomepageState extends State<Homepage> {
             IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
-                print('pressed signout');
                 BlocProvider.of<AuthenticationBloc>(context).add(
                   AuthenticationLoggedOut(),
                 );
@@ -93,45 +117,53 @@ class _HomepageState extends State<Homepage> {
             ),
           ],
         ),
-        // body: InkWell(
+        //handles blog list view on state change
         body: Container(
           child: BlocBuilder<BlogsBloc, BlogsState>(
             bloc: _blog,
             builder: (context, state) {
+              //Loading state
               if (state is BlogsLoading) {
                 return Text('blogs loading...${state}');
-              } else if (state is BlogsLoaded) {
-                print('state in homescreen ${state.blogs.length}');
+              } //Loaded state
+              else if (state is BlogsLoaded) {
                 return ListView.builder(
-                  itemCount: state.blogs.length,
+                  shrinkWrap: false,
+                  scrollDirection: Axis.vertical,
+                  physics: ScrollPhysics(),
+                  itemCount: state.hasReachedMax
+                      ? state.blogs.length
+                      : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
-                    // print(
-                    //     'list tile value in blocbuilder ${state.blogs[index].authorname},${index}');
-                    return ListTile(
-                        onTap: () => navigateToDetailPage(state.blogs[index]),
-                        title: blogsUi(
-                            state.blogs[index].image,
-                            state.blogs[index].uid,
-                            state.blogs[index].authorname,
-                            state.blogs[index].title,
-                            state.blogs[index].description,
-                            state.blogs[index].likes,
-                            state.blogs[index].date,
-                            state.blogs[index].time));
+                    return index >= state.blogs.length
+                        ? bottomLoader()
+                        : ListTile(
+                            onTap: () =>
+                                navigateToDetailPage(state.blogs[index]),
+                            title: blogsUi(
+                              state.blogs[index].image,
+                              state.blogs[index].uid,
+                              state.blogs[index].authorname,
+                              state.blogs[index].title,
+                              state.blogs[index].description,
+                              state.blogs[index].likes,
+                              state.blogs[index].date,
+                              state.blogs[index].time,
+                              state.blogs[index].timeStamp,
+                            ));
                   },
-                );
+                  controller: _scrollController,
+                ); //error state
               } else if (state is BlogsNotLoaded) {
                 return Text('Not loaded');
               }
             },
           ),
         ),
-        // ),
-        //onTap: () => navigateToDetailPage(snapshot.data['index']),
-        //   ),
         floatingActionButton: RaisedButton(
           color: Colors.purple[800],
           onPressed: () {
+            //navigate to add blog screen
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return new AddBlogScreen();
             }));
@@ -141,15 +173,19 @@ class _HomepageState extends State<Homepage> {
             style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
           ),
         ));
-    //);
   }
 
-  Widget blogsUi(String image, String uid, String authorname, String title,
-      String description, String likes, String date, String time) {
-    // print('authorname in home ${authorname}');
-    // print('uid in homeUI---${uid}');
-    // print('${description.length},length');
-    // print('${title.length}-----title length');
+//blog tile widget
+  Widget blogsUi(
+      String image,
+      String uid,
+      String authorname,
+      String title,
+      String description,
+      String likes,
+      String date,
+      String time,
+      int timeStamp) {
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.all(15.0),
@@ -199,7 +235,7 @@ class _HomepageState extends State<Homepage> {
                     textAlign: TextAlign.right,
                   ),
                   new Text(
-                    date,
+                    time,
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w400,
@@ -226,83 +262,3 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
-// import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
-// import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
-// import 'package:mr_blogger/models/blogs.dart';
-// import 'package:mr_blogger/service/blog_service.dart';
-
-// class Homepage extends StatefulWidget {
-//   Homepage({Key key}) : super(key: key);
-
-//   @override
-//   _HomepageState createState() => _HomepageState();
-// }
-
-// class _HomepageState extends State<Homepage> {
-// //  BlogsBloc _blogsBloc;
-//   static BlogsService _blogsService;
-//   List<Blogs> blogsList = [];
-//   var _blog = BlogsBloc(blogsService: _blogsService);
-//   @override
-//   void initState() {
-//     print('in home initial state');
-//     super.initState();
-//     //  _blogsBloc = BlocProvider.of<BlogsBloc>(context);
-//     _blog.add(
-//       FetchBlogs(),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<BlogsBloc, BlogsState>(
-//       bloc: _blog,
-//       builder: (context, state) {
-//         print('state in blocbuilder ${state}');
-//         if (state is BlogsLoading) {
-//           return Center(
-//             child: CircularProgressIndicator(),
-//           );
-//         }
-//         if (state is BlogsNotLoaded) {
-//           return Center(
-//             child: Text('failed to fetch blogs'),
-//           );
-//         }
-//         if (state is BlogsLoaded) {
-//           if (state.blogs.isEmpty) {
-//             return Center(
-//               child: Text('no blogs'),
-//             );
-//           }
-//           return ListView.builder(
-//             itemBuilder: (BuildContext context, int index) {
-//               print(
-//                   'list tile value in blocbuilder ${state.blogs[index].authorname}');
-//               return BlogsWidget(blog: state.blogs[index]);
-//             },
-//           );
-//         }
-//       },
-//     );
-//   }
-// }
-
-// class BlogsWidget extends StatelessWidget {
-//   final Blogs blog;
-
-//   const BlogsWidget({Key key, @required this.blog}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     print('in widget build ${blog.authorname}');
-//     return Card(
-//         child: ListTile(
-//       title: Text(blog.title),
-//       subtitle: Text(blog.description),
-//     ));
-//   }
-// }

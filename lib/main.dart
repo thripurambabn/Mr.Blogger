@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
-import 'package:mr_blogger/routes/routes.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
-
 import 'package:mr_blogger/view/login_screen.dart';
-
 import 'package:mr_blogger/view/splash_scren.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  //BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserService userService = UserService();
   final BlogsService blogsService = BlogsService();
   runApp(
@@ -49,8 +44,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      onGenerateRoute: generateRoute,
-      navigatorKey: navigatorKey,
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is AuthenticationFailure) {

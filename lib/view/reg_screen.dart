@@ -92,7 +92,6 @@ class _RegisterFormState extends State<RegisterForm> {
                         fontFamily: 'Paficico',
                         fontSize: 30.0,
                         color: Colors.purple[700],
-                        //fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -188,24 +187,28 @@ class _RegisterFormState extends State<RegisterForm> {
     super.dispose();
   }
 
+//calls RegisterEmailChanged event
   void _onEmailChanged() {
     _registerBloc.add(
       RegisterEmailChanged(email: _emailController.text),
     );
   }
 
+//calls RegisterPasswordChanged event
   void _onPasswordChanged() {
     _registerBloc.add(
       RegisterPasswordChanged(password: _passwordController.text),
     );
   }
 
+//calls RegisterusernameChanged event
   void _onUserNameChanged() {
     _registerBloc.add(
       RegisterusernameChanged(username: _usernameController.text),
     );
   }
 
+//calls RegisterSubmitted event
   void _onFormSubmitted() {
     _registerBloc.add(
       RegisterSubmitted(

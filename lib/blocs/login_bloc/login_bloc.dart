@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserService _userService;
-
+//constructor for locgin bloc
   LoginBloc({
     @required UserService userService,
   })  : assert(userService != null),
@@ -35,6 +35,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 
+//mapping login state with login event
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is LoginEmailChanged) {
@@ -53,18 +54,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+//mapping Login Email Changed event with state
   Stream<LoginState> _mapLoginEmailChangedToState(String email) async* {
     yield state.update(
       isEmailValid: Validators.isValidEmail(email),
     );
   }
 
+//mapping Login Password Changed event with state
   Stream<LoginState> _mapLoginPasswordChangedToState(String password) async* {
     yield state.update(
       isPasswordValid: Validators.isValidPassword(password),
     );
   }
 
+//mapping Login With Google event with state
   Stream<LoginState> _mapLoginWithGooglePressedToState() async* {
     try {
       await _userService.signInWithGoogle();
@@ -74,6 +78,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+////mapping Login With Credentials event with state
   Stream<LoginState> _mapLoginWithCredentialsPressedToState({
     String email,
     String password,
@@ -88,6 +93,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+//mapping Logout event with state
   @override
   Stream<LoginState> _mapLogoutEvent() async* {
     _userService.signOut();

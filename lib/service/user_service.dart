@@ -9,11 +9,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserService {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
-
+//auth service constructor
   UserService({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
         _googleSignIn = googleSignin ?? GoogleSignIn();
 
+//google signin with firebase
   Future<FirebaseUser> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
@@ -26,6 +27,7 @@ class UserService {
     return _firebaseAuth.currentUser();
   }
 
+//firebase sign in with user email and password
   Future<void> signInWithCredentials(String email, String password) {
     return _firebaseAuth.signInWithEmailAndPassword(
       email: email,
@@ -33,105 +35,93 @@ class UserService {
     );
   }
 
+//firebase signup with user details
   Future<void> signUp({String email, String password, String username}) async {
     try {
       final FirebaseAuth firebaseAuth1 = FirebaseAuth.instance;
-      print('firbase instance${firebaseAuth1}');
-      print('success');
+
       var result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       final FirebaseUser user = await firebaseAuth1.currentUser();
-      print('user-${user},result-${result},UID-${user.uid},');
+
       var addusername = UserUpdateInfo();
       addusername.displayName = username;
       await user.updateProfile(addusername);
       await user.reload();
 
-      print('result---------${result.user}');
-
-      // await Firestore.instance.collection("users").document(email).setData({
-      //   'username': username,
-      //   'email': email,
-      //   'password': password,
-      //   'Blogs': false
-      // });
       var data = {
         'uid': user.uid,
         'username': username,
         'email': email,
         'password': password,
-        // 'Blogs': false
       };
       await FirebaseDatabase.instance
           .reference()
           .child('users')
           .push()
           .set(data);
-      print('saving to DB in the end,${user},${data}');
+
       return user.uid;
-      //  return result.user;
     } catch (e) {
       print('failure in saving it ro the db');
     }
   }
 
+//firebase signout
   Future<void> signOut() async {
-    print('calling signout');
     return Future.wait([
       _firebaseAuth.signOut(),
       _googleSignIn.signOut(),
     ]);
   }
 
+//check if user is logged in
   Future<bool> isSignedIn() async {
     final currentUser = await _firebaseAuth.currentUser();
-    // print('current user ${currentUser.email}');
     return currentUser != null;
   }
 
+//to get current logged in user details
   Future<FirebaseUser> getUser() async {
     final user = await _firebaseAuth.currentUser();
-    final userid = user.uid;
-    // print('uid in service----${userid}');
     return user;
   }
 
+//get current logged in user id
   Future<String> getUserID() async {
     final user = await _firebaseAuth.currentUser();
     final userid = user.uid;
-    // print('uid in service----${userid}');
+
     return userid;
   }
 
+//get current logged in user name
   Future<String> getUserName() async {
     final user = await _firebaseAuth.currentUser();
     final username = user.displayName;
-    // print('username in service------${username}');
     return username;
   }
 
+//to read data from local storage
   Future<String> read() async {
     final prefs = await SharedPreferences.getInstance();
     final user = await _firebaseAuth.currentUser();
     final userName = user.displayName;
     final email = user.email;
-    print('user in read preferences ${userName}');
     prefs.setString("displayname", userName);
     prefs.setString("email", email);
   }
 
+//to write data to local storage
   Future<Users> save() async {
     final prefs = await SharedPreferences.getInstance();
-    print('user in save preference ${prefs.getString("displayname")}');
     Users user =
         new Users(prefs.getString("displayname"), prefs.getString('email'));
     prefs.getString(
       "dispalyname",
     );
-    prefs.getString("email");
-
     return user;
   }
 }

@@ -21,9 +21,11 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  // List<Users> userlist = [];
-
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin {
+  //initialiser for tab controller
+  TabController tabController;
+  //instance of userService
   var userService = UserService();
   static BlogsService _blogsService = BlogsService();
   static ProfileService _profileService = ProfileService();
@@ -38,8 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Blogs> blogsList = [];
   @override
   void initState() {
-    print('in profile initial state');
-
+    //calls loaded profile details event
     _profile.add(
       LoadedProfileDeatils(),
     );
@@ -47,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
+//navigates to detail page
   void navigateToDetailPage(Blogs blog) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new DetailPage(
@@ -56,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget build(BuildContext ctx) {
+    tabController = new TabController(length: 2, vsync: this);
     return new Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
@@ -82,65 +85,105 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
             ),
-            // profileUi(widget.user.displayName, widget.user.email),
             SizedBox(
               height: 30,
             ),
             Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Your Blogs',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    // fontFamily: 'Paficico',
-                    color: Colors.purple),
-                textAlign: TextAlign.left,
+              color: Colors.purple[800],
+              //tab bar controller
+              child: TabBar(
+                controller: tabController,
+                tabs: [
+                  new Tab(
+                    icon: new Icon(Icons.list),
+                  ),
+                  new Tab(
+                    icon: new Icon(Icons.grid_on),
+                  ),
+                ],
+                indicatorColor: Colors.white,
               ),
-            ),
-            Divider(
-              height: 10,
-              thickness: 5,
-              color: Colors.purple,
             ),
             Container(
-              child: BlocBuilder<ProfileBloc, ProfileState>(
-                bloc: _profile,
-                builder: (context, state) {
-                  if (state is ProfileLoading) {
-                    return Image.network(
-                        'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                  } else if (state is ProfileLoaded) {
-                    return ListView.builder(
-                      physics: ScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: state.blogs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                            onTap: () =>
-                                navigateToDetailPage(state.blogs[index]),
-                            title: blogsUi(
-                                state.blogs[index].image,
-                                state.blogs[index].uid,
-                                state.blogs[index].authorname,
-                                state.blogs[index].title,
-                                state.blogs[index].description,
-                                state.blogs[index].likes,
-                                state.blogs[index].date,
-                                state.blogs[index].time));
-                      },
-                    );
-                  } else if (state is ProfileNotLoaded) {
-                    return Text('Not loaded');
-                  }
-                },
-              ),
-            ),
+              height: 8000,
+              //tab bar view controller
+              child: TabBarView(controller: tabController, children: [
+                Container(
+                  child: BlocBuilder<ProfileBloc, ProfileState>(
+                    bloc: _profile,
+                    builder: (context, state) {
+                      if (state is ProfileLoading) {
+                        return Image.network(
+                            'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                      } else if (state is ProfileLoaded) {
+                        return ListView.builder(
+                          physics: ScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: state.blogs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                                onTap: () =>
+                                    navigateToDetailPage(state.blogs[index]),
+                                title: blogsUi(
+                                    state.blogs[index].image,
+                                    state.blogs[index].uid,
+                                    state.blogs[index].authorname,
+                                    state.blogs[index].title,
+                                    state.blogs[index].description,
+                                    state.blogs[index].likes,
+                                    state.blogs[index].date,
+                                    state.blogs[index].time));
+                          },
+                        );
+                      } else if (state is ProfileNotLoaded) {
+                        return Text('Not loaded');
+                      }
+                    },
+                  ),
+                ),
+                Container(
+                  child: BlocBuilder<ProfileBloc, ProfileState>(
+                    bloc: _profile,
+                    builder: (context, state) {
+                      if (state is ProfileLoading) {
+                        return Image.network(
+                            'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                      } else if (state is ProfileLoaded) {
+                        return GridView.builder(
+                          gridDelegate:
+                              new SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2),
+                          physics: ScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: state.blogs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GridTile(
+                                child: blogsUi(
+                                    state.blogs[index].image,
+                                    state.blogs[index].uid,
+                                    state.blogs[index].authorname,
+                                    state.blogs[index].title,
+                                    state.blogs[index].description,
+                                    state.blogs[index].likes,
+                                    state.blogs[index].date,
+                                    state.blogs[index].time));
+                          },
+                        );
+                      } else if (state is ProfileNotLoaded) {
+                        return Text('Not loaded');
+                      }
+                    },
+                  ),
+                ),
+              ]),
+            )
           ]),
         )));
   }
 
+//blog tile widget
   Widget blogsUi(String image, String uid, String authorname, String title,
       String description, String likes, String date, String time) {
     return new Card(
@@ -192,7 +235,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     textAlign: TextAlign.right,
                   ),
                   new Text(
-                    date,
+                    time,
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w400,
@@ -220,8 +263,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
+//user deatils widget
 Widget profileUi(String username, String email) {
-  print('user shivraj ${username}');
   return new Column(children: <Widget>[
     Container(
       child: Stack(

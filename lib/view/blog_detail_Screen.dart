@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 class DetailPage extends StatefulWidget {
   final Blogs blogs;
@@ -12,6 +10,7 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState();
 }
 
+//Blog details view
 class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
@@ -88,7 +87,7 @@ class _DetailPageState extends State<DetailPage> {
                               alignment: Alignment.bottomLeft,
                               padding: EdgeInsets.fromLTRB(12, 0, 15, 0),
                               child: new Text(
-                                widget.blogs.date,
+                                widget.blogs.time,
                                 style: TextStyle(
                                   color: Colors.black45,
                                   fontSize: 13,

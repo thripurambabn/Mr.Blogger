@@ -9,7 +9,7 @@ class LoginState {
   final bool isFailure;
 
   bool get isFormValid => isEmailValid && isPasswordValid;
-
+//constructor for login state
   LoginState({
     @required this.isEmailValid,
     @required this.isPasswordValid,
@@ -17,7 +17,7 @@ class LoginState {
     @required this.isSuccess,
     @required this.isFailure,
   });
-
+//initial state
   factory LoginState.initial() {
     return LoginState(
       isEmailValid: true,
@@ -27,7 +27,7 @@ class LoginState {
       isFailure: false,
     );
   }
-
+//loading state
   factory LoginState.loading() {
     return LoginState(
       isEmailValid: true,
@@ -37,7 +37,7 @@ class LoginState {
       isFailure: false,
     );
   }
-
+//failure state
   factory LoginState.failure() {
     print('login failure');
     return LoginState(
@@ -48,7 +48,7 @@ class LoginState {
       isFailure: true,
     );
   }
-
+//success state
   factory LoginState.success() {
     print('login success');
     return LoginState(
@@ -59,7 +59,7 @@ class LoginState {
       isFailure: false,
     );
   }
-
+//login form validator
   LoginState update({
     bool isEmailValid,
     bool isPasswordValid,
@@ -102,14 +102,8 @@ class LoginState {
   }
 }
 
-class LogOutInitial extends LoginState {
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
-}
-
+//log out success state
 class LogOutSuccessState extends LoginState {
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }

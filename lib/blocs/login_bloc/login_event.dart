@@ -8,9 +8,9 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
+//Login Email Changed event
 class LoginEmailChanged extends LoginEvent {
   final String email;
-
   const LoginEmailChanged({@required this.email});
 
   @override
@@ -20,6 +20,7 @@ class LoginEmailChanged extends LoginEvent {
   String toString() => 'EmailChanged { email :$email }';
 }
 
+//Login Password Changed event
 class LoginPasswordChanged extends LoginEvent {
   final String password;
 
@@ -32,6 +33,7 @@ class LoginPasswordChanged extends LoginEvent {
   String toString() => 'PasswordChanged { password: $password }';
 }
 
+//Login With Google Pressed event
 class LoginWithGooglePressed extends LoginEvent {}
 
 class LoginWithCredentialsPressed extends LoginEvent {
@@ -52,8 +54,8 @@ class LoginWithCredentialsPressed extends LoginEvent {
   }
 }
 
+//Log Out Event
 class LogOutEvent extends LoginEvent {
   @override
-  // TODO: implement props
   List<Object> get props => null;
 }
