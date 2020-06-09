@@ -109,6 +109,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                     autocorrect: false,
                     autovalidate: true,
+                    textCapitalization: TextCapitalization.sentences,
                     validator: (_) {
                       return !state.isUsernameValid ? 'Invalid username' : null;
                     },

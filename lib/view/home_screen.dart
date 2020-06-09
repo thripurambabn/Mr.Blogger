@@ -102,6 +102,12 @@ class _HomepageState extends State<Homepage> {
           backgroundColor: Colors.purple[800],
           title: Text('Mr.Blogger',
               style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(FontAwesomeIcons.userCircle),
+              onPressed: navigateToProfilePage,
+            ),
+          ],
         ),
         //handles blog list view on state change
         body: Container(
@@ -111,7 +117,9 @@ class _HomepageState extends State<Homepage> {
               //Loading state
               if (state is BlogsLoading) {
                 return Image.network(
-                    'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif');
+                  'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
+                  alignment: Alignment.center,
+                );
               } //Loaded state
               else if (state is BlogsLoaded) {
                 return ListView.builder(
@@ -147,18 +155,19 @@ class _HomepageState extends State<Homepage> {
             },
           ),
         ),
-        floatingActionButton: RaisedButton(
-          color: Colors.purple[800],
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.purple[800],
           onPressed: () {
             //navigate to add blog screen
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return new AddBlogScreen();
             }));
           },
-          child: Text(
-            'Upload Your Blog',
-            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-          ),
+          // child: Text(
+          //   'Upload Your Blog',
+          //   style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+          // ),
+          child: Icon(FontAwesomeIcons.solidEdit),
         ));
   }
 
@@ -174,9 +183,10 @@ class _HomepageState extends State<Homepage> {
       String time,
       int timeStamp) {
     return new Card(
+      margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
       child: new Container(
-        padding: EdgeInsets.all(15.0),
+        padding: EdgeInsets.fromLTRB(15, 10, 10, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -198,19 +208,19 @@ class _HomepageState extends State<Homepage> {
               image ??
                   Container(
                     color: Colors.purple[50],
-                    height: 300,
-                    width: 350,
+                    height: 240,
+                    width: MediaQuery.of(context).size.width / 1.2,
                   ),
               fit: BoxFit.cover,
               height: 240,
-              width: 290,
+              width: MediaQuery.of(context).size.width / 1.2,
               loadingBuilder: (context, child, progress) {
                 return progress == null
                     ? child
                     : Container(
                         color: Colors.purple[50],
                         height: 300,
-                        width: 350,
+                        width: MediaQuery.of(context).size.width / 1.2,
                       );
               },
             ),
@@ -220,33 +230,54 @@ class _HomepageState extends State<Homepage> {
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'By: ' + authorname ?? '',
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.right,
-                  ),
-                  new Text(
-                    time,
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey[350],
+                  Row(children: <Widget>[
+                    Text(
+                      'Author Name: ',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[700],
+                      ),
                     ),
-                    textAlign: TextAlign.right,
-                  ),
+                    Text(
+                      authorname ?? '',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[850],
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ]),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
+                    child: new Text(
+                      time,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[500],
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  )
                 ]),
             SizedBox(
               height: 10,
             ),
             Container(
-              child: new Text(
-                description ?? '',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.subtitle1,
-                textAlign: TextAlign.left,
-              ),
-            )
+              //padding: EdgeInsets.fromLTRB(0, 0, 1, 0),
+              margin: EdgeInsets.fromLTRB(0, 0, 0.5, 0),
+              child: new Text(description ?? '',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey[700],
+                  ),
+                  textAlign: TextAlign.left),
+            ),
           ],
         ),
       ),

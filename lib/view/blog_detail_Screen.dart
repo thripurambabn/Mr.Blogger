@@ -23,33 +23,63 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.purple[800],
-            title: Text('Mr.Blogger',
-                style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  // _select(choices[0]);
+          backgroundColor: Colors.purple[800],
+          title: Text('Mr.Blogger',
+              style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
+          actions: <Widget>[
+            Container(
+              width: 50,
+              child: PopupMenuButton(
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem<String>(
+                      value: '1',
+                      child: FlatButton(
+                        onPressed: () {
+                          //  navigateToProfilePage();
+                        },
+                        child: Text('Edit',
+                            style: TextStyle(
+                                color: Colors.purple[800],
+                                fontFamily: 'Paficico')),
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: '2',
+                      child: FlatButton(
+                        onPressed: () {
+                          onPressed:
+                          () {};
+                        },
+                        child: Text('Delete',
+                            style: TextStyle(
+                                color: Colors.purple[800],
+                                fontFamily: 'Paficico')),
+                      ),
+                    )
+                  ];
                 },
               ),
-              // action button
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  _blog.add(DeleteBlog(widget.blogs.timeStamp));
-                  print('pressed delete ${widget.blogs.timeStamp}');
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return new Homepage();
-                    },
-                  ));
-                },
-              ),
-            ]),
+            )
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              SizedBox(height: 20),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: new Text(
+                  'Category',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w300,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
               Container(
                 alignment: Alignment.bottomCenter,
                 child: Container(
@@ -59,7 +89,7 @@ class _DetailPageState extends State<DetailPage> {
                         height: 10,
                       ),
                       Container(
-                        padding: EdgeInsets.fromLTRB(14, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                         alignment: Alignment.centerLeft,
                         child: Text(
                           //widget.blogs.uid,
@@ -72,39 +102,19 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(60),
-                                topRight: Radius.circular(60))),
-                        child: Image.network(
-                          widget.blogs.image,
-                          fit: BoxFit.cover,
-                          height: 300,
-                          width: 350,
-                          loadingBuilder: (context, child, progress) {
-                            return progress == null
-                                ? child
-                                : Container(
-                                    color: Colors.purple[50],
-                                    height: 300,
-                                    width: 350,
-                                  );
-                          },
-                        ),
+                      SizedBox(
+                        height: 10,
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Container(
                               alignment: Alignment.bottomLeft,
-                              padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                               child: Text(
                                 widget.blogs.authorname,
                                 style: TextStyle(
-                                  color: Colors.black54,
+                                  color: Colors.grey[700],
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -113,11 +123,11 @@ class _DetailPageState extends State<DetailPage> {
                             SizedBox(width: 15),
                             Container(
                               alignment: Alignment.bottomLeft,
-                              padding: EdgeInsets.fromLTRB(12, 0, 15, 0),
+                              padding: EdgeInsets.fromLTRB(12, 0, 10, 0),
                               child: new Text(
                                 widget.blogs.time,
                                 style: TextStyle(
-                                  color: Colors.black45,
+                                  color: Colors.grey[500],
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -129,13 +139,40 @@ class _DetailPageState extends State<DetailPage> {
                         height: 10,
                       ),
                       Container(
+                          //     margin: const EdgeInsets.all(15.0),
+                          //     decoration: BoxDecoration(
+                          //         color: Colors.white,
+                          //         borderRadius: BorderRadius.circular(30)),
+                          padding: EdgeInsets.all(10.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Image.network(
+                              widget.blogs.image,
+                              fit: BoxFit.cover,
+                              height: 280,
+                              width: 350,
+                              loadingBuilder: (context, child, progress) {
+                                return progress == null
+                                    ? child
+                                    : Container(
+                                        color: Colors.purple[50],
+                                        height: 300,
+                                        width: 400,
+                                      );
+                              },
+                            ),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
                         padding: EdgeInsets.fromLTRB(12, 0, 13, 0),
                         child: new Text(
                           widget.blogs.description,
                           style: TextStyle(
-                            color: Colors.black87,
+                            color: Colors.grey[700],
                             fontSize: 15,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeight.w400,
                           ),
                           textAlign: TextAlign.left,
                         ),

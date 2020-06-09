@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
+import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
-import 'package:mr_blogger/blocs/login_bloc/login_state.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -11,6 +13,7 @@ import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
+import 'package:mr_blogger/view/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -66,6 +69,22 @@ class _ProfilePageState extends State<ProfilePage>
             'Profile',
             style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
           ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                print('pressed signout');
+                BlocProvider.of<AuthenticationBloc>(context).add(
+                  AuthenticationLoggedOut(),
+                );
+                Navigator.pop(context, MaterialPageRoute(builder: (context) {
+                  return new LoginForm(
+                    userService: userService,
+                  );
+                }));
+              },
+            ),
+          ],
         ),
         body: SingleChildScrollView(
             child: Container(
@@ -86,22 +105,27 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 10,
+            ),
+            Divider(
+              color: Colors.purple[300],
             ),
             Container(
-              color: Colors.purple[800],
+              // color: Colors.white,
               //tab bar controller
               child: TabBar(
                 controller: tabController,
                 tabs: [
                   new Tab(
-                    icon: new Icon(Icons.list),
+                    icon: new Icon(Icons.list, color: Colors.purple[600]),
                   ),
                   new Tab(
-                    icon: new Icon(Icons.grid_on),
+                    icon: new Icon(Icons.grid_on, color: Colors.purple[600]),
                   ),
                 ],
-                indicatorColor: Colors.white,
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 4.0, color: Colors.purple[600]),
+                ),
               ),
             ),
             Container(
@@ -153,14 +177,16 @@ class _ProfilePageState extends State<ProfilePage>
                         return GridView.builder(
                           gridDelegate:
                               new SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2),
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 0.0,
+                                  childAspectRatio: 0.75),
                           physics: ScrollPhysics(),
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           itemCount: state.blogs.length,
                           itemBuilder: (BuildContext context, int index) {
                             return GridTile(
-                                child: blogsUi(
+                                child: blogsGridUi(
                                     state.blogs[index].image,
                                     state.blogs[index].uid,
                                     state.blogs[index].authorname,
@@ -188,9 +214,9 @@ class _ProfilePageState extends State<ProfilePage>
       String description, String likes, String date, String time) {
     return new Card(
       elevation: 10.0,
-      margin: EdgeInsets.all(15.0),
+      margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       child: new Container(
-        padding: EdgeInsets.all(15.0),
+        padding: EdgeInsets.fromLTRB(20, 15, 15, 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -211,15 +237,15 @@ class _ProfilePageState extends State<ProfilePage>
             Image.network(
               image,
               fit: BoxFit.cover,
-              height: 300,
-              width: 350,
+              height: 240,
+              width: MediaQuery.of(context).size.width / 1.2,
               loadingBuilder: (context, child, progress) {
                 return progress == null
                     ? child
                     : Container(
                         color: Colors.purple[50],
-                        height: 300,
-                        width: 350,
+                        height: 240,
+                        width: MediaQuery.of(context).size.width / 1.2,
                       );
               },
             ),
@@ -229,17 +255,31 @@ class _ProfilePageState extends State<ProfilePage>
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    'By: ' + authorname,
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.right,
-                  ),
+                  Row(children: <Widget>[
+                    Text(
+                      'Author Name: ',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    Text(
+                      authorname ?? '',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[850],
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ]),
                   new Text(
                     time,
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w400,
-                      color: Colors.grey[350],
+                      color: Colors.grey[500],
                     ),
                     textAlign: TextAlign.right,
                   ),
@@ -252,10 +292,59 @@ class _ProfilePageState extends State<ProfilePage>
                 description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[700],
+                ),
                 textAlign: TextAlign.left,
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget blogsGridUi(String image, String uid, String authorname, String title,
+      String description, String likes, String date, String time) {
+    return new Card(
+      elevation: 15.0,
+      margin: EdgeInsets.all(8.0),
+      child: new Container(
+        padding: EdgeInsets.all(5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Text(
+                  title.substring(0, 9) + '....',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Paficico',
+                      color: Colors.purple),
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Image.network(
+              image,
+              fit: BoxFit.cover,
+              height: 160,
+              width: MediaQuery.of(context).size.width / 1.2,
+              loadingBuilder: (context, child, progress) {
+                return progress == null
+                    ? child
+                    : Container(
+                        color: Colors.purple[50],
+                        height: 200,
+                        width: MediaQuery.of(context).size.width / 1.2,
+                      );
+              },
+            ),
           ],
         ),
       ),
@@ -275,7 +364,7 @@ Widget profileUi(String username, String email) {
             children: <Widget>[
               Expanded(
                 child: Container(
-                  height: 150.0,
+                  height: 110.0,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                           begin: Alignment.bottomCenter,
@@ -291,10 +380,10 @@ Widget profileUi(String username, String email) {
             ],
           ),
           Positioned(
-            top: 45.0,
+            top: 30.0,
             child: Container(
-              height: 190.0,
-              width: 190.0,
+              height: 150.0,
+              width: 150.0,
               decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
@@ -309,7 +398,7 @@ Widget profileUi(String username, String email) {
       ),
     ),
     SizedBox(
-      height: 90,
+      height: 70,
     ),
     Text(
       username,

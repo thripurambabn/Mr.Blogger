@@ -139,8 +139,8 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
                     obscureText: true,
-                    autovalidate: true,
-                    autocorrect: false,
+                    //autovalidate: true,
+                    //autocorrect: false,
                     validator: (_) {
                       return !state.isPasswordValid ? 'Invalid Password' : null;
                     },
@@ -196,11 +196,11 @@ class _LoginFormState extends State<LoginForm> {
                           height: 20,
                         ),
                         FlatButton(
-                          child: Text('New User?SignUp here',
+                          child: Text('New User? SignUp here',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline,
-                                  fontSize: 22.0,
+                                  fontSize: 20.0,
                                   color: Colors.purple[400])),
                           onPressed: () {
                             Navigator.of(context).push(
