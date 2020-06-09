@@ -13,21 +13,29 @@ class ProfileService {
         FirebaseDatabase.instance.reference().child('blogs');
     final DataSnapshot snapshot =
         await blogsref.orderByChild('uid').equalTo(userid).once();
-    var refkey = snapshot.value.keys;
-    var data = snapshot.value;
-    for (var key in refkey) {
-      Blogs blog = new Blogs(
-        data[key]['image'],
-        data[key]['uid'],
-        data[key]['authorname'],
-        data[key]['title'],
-        data[key]['description'],
-        data[key]['likes'],
-        data[key]['date'],
-        data[key]['time'],
-        data[key]['timeStamp'],
-      );
-      blogsList.add(blog);
+    try {
+      if (snapshot.value != null) {
+        var refkey = snapshot.value.keys;
+        var data = snapshot.value;
+        for (var key in refkey) {
+          Blogs blog = new Blogs(
+              image: data[key]['image'],
+              uid: data[key]['uid'],
+              authorname: data[key]['authorname'],
+              title: data[key]['title'],
+              description: data[key]['description'],
+              likes: data[key]['likes'],
+              date: data[key]['date'],
+              time: data[key]['time'],
+              timeStamp: data[key]['timeStamp']);
+          blogsList.add(blog);
+          print('-----blog in profile service ${blog}');
+        }
+      } else {
+        print('there are no blogs of this user');
+      }
+    } catch (e) {
+      print(e);
     }
     return blogsList;
   }

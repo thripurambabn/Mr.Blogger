@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/service/blog_service.dart';
+import 'package:mr_blogger/view/home_screen.dart';
 
 class DetailPage extends StatefulWidget {
   final Blogs blogs;
@@ -12,14 +16,37 @@ class DetailPage extends StatefulWidget {
 
 //Blog details view
 class _DetailPageState extends State<DetailPage> {
+  static BlogsService _blogsServcie = BlogsService();
+  var _blog = BlogsBloc(blogsService: _blogsServcie);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.purple[800],
-          title: Text('Mr.Blogger',
-              style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
-        ),
+            backgroundColor: Colors.purple[800],
+            title: Text('Mr.Blogger',
+                style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  // _select(choices[0]);
+                },
+              ),
+              // action button
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  _blog.add(DeleteBlog(widget.blogs.timeStamp));
+                  print('pressed delete ${widget.blogs.timeStamp}');
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return new Homepage();
+                    },
+                  ));
+                },
+              ),
+            ]),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -35,7 +62,8 @@ class _DetailPageState extends State<DetailPage> {
                         padding: EdgeInsets.fromLTRB(14, 0, 0, 0),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          widget.blogs.title,
+                          //widget.blogs.uid,
+                          widget.blogs.title ?? '',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             color: Colors.purple[800],
@@ -74,7 +102,7 @@ class _DetailPageState extends State<DetailPage> {
                               alignment: Alignment.bottomLeft,
                               padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
                               child: Text(
-                                'AuthorName',
+                                widget.blogs.authorname,
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 16,

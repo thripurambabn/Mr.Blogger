@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class BlogsEvent extends Equatable {
   const BlogsEvent();
@@ -56,4 +57,14 @@ class UploadImage extends BlogsEvent {
 
   @override
   String toString() => 'ImageBlog { blog: $image }';
+}
+
+class DeleteBlog extends BlogsEvent {
+  final int key;
+  const DeleteBlog(@required this.key);
+  @override
+  List<Object> get props => [key];
+
+  @override
+  String toString() => 'Deleted blog { blog: $key }';
 }

@@ -102,20 +102,6 @@ class _HomepageState extends State<Homepage> {
           backgroundColor: Colors.purple[800],
           title: Text('Mr.Blogger',
               style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(FontAwesomeIcons.userCircle),
-              onPressed: navigateToProfilePage,
-            ),
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                BlocProvider.of<AuthenticationBloc>(context).add(
-                  AuthenticationLoggedOut(),
-                );
-              },
-            ),
-          ],
         ),
         //handles blog list view on state change
         body: Container(
@@ -124,7 +110,8 @@ class _HomepageState extends State<Homepage> {
             builder: (context, state) {
               //Loading state
               if (state is BlogsLoading) {
-                return Text('blogs loading...${state}');
+                return Image.network(
+                    'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif');
               } //Loaded state
               else if (state is BlogsLoaded) {
                 return ListView.builder(
@@ -187,8 +174,7 @@ class _HomepageState extends State<Homepage> {
       String time,
       int timeStamp) {
     return new Card(
-      elevation: 10.0,
-      margin: EdgeInsets.all(15.0),
+      elevation: 15.0,
       child: new Container(
         padding: EdgeInsets.all(15.0),
         child: Column(
@@ -197,7 +183,7 @@ class _HomepageState extends State<Homepage> {
             Row(
               children: <Widget>[
                 Text(
-                  title.substring(0, 9) + '....',
+                  title ?? '',
                   style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
@@ -209,10 +195,15 @@ class _HomepageState extends State<Homepage> {
             ),
             SizedBox(height: 10.0),
             Image.network(
-              image,
+              image ??
+                  Container(
+                    color: Colors.purple[50],
+                    height: 300,
+                    width: 350,
+                  ),
               fit: BoxFit.cover,
-              height: 300,
-              width: 350,
+              height: 240,
+              width: 290,
               loadingBuilder: (context, child, progress) {
                 return progress == null
                     ? child
@@ -230,7 +221,7 @@ class _HomepageState extends State<Homepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'By: ' + authorname,
+                    'By: ' + authorname ?? '',
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.right,
                   ),
@@ -249,7 +240,7 @@ class _HomepageState extends State<Homepage> {
             ),
             Container(
               child: new Text(
-                description,
+                description ?? '',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.subtitle1,

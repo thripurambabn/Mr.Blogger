@@ -79,3 +79,8 @@ class UploadImageSuccess extends BlogsState {
   @override
   String toString() => 'uploadimagesuccess';
 }
+
+class SuccessfullyDeletedblog extends BlogsState {
+  @override
+  String toString() => 'Deleted succssfully';
+}

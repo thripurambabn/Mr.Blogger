@@ -24,16 +24,15 @@ class BlogsService {
     var data = snapshot.value;
     for (var key in refkey) {
       Blogs blog = new Blogs(
-        data[key]['image'],
-        data[key]['uid'],
-        data[key]['authorname'],
-        data[key]['title'],
-        data[key]['description'],
-        data[key]['likes'],
-        data[key]['date'],
-        data[key]['time'],
-        data[key]['timeStamp'],
-      );
+          image: data[key]['image'],
+          uid: data[key]['uid'],
+          authorname: data[key]['authorname'],
+          title: data[key]['title'],
+          description: data[key]['description'],
+          likes: data[key]['likes'],
+          date: data[key]['date'],
+          time: data[key]['time'],
+          timeStamp: data[key]['timeStamp']);
       blogsList.add(blog);
     }
     //sort blogs on timestamp
@@ -59,15 +58,15 @@ class BlogsService {
         var data = snapshot.value;
         for (var key in refkey) {
           Blogs blog = new Blogs(
-              data[key]['image'],
-              data[key]['uid'],
-              data[key]['authorname'],
-              data[key]['title'],
-              data[key]['description'],
-              data[key]['likes'],
-              data[key]['date'],
-              data[key]['time'],
-              data[key]['timeStamp']);
+              image: data[key]['image'],
+              uid: data[key]['uid'],
+              authorname: data[key]['authorname'],
+              title: data[key]['title'],
+              description: data[key]['description'],
+              likes: data[key]['likes'],
+              date: data[key]['date'],
+              time: data[key]['time'],
+              timeStamp: data[key]['timeStamp']);
           blogsList.add(blog);
         }
       }
@@ -153,5 +152,14 @@ class BlogsService {
       form.save();
       return true;
     }
+  }
+
+//To delete a blog from firebase
+  Future<void> deleteBlog(key) {
+    print('in service');
+    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
+    print('key ${key}');
+    databaseReference.child(key).remove();
+    print('deleted successfully');
   }
 }

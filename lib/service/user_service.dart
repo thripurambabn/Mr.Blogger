@@ -108,20 +108,26 @@ class UserService {
   Future<String> read() async {
     final prefs = await SharedPreferences.getInstance();
     final user = await _firebaseAuth.currentUser();
-    final userName = user.displayName;
+    final uid = user.uid;
+    final displayName = user.displayName;
     final email = user.email;
-    prefs.setString("displayname", userName);
+    print('read string ${displayName},${email}');
+    prefs.setString("displayName", displayName);
     prefs.setString("email", email);
+    prefs.setString('uid', uid);
   }
 
 //to write data to local storage
   Future<Users> save() async {
     final prefs = await SharedPreferences.getInstance();
-    Users user =
-        new Users(prefs.getString("displayname"), prefs.getString('email'));
-    prefs.getString(
-      "dispalyname",
+    final displayName = prefs.getString(
+      "displayName",
     );
+    print('displayname ${displayName}');
+    final email = prefs.getString("email");
+    final uid = prefs.getString('uid');
+    print('display name and email ${displayName} ${email} ${uid}');
+    Users user = new Users(displayName: displayName, email: email, uid: uid);
     return user;
   }
 }

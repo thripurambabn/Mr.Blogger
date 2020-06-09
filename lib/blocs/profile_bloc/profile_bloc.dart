@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
-
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
@@ -36,20 +35,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 //mapping LoadingProfileDetails event with states
   Stream<ProfileState> _mapLoadedProfileState() async* {
     yield ProfileLoading();
-    try {
-      UserService _userService = new UserService();
+    // try {
+    UserService _userService = new UserService();
+    print('in profile bloc calling get blogs ');
+    List<Blogs> profileblogslist = await _profileService.getblogs();
+    print('profile get blogs in servcie ${profileblogslist}');
+    // print('${_userService.save()}');
+    await _userService.read();
+    await _userService.save();
+    final test = await _userService.save();
 
-      List<Blogs> profileblogslist = await _profileService.getblogs();
-
-      await _userService.read();
-      await _userService.save();
-      final test = await _userService.save();
-
-      yield ProfileLoaded(profileblogslist, test.displayName, test.email);
-    } catch (e) {
-      yield ProfileNotLoaded();
-    }
+    yield ProfileLoaded(profileblogslist, test.displayName, test.email);
   }
+  // catch (e) {
+  //   yield ProfileNotLoaded();
+  // }
+  // }
 
   // Stream<ProfileState> _mapLoadProfileToState() async* {
   //   print('load blogs in blogs_bloc.dart');
