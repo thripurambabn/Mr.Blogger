@@ -59,16 +59,6 @@ class UploadImage extends BlogsEvent {
   String toString() => 'ImageBlog { blog: $image }';
 }
 
-class DeleteBlog extends BlogsEvent {
-  final int key;
-  const DeleteBlog(@required this.key);
-  @override
-  List<Object> get props => [key];
-
-  @override
-  String toString() => 'Deleted blog { blog: $key }';
-}
-
 class SearchBlog extends BlogsEvent {
   final String searchkey;
 

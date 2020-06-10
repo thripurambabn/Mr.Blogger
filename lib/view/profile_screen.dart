@@ -99,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage>
                   } else if (state is ProfileLoaded) {
                     return profileUi(state.displayName, state.email);
                   } else if (state is ProfileNotLoaded) {
-                    return Text('Not loaded');
+                    return errorUI();
                   }
                 },
               ),
@@ -161,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage>
                           },
                         );
                       } else if (state is ProfileNotLoaded) {
-                        return Text('Not loaded');
+                        return errorUI();
                       }
                     },
                   ),
@@ -198,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage>
                           },
                         );
                       } else if (state is ProfileNotLoaded) {
-                        return Text('Not loaded');
+                        return errorUI();
                       }
                     },
                   ),
@@ -416,4 +416,9 @@ Widget profileUi(String username, String email) {
           color: Colors.purple[600],
         ))
   ]);
+}
+
+Widget errorUI() {
+  return new SnackBar(
+      content: Text('Something went wrong try after sometime!!'));
 }

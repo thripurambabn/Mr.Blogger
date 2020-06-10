@@ -4,10 +4,12 @@ import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 
 class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   BlogsService _blogsService = new BlogsService();
+  ProfileService _profileService = new ProfileService();
   //contructor for blogs bloc
   BlogsBloc({@required BlogsService blogsService});
 
@@ -25,8 +27,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapAddBlogState(event);
     } else if (event is UploadImage) {
       yield* _mapUploadImageToState(event);
-    } else if (event is DeleteBlog) {
-      yield* _mapDeletedBlogToState(event);
     } else if (event is SearchBlog) {
       yield* _mapSerachBlogToState(event);
     }
@@ -90,18 +90,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print('${e.toString()}');
-    }
-  }
-
-  Stream<BlogsState> _mapDeletedBlogToState(DeleteBlog event) async* {
-    try {
-      print('in bloc');
-      await _blogsService.deleteBlog(event.key);
-      print('called delete blog ${event.key}');
-      final List<Blogs> blog = await _blogsService.getblogs();
-      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
-    } catch (e) {
-      print(e);
     }
   }
 

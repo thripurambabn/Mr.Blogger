@@ -29,6 +29,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapLoadedProfileState();
     } else if (event is LoadedProfileDeatils) {
       yield* _mapLoadedProfileState();
+    } else if (event is DeleteBlog) {
+      yield* _mapDeletedBlogToState(event);
     }
   }
 
@@ -52,6 +54,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   // }
   // }
 
+  Stream<ProfileState> _mapDeletedBlogToState(DeleteBlog event) async* {
+    try {
+      print('in bloc');
+      await _profileService.deleteBlog(event.key);
+      print('called delete blog ${event.key}');
+    } catch (e) {
+      print(e);
+    }
+  }
   // Stream<ProfileState> _mapLoadProfileToState() async* {
   //   print('load blogs in blogs_bloc.dart');
   // }

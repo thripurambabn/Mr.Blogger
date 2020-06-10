@@ -32,3 +32,8 @@ class ProfileNotLoaded extends ProfileState {
   @override
   String toString() => 'profilenotloaded';
 }
+
+class SuccessfullyDeletedblog extends ProfileState {
+  @override
+  String toString() => 'Deleted succssfully';
+}

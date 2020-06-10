@@ -37,7 +37,7 @@ class _HomepageState extends State<Homepage> {
     //listener for scroll event
     _scrollController.addListener(_onScroll);
     //inital call for get blogs
-
+    print('homepage');
     getBlogs();
     // print('searching blog');
     // _blogsServcie.searchBlogs(searchbar.text);
@@ -168,7 +168,7 @@ class _HomepageState extends State<Homepage> {
                   controller: _scrollController,
                 ); //error state
               } else if (state is BlogsNotLoaded) {
-                return Text('Not loaded');
+                return errorUI();
               }
             },
           ),
@@ -301,4 +301,9 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
+}
+
+Widget errorUI() {
+  return new SnackBar(
+      content: Text('Something went wrong try after sometime!!'));
 }

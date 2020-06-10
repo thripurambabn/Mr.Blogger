@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
@@ -17,7 +22,20 @@ class DetailPage extends StatefulWidget {
 //Blog details view
 class _DetailPageState extends State<DetailPage> {
   static BlogsService _blogsServcie = BlogsService();
+  static ProfileService _profileService = ProfileService();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
+  var _profile =
+      ProfileBloc(blogsService: _blogsServcie, profileService: _profileService);
+//Navigate to homepage
+  void navigateToHomePage() {
+    Timer(Duration(seconds: 8), () {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return new Homepage();
+        },
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +65,15 @@ class _DetailPageState extends State<DetailPage> {
                     PopupMenuItem<String>(
                       value: '2',
                       child: FlatButton(
-                        onPressed: () {
-                          onPressed:
-                          () {};
-                        },
                         child: Text('Delete',
                             style: TextStyle(
                                 color: Colors.purple[800],
                                 fontFamily: 'Paficico')),
+                        onPressed: () async {
+                          print('delete pressed');
+                          _profile.add(DeleteBlog(widget.blogs.title));
+                          navigateToHomePage();
+                        },
                       ),
                     )
                   ];

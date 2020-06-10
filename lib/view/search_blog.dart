@@ -87,6 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                   if (this.cusIcon.icon == Icons.search) {
                     this.cusIcon = Icon(Icons.cancel);
                     this.cusSearchBar = TextField(
+                      textInputAction: TextInputAction.go,
                       decoration: InputDecoration(border: InputBorder.none),
                       style: TextStyle(
                         color: Colors.purple[300],
@@ -95,10 +96,15 @@ class _SearchPageState extends State<SearchPage> {
                       cursorColor: Colors.purple[400],
                       textCapitalization: TextCapitalization.sentences,
                       controller: searchBlog,
-                      onSubmitted: (newvalue) {
-                        _blog.add(SearchBlog(newvalue));
+                      onSubmitted: (searchBlog) {
+                        _blog.add(SearchBlog(searchBlog));
                       },
                     );
+                  } else {
+                    this.cusIcon = Icon(Icons.search);
+                    this.cusSearchBar = Text('',
+                        style: TextStyle(
+                            color: Colors.white, fontFamily: 'Paficico'));
                   }
                 }),
               },
@@ -117,7 +123,7 @@ class _SearchPageState extends State<SearchPage> {
                 style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.normal,
-                    //fontFamily: 'Paficico',
+                    fontFamily: 'Paficico',
                     color: Colors.purple),
                 textAlign: TextAlign.left,
               ),
@@ -162,7 +168,7 @@ class _SearchPageState extends State<SearchPage> {
                       controller: _scrollController,
                     ); //error state
                   } else if (state is BlogsNotLoaded) {
-                    return Text('Not loaded');
+                    return errorUI();
                   }
                 },
               ),
@@ -283,4 +289,9 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+}
+
+Widget errorUI() {
+  return new SnackBar(
+      content: Text('Something went wrong try after sometime!!'));
 }

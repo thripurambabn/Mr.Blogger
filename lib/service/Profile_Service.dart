@@ -40,12 +40,22 @@ class ProfileService {
   }
 
 //To delete a blog from firebase
-  Future<void> deleteBlog(key) {
-    print('in service');
-    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
-    print('key ${key}');
-    databaseReference.child(key).remove();
-    print('deleted successfully');
-    getblogs();
+  Future deleteBlog(String key) {
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('title')
+        .equalTo(key)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('blogs')
+          .child(event.snapshot.key)
+          .remove();
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
   }
 }

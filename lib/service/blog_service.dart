@@ -154,15 +154,6 @@ class BlogsService {
     }
   }
 
-//To delete a blog from firebase
-  Future<void> deleteBlog(key) {
-    print('in service');
-    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
-    print('key ${key}');
-    databaseReference.child(key).remove();
-    print('deleted successfully');
-  }
-
 //To Search a blog in firebase
   Future searchBlogs(String searchKey) async {
     Query blogsref = FirebaseDatabase.instance
