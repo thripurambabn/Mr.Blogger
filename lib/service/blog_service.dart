@@ -162,4 +162,42 @@ class BlogsService {
     databaseReference.child(key).remove();
     print('deleted successfully');
   }
+
+//To Search a blog in firebase
+  Future searchBlogs(String searchKey) async {
+    Query blogsref = FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('title')
+        .startAt(searchKey)
+        .endAt(searchKey + '\uf8ff');
+    final DataSnapshot snapshot = await blogsref.once();
+    try {
+      if (snapshot.value != null) {
+        var refkey = snapshot.value.keys;
+        var data = snapshot.value;
+        for (var key in refkey) {
+          Blogs blog = new Blogs(
+              image: data[key]['image'],
+              uid: data[key]['uid'],
+              authorname: data[key]['authorname'],
+              title: data[key]['title'],
+              description: data[key]['description'],
+              likes: data[key]['likes'],
+              date: data[key]['date'],
+              time: data[key]['time'],
+              timeStamp: data[key]['timeStamp']);
+          blogsList.clear();
+          blogsList.add(blog);
+
+          print('-----blog in profile service ${blog.title}');
+        }
+      } else {
+        print('there are no blogs of this user');
+      }
+    } catch (e) {
+      print(e);
+    }
+    return blogsList;
+  }
 }

@@ -68,3 +68,15 @@ class DeleteBlog extends BlogsEvent {
   @override
   String toString() => 'Deleted blog { blog: $key }';
 }
+
+class SearchBlog extends BlogsEvent {
+  final String searchkey;
+
+  SearchBlog(this.searchkey);
+
+  @override
+  List<Object> get props => [searchkey];
+
+  @override
+  String toString() => 'Serached blog { blog: $searchkey }';
+}

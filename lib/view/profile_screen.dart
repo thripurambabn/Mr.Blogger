@@ -402,11 +402,18 @@ Widget profileUi(String username, String email) {
     ),
     Text(
       username,
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+      style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 20.0,
+          fontFamily: 'Paficico',
+          color: Colors.purple[600]),
     ),
-    Text(
-      email,
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-    )
+    Text(email,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 20.0,
+          fontFamily: 'Paficico',
+          color: Colors.purple[600],
+        ))
   ]);
 }

@@ -27,6 +27,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapUploadImageToState(event);
     } else if (event is DeleteBlog) {
       yield* _mapDeletedBlogToState(event);
+    } else if (event is SearchBlog) {
+      yield* _mapSerachBlogToState(event);
     }
   }
 
@@ -98,6 +100,18 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       print('called delete blog ${event.key}');
       final List<Blogs> blog = await _blogsService.getblogs();
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapSerachBlogToState(SearchBlog event) async* {
+    try {
+      print('insisde searcg bloc');
+      final List<Blogs> blog = await _blogsService.searchBlogs(event.searchkey);
+      print('serached blogs in bloc ');
+      yield BlogsLoaded(blogs: blog, hasReachedMax: true);
+      print('loaded blogs');
     } catch (e) {
       print(e);
     }

@@ -9,20 +9,16 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
-import 'package:mr_blogger/view/login_screen.dart';
-import 'package:mr_blogger/view/profile_screen.dart';
-import 'package:mr_blogger/view/search_blog.dart';
 
-class Homepage extends StatefulWidget {
-  Homepage({Key key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  SearchPage({Key key}) : super(key: key);
 
   @override
-  _HomepageState createState() => _HomepageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _SearchPageState extends State<SearchPage> {
   //instance of user Service
   var userService = UserService();
   static BlogsService _blogsServcie = BlogsService();
@@ -36,11 +32,6 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     //listener for scroll event
     _scrollController.addListener(_onScroll);
-    //inital call for get blogs
-
-    getBlogs();
-    // print('searching blog');
-    // _blogsServcie.searchBlogs(searchbar.text);
   }
 
 //events on scroll for pagiantion
@@ -53,40 +44,12 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-//calls Fetch Blogs event
-  void getBlogs() async {
-    await _blog.add(FetchBlogs());
-  }
-
-//navigate to sign Up page
-  void navigateToSignUpPage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return LoginScreen(
-        userService: userService,
-      );
-    }));
-  }
-
 //navigate to detail page page
   void navigateToDetailPage(Blogs blog) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new DetailPage(
         blogs: blog,
       );
-    }));
-  }
-
-//navigate to profile page
-  void navigateToProfilePage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new ProfilePage();
-    }));
-  }
-
-//navigate to profile page
-  void navigateToSerachPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new SearchPage();
     }));
   }
 
@@ -119,74 +82,93 @@ class _HomepageState extends State<Homepage> {
           actions: <Widget>[
             IconButton(
               icon: cusIcon,
-              onPressed: navigateToSerachPage,
-            ),
-            IconButton(
-              icon: Icon(FontAwesomeIcons.userCircle),
-              onPressed: navigateToProfilePage,
+              onPressed: () => {
+                setState(() {
+                  if (this.cusIcon.icon == Icons.search) {
+                    this.cusIcon = Icon(Icons.cancel);
+                    this.cusSearchBar = TextField(
+                      decoration: InputDecoration(border: InputBorder.none),
+                      style: TextStyle(
+                        color: Colors.purple[300],
+                        fontSize: 20.0,
+                      ),
+                      cursorColor: Colors.purple[400],
+                      textCapitalization: TextCapitalization.sentences,
+                      controller: searchBlog,
+                      onSubmitted: (newvalue) {
+                        _blog.add(SearchBlog(newvalue));
+                      },
+                    );
+                  }
+                }),
+              },
             ),
           ],
         ),
         //handles blog list view on state change
-        body: Container(
-          child: BlocBuilder<BlogsBloc, BlogsState>(
-            bloc: _blog,
-            builder: (context, state) {
-              //Loading state
-              if (state is BlogsLoading) {
-                return Image.network(
-                  'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
-                  alignment: Alignment.center,
-                );
-              } //Loaded state
-              else if (state is BlogsLoaded) {
-                return ListView.builder(
-                  shrinkWrap: false,
-                  scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
-                  itemCount: state.hasReachedMax
-                      ? state.blogs.length
-                      : state.blogs.length + 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= state.blogs.length
-                        ? bottomLoader()
-                        : ListTile(
-                            onTap: () =>
-                                navigateToDetailPage(state.blogs[index]),
-                            title: blogsUi(
-                              state.blogs[index].image,
-                              state.blogs[index].uid,
-                              state.blogs[index].authorname,
-                              state.blogs[index].title,
-                              state.blogs[index].description,
-                              state.blogs[index].likes,
-                              state.blogs[index].date,
-                              state.blogs[index].time,
-                              state.blogs[index].timeStamp,
-                            ));
-                  },
-                  controller: _scrollController,
-                ); //error state
-              } else if (state is BlogsNotLoaded) {
-                return Text('Not loaded');
-              }
-            },
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.purple[800],
-          onPressed: () {
-            //navigate to add blog screen
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return new AddBlogScreen();
-            }));
-          },
-          // child: Text(
-          //   'Upload Your Blog',
-          //   style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-          // ),
-          child: Icon(FontAwesomeIcons.solidEdit),
-        ));
+        body: SingleChildScrollView(
+            child: Container(
+          child: Column(children: <Widget>[
+            Container(
+              padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Results for "${searchBlog.text}"...',
+                style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.normal,
+                    //fontFamily: 'Paficico',
+                    color: Colors.purple),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Container(
+              child: BlocBuilder<BlogsBloc, BlogsState>(
+                bloc: _blog,
+                builder: (context, state) {
+                  //Loading state
+                  if (state is BlogsLoading) {
+                    return Image.network(
+                      'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
+                      alignment: Alignment.center,
+                    );
+                  } //Loaded state
+                  else if (state is BlogsLoaded) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      physics: ScrollPhysics(),
+                      itemCount: state.hasReachedMax
+                          ? state.blogs.length
+                          : state.blogs.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return index >= state.blogs.length
+                            ? bottomLoader()
+                            : ListTile(
+                                onTap: () =>
+                                    navigateToDetailPage(state.blogs[index]),
+                                title: blogsUi(
+                                  state.blogs[index].image,
+                                  state.blogs[index].uid,
+                                  state.blogs[index].authorname,
+                                  state.blogs[index].title,
+                                  state.blogs[index].description,
+                                  state.blogs[index].likes,
+                                  state.blogs[index].date,
+                                  state.blogs[index].time,
+                                  state.blogs[index].timeStamp,
+                                ));
+                      },
+                      controller: _scrollController,
+                    ); //error state
+                  } else if (state is BlogsNotLoaded) {
+                    return Text('Not loaded');
+                  }
+                },
+              ),
+            )
+          ]),
+        )));
   }
 
 //blog tile widget

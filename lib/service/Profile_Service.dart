@@ -29,7 +29,6 @@ class ProfileService {
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
           blogsList.add(blog);
-          print('-----blog in profile service ${blog}');
         }
       } else {
         print('there are no blogs of this user');
@@ -38,5 +37,15 @@ class ProfileService {
       print(e);
     }
     return blogsList;
+  }
+
+//To delete a blog from firebase
+  Future<void> deleteBlog(key) {
+    print('in service');
+    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
+    print('key ${key}');
+    databaseReference.child(key).remove();
+    print('deleted successfully');
+    getblogs();
   }
 }
