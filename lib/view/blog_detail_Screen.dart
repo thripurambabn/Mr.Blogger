@@ -8,12 +8,14 @@ import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
+import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
 class DetailPage extends StatefulWidget {
   final Blogs blogs;
+  final String uid;
 
-  DetailPage({Key key, this.blogs}) : super(key: key);
+  DetailPage({Key key, this.blogs, this.uid}) : super(key: key);
 
   @override
   _DetailPageState createState() => _DetailPageState();
@@ -26,12 +28,33 @@ class _DetailPageState extends State<DetailPage> {
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   var _profile =
       ProfileBloc(blogsService: _blogsServcie, profileService: _profileService);
+
+  @override
+  void initState() {
+    if (widget.blogs == null) {
+    } else {}
+    super.initState();
+  }
+
 //Navigate to homepage
   void navigateToHomePage() {
     Timer(Duration(seconds: 8), () {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) {
           return new Homepage();
+        },
+      ));
+    });
+  }
+
+  void navigateToAddPage(blog) {
+    Timer(Duration(seconds: 8), () {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return new AddBlogScreen(
+            blog: blog,
+            isEdit: true,
+          );
         },
       ));
     });
@@ -46,40 +69,43 @@ class _DetailPageState extends State<DetailPage> {
               style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
           actions: <Widget>[
             Container(
-              width: 50,
-              child: PopupMenuButton(
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<String>(
-                      value: '1',
-                      child: FlatButton(
-                        onPressed: () {
-                          //  navigateToProfilePage();
-                        },
-                        child: Text('Edit',
-                            style: TextStyle(
-                                color: Colors.purple[800],
-                                fontFamily: 'Paficico')),
-                      ),
-                    ),
-                    PopupMenuItem<String>(
-                      value: '2',
-                      child: FlatButton(
-                        child: Text('Delete',
-                            style: TextStyle(
-                                color: Colors.purple[800],
-                                fontFamily: 'Paficico')),
-                        onPressed: () async {
-                          print('delete pressed');
-                          _profile.add(DeleteBlog(widget.blogs.title));
-                          navigateToHomePage();
-                        },
-                      ),
-                    )
-                  ];
-                },
-              ),
-            )
+                width: 50,
+                child: Visibility(
+                  visible: widget.blogs.uid == widget.uid,
+                  child: PopupMenuButton(
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<String>(
+                          value: '1',
+                          child: FlatButton(
+                            onPressed: () {
+                              //   print('sending ${widget.blogs.title}');
+                              navigateToAddPage(widget.blogs);
+                            },
+                            child: Text('Edit',
+                                style: TextStyle(
+                                    color: Colors.purple[800],
+                                    fontFamily: 'Paficico')),
+                          ),
+                        ),
+                        PopupMenuItem<String>(
+                          value: '2',
+                          child: FlatButton(
+                            child: Text('Delete',
+                                style: TextStyle(
+                                    color: Colors.purple[800],
+                                    fontFamily: 'Paficico')),
+                            onPressed: () async {
+                              print('delete pressed');
+                              _profile.add(DeleteBlog(widget.blogs.title));
+                              navigateToHomePage();
+                            },
+                          ),
+                        )
+                      ];
+                    },
+                  ),
+                ))
           ],
         ),
         body: SingleChildScrollView(

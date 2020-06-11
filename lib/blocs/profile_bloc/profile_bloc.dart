@@ -47,7 +47,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     await _userService.save();
     final test = await _userService.save();
 
-    yield ProfileLoaded(profileblogslist, test.displayName, test.email);
+    yield ProfileLoaded(
+        profileblogslist, test.displayName, test.email, test.uid);
   }
   // catch (e) {
   //   yield ProfileNotLoaded();

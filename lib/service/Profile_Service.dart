@@ -58,4 +58,44 @@ class ProfileService {
       print('Error: ${error.code} ${error.message}');
     });
   }
+
+  Future updateBlog({
+    sampleImage,
+    url,
+    mytitlevalue,
+    myvalue,
+    category,
+  }) {
+    try {
+      var data = {
+        'image': url,
+        'title': mytitlevalue,
+        'description': myvalue,
+        // 'date': date,
+        // 'time': time,
+        // 'timeStamp': timeStamp,
+      };
+      print('in update service ${myvalue} ${url}');
+      FirebaseDatabase.instance
+          .reference()
+          .child('blogs')
+          .orderByChild('title')
+          .equalTo(mytitlevalue)
+          .onChildAdded
+          .listen((Event event) {
+        FirebaseDatabase.instance
+            .reference()
+            .child('blogs')
+            .child(event.snapshot.key)
+            .update({
+          'description': myvalue,
+        });
+      }, onError: (Object o) {
+        final DatabaseError error = o;
+        print('Error: ${error.code} ${error.message}');
+      });
+    } catch (e) {
+      print('e');
+    }
+  }
 }

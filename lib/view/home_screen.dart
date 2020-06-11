@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:medium_clap_flutter/medium_clap_flutter.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
@@ -11,6 +14,7 @@ import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
+import 'package:mr_blogger/view/comment_screen.dart';
 import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
 import 'package:mr_blogger/view/search_blog.dart';
@@ -31,6 +35,7 @@ class _HomepageState extends State<Homepage> {
   final _scrollController = ScrollController();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   final _scrollThreshold = 200.0;
+
   @override
   void initState() {
     super.initState();
@@ -67,11 +72,19 @@ class _HomepageState extends State<Homepage> {
     }));
   }
 
+//navigate to sign Up page
+  void navigateTocommentpPage() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return CommentsScreen();
+    }));
+  }
+
 //navigate to detail page page
-  void navigateToDetailPage(Blogs blog) {
+  void navigateToDetailPage(Blogs blog, String uid) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new DetailPage(
         blogs: blog,
+        uid: uid,
       );
     }));
   }
@@ -148,11 +161,13 @@ class _HomepageState extends State<Homepage> {
                       ? state.blogs.length
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
+                    // print(
+                    //     'user id=${state.uid} blogsid-${state.blogs[index].uid}');
                     return index >= state.blogs.length
                         ? bottomLoader()
                         : ListTile(
-                            onTap: () =>
-                                navigateToDetailPage(state.blogs[index]),
+                            onTap: () => navigateToDetailPage(
+                                state.blogs[index], state.uid),
                             title: blogsUi(
                               state.blogs[index].image,
                               state.blogs[index].uid,
@@ -178,7 +193,10 @@ class _HomepageState extends State<Homepage> {
           onPressed: () {
             //navigate to add blog screen
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return new AddBlogScreen();
+              return new AddBlogScreen(
+                blog: null,
+                isEdit: false,
+              );
             }));
           },
           // child: Text(
@@ -280,8 +298,12 @@ class _HomepageState extends State<Homepage> {
                     ),
                   )
                 ]),
-            SizedBox(
-              height: 10,
+            Row(
+              children: <Widget>[
+                getClapButton(),
+                clapcount(),
+                getCommentButton()
+              ],
             ),
             Container(
               //padding: EdgeInsets.fromLTRB(0, 0, 1, 0),
@@ -301,9 +323,60 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
-}
 
-Widget errorUI() {
-  return new SnackBar(
-      content: Text('Something went wrong try after sometime!!'));
+  Widget getClapButton() {
+    return new GestureDetector(
+        // onTapUp: onTapUp,
+        // onTapDown: onTapDown,
+        child: new Container(
+      height: 20.0,
+      width: 20.0,
+      padding: new EdgeInsets.all(0.0),
+      decoration: new BoxDecoration(
+        borderRadius: new BorderRadius.circular(50.0),
+        color: Colors.white,
+      ),
+      child: new ImageIcon(new AssetImage("assets/images/clap.png"),
+          color: Colors.purple[500], size: 40.0),
+    ));
+  }
+
+  Widget clapcount() {
+    return new Opacity(
+        opacity: 1.0,
+        child: new Container(
+            height: 10,
+            width: 10.0,
+            // decoration: new ShapeDecoration(
+            //   shape: new CircleBorder(side: BorderSide.none),
+            //   color: Colors.pink,
+            // ),
+            child: new Center(
+                child: new Text(
+              '5',
+              style: new TextStyle(color: Colors.grey[700], fontSize: 10.0),
+            ))));
+  }
+
+  Widget getCommentButton() {
+    return new GestureDetector(
+      child: new Container(
+        alignment: Alignment.topCenter,
+        height: 30.0,
+        width: 30.0,
+        child: IconButton(
+            icon: Icon(
+              FontAwesomeIcons.comment,
+              color: Colors.purple[400],
+              size: 15.0,
+            ),
+            onPressed: navigateTocommentpPage),
+      ),
+    );
+  }
+
+  Widget errorUI() {
+    return new SnackBar(
+        content: Text('Something went wrong try after sometime!!'));
+  }
 }

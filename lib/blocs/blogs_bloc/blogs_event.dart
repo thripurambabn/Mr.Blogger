@@ -70,3 +70,21 @@ class SearchBlog extends BlogsEvent {
   @override
   String toString() => 'Serached blog { blog: $searchkey }';
 }
+
+class UpdateBlog extends BlogsEvent {
+  final File image;
+  final String url, title, description, category;
+
+  UpdateBlog({
+    this.image,
+    this.url,
+    this.title,
+    this.description,
+    this.category,
+  });
+  @override
+  List<Object> get props => [image, url, title, description, category];
+
+  @override
+  String toString() => 'Updateblog { blog: $image }';
+}

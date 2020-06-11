@@ -6,11 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
+import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 
 class AddBlogScreen extends StatefulWidget {
+  final bool isEdit;
+  final Blogs blog;
+  const AddBlogScreen({Key key, @required this.isEdit, @required this.blog})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _AddBlogScreenPage();
@@ -20,13 +25,14 @@ class AddBlogScreen extends StatefulWidget {
 class _AddBlogScreenPage extends State<AddBlogScreen> {
   File sampleImage;
   final formKey = new GlobalKey<FormState>();
-  String _myvalue;
+  //String _myvalue;
   String _mytitlevalue;
   String category;
   String likes;
   String url;
   bool isbuttondisabled = false;
   final TextEditingController _titleController = TextEditingController();
+  // static String _myvalue = widget.blog.description;
   final TextEditingController _descriptionController = TextEditingController();
 
   //instance of blog Service and User Service
@@ -34,17 +40,27 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   static BlogsService _blogsServcie = BlogsService();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
 
+  bool get isEdit => widget.isEdit;
+  static String _myvalue;
+
   @override
   Widget build(BuildContext context) {
+    //_myvalue = widget.blog.title;
+
     return new WillPopScope(
       onWillPop: _onWillPop,
       child: new Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
-          title: Text(
-            'Add blog',
-            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-          ),
+          title: isEdit
+              ? Text(
+                  'Edit blog',
+                  style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+                )
+              : Text(
+                  'Add blog',
+                  style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+                ),
         ),
         body: SingleChildScrollView(
           child: new Center(
@@ -53,6 +69,14 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    _titleController.text = widget.isEdit == true ? widget.blog.title : '';
+    _descriptionController.text =
+        widget.isEdit == true ? widget.blog.description : '';
+    return super.initState();
   }
 
 //Navigate back confirmation dialog box
@@ -114,6 +138,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //calls Upload Image event to add blog
   void addBlog() {
+    validateandSave();
+    // print(
+    //     'title ${_titleController.text} ${this._mytitlevalue} description --${_descriptionController.text} ${_myvalue}');
     _blog.add(
       UploadImage(
         url: url,
@@ -121,6 +148,18 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         title: _titleController.text,
         description: _descriptionController.text,
         category: category,
+      ),
+    );
+  }
+
+  void updateBlog() {
+    _blog.add(
+      UpdateBlog(
+        url: widget.blog.image,
+        image: File(widget.blog.image),
+        title: widget.blog.title,
+        description: _descriptionController.text,
+        category: 'play',
       ),
     );
   }
@@ -168,7 +207,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             ),
             RaisedButton(
               child: Text(
-                'Upload blog',
+                widget.isEdit == true ? 'update blog' : 'uploade blog',
                 style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
               ),
               color: Colors.purple[800],
@@ -176,9 +215,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                   ? null
                   : () {
                       setState(() => isbuttondisabled = !isbuttondisabled);
-
-                      addBlog();
-
+                      widget.isEdit == true ? updateBlog() : addBlog();
                       navigateToHomePage();
                     },
             )
@@ -201,41 +238,62 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           SizedBox(
             height: 20,
           ),
-          InkWell(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-              color: Colors.purple[300],
-              alignment: Alignment.center,
-              height: 240,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.solidImages,
+          isEdit
+              ? InkWell(
+                  child: Image.network(widget.blog.image),
+                  onTap: getImage,
+                )
+              : InkWell(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                    color: Colors.purple[300],
+                    alignment: Alignment.center,
+                    height: 240,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.solidImages,
+                          ),
+                          tooltip: 'Add photo',
+                          iconSize: 50,
+                          color: Colors.white,
+                          splashColor: Colors.purple,
+                          onPressed: getImage,
+                        ),
+                        Text(
+                          'Add Photo',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.purple, fontFamily: 'Paficico'),
+                        )
+                      ],
                     ),
-                    tooltip: 'Add photo',
-                    iconSize: 50,
-                    color: Colors.white,
-                    splashColor: Colors.purple,
-                    onPressed: getImage,
+                    width: 340,
                   ),
-                  Text(
-                    'Add Photo',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(color: Colors.purple, fontFamily: 'Paficico'),
-                  )
-                ],
-              ),
-              width: 340,
-            ),
-            onTap: getImage,
-          ),
+                  onTap: getImage,
+                ),
           SizedBox(
             height: 10,
           ),
-          descriptionfield()
+          descriptionfield(),
+          RaisedButton(
+            child: Text(
+              widget.isEdit == true ? 'update blog' : 'uploade blog',
+              style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+            ),
+            color: Colors.purple[800],
+            onPressed: isbuttondisabled
+                ? null
+                : () {
+                    setState(() => isbuttondisabled = !isbuttondisabled);
+
+                    widget.isEdit == true ? updateBlog() : addBlog();
+
+                    navigateToHomePage();
+                  },
+          )
         ],
       ),
     );
@@ -283,6 +341,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   descriptionfield() {
+    //print('inside description ${widget.blog.description} ${isEdit}');
     return Container(
         child: Column(
       children: <Widget>[
@@ -321,7 +380,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               validator: (value) {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
-              onSaved: (value) {
+              onChanged: (value) {
+                print('value saved ${value} ${_myvalue}');
                 _myvalue = value;
               },
             ),
@@ -346,6 +406,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: TextFormField(
+            // initialValue: isEdit ? widget.blog.title : '',
             controller: _titleController,
             textAlign: TextAlign.left,
             //   keyboardType: TextInputType.multiline,
@@ -363,7 +424,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             validator: (value) {
               return value.isEmpty ? 'Title for your blog is required' : null;
             },
-            onSaved: (value) {
+            onChanged: (value) {
               _mytitlevalue = value;
             },
           ),

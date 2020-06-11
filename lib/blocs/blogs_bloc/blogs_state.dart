@@ -47,11 +47,12 @@ class BlogsEmpty extends BlogsState {}
 class BlogsLoaded extends BlogsState {
   final List<Blogs> blogs;
   final bool hasReachedMax;
+  final String uid;
 
-  const BlogsLoaded({this.blogs, this.hasReachedMax});
+  const BlogsLoaded({this.blogs, this.hasReachedMax, this.uid});
 
   @override
-  List<Object> get props => [blogs, hasReachedMax];
+  List<Object> get props => [blogs, hasReachedMax, uid];
 
   BlogsLoaded copyWith({
     List<Blogs> blogs,
@@ -60,6 +61,7 @@ class BlogsLoaded extends BlogsState {
     return BlogsLoaded(
       blogs: blogs ?? this.blogs,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      uid: uid,
     );
   }
 
@@ -72,10 +74,4 @@ class BlogsLoaded extends BlogsState {
 class BlogsNotLoaded extends BlogsState {
   @override
   String toString() => 'blogsNotLoaded';
-}
-
-//upload image success state
-class UploadImageSuccess extends BlogsState {
-  @override
-  String toString() => 'uploadimagesuccess';
 }

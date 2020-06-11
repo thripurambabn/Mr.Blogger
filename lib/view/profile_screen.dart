@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
@@ -52,10 +51,11 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
 //navigates to detail page
-  void navigateToDetailPage(Blogs blog) {
+  void navigateToDetailPage(Blogs blog, String uid) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new DetailPage(
         blogs: blog,
+        uid: uid,
       );
     }));
   }
@@ -147,8 +147,8 @@ class _ProfilePageState extends State<ProfilePage>
                           itemCount: state.blogs.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
-                                onTap: () =>
-                                    navigateToDetailPage(state.blogs[index]),
+                                onTap: () => navigateToDetailPage(
+                                    state.blogs[index], state.uid),
                                 title: blogsUi(
                                     state.blogs[index].image,
                                     state.blogs[index].uid,
