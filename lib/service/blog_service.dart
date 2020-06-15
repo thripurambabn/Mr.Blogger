@@ -29,7 +29,6 @@ class BlogsService {
           authorname: data[key]['authorname'],
           title: data[key]['title'],
           description: data[key]['description'],
-          likes: data[key]['likes'],
           date: data[key]['date'],
           time: data[key]['time'],
           timeStamp: data[key]['timeStamp']);
@@ -63,7 +62,6 @@ class BlogsService {
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
-              likes: data[key]['likes'],
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
@@ -174,7 +172,6 @@ class BlogsService {
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
-              likes: data[key]['likes'],
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);

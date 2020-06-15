@@ -31,6 +31,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapLoadedProfileState();
     } else if (event is DeleteBlog) {
       yield* _mapDeletedBlogToState(event);
+    } else if (event is EditProfile) {
+      yield* _mapEditProfileToState(event);
     }
   }
 
@@ -39,14 +41,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     yield ProfileLoading();
     // try {
     UserService _userService = new UserService();
-    print('in profile bloc calling get blogs ');
-    List<Blogs> profileblogslist = await _profileService.getblogs();
-    print('profile get blogs in servcie ${profileblogslist}');
-    // print('${_userService.save()}');
-    await _userService.read();
-    await _userService.save();
-    final test = await _userService.save();
 
+    List<Blogs> profileblogslist = await _profileService.getblogs();
+    await _userService.read();
+    final test = await _userService.save();
     yield ProfileLoaded(
         profileblogslist, test.displayName, test.email, test.uid);
   }
@@ -57,14 +55,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Stream<ProfileState> _mapDeletedBlogToState(DeleteBlog event) async* {
     try {
-      print('in bloc');
       await _profileService.deleteBlog(event.key);
-      print('called delete blog ${event.key}');
     } catch (e) {
       print(e);
     }
   }
-  // Stream<ProfileState> _mapLoadProfileToState() async* {
-  //   print('load blogs in blogs_bloc.dart');
-  // }
+
+  Stream<ProfileState> _mapEditProfileToState(EditProfile event) async* {
+    try {
+      await _profileService.editProfile(event.name);
+      List<Blogs> profileblogslist = await _profileService.getblogs();
+      UserService _userService = new UserService();
+      await _userService.read();
+      await _userService.save();
+      final test = await _userService.save();
+      yield ProfileLoaded(
+          profileblogslist, test.displayName, test.email, test.uid);
+    } catch (e) {
+      print(e);
+    }
+  }
 }

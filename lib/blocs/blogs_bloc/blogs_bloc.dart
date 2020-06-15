@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
@@ -39,6 +41,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 //mapping Fetch Blogs event with blogs state
   Stream<BlogsState> _mapLoadedBlogsState(
       FetchBlogs event, BlogsState state) async* {
+    print('inside loaded');
     final result = await _userService.read();
     final uid = await _userService.save();
     try {
@@ -115,13 +118,14 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapUpdateBlogToState(UpdateBlog event) async* {
     try {
-      print('insisde update bloc');
-      await _profileService.updateBlog(
+      print('insisde update bloc ${event.image}');
+      await _profileService.updateImage(
         url: event.url,
         sampleImage: event.image,
         mytitlevalue: event.title,
         myvalue: event.description,
         category: event.category,
+        blogtimeStamp: event.timeStamp,
       );
       print('updated blog');
       final List<Blogs> blog = await _blogsService.getblogs();
@@ -129,6 +133,5 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     } catch (e) {
       print(e);
     }
-    ;
   }
 }

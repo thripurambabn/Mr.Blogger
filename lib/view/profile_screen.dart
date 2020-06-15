@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
+import 'package:mr_blogger/view/edit_profile.dart';
 import 'package:mr_blogger/view/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,14 +33,11 @@ class _ProfilePageState extends State<ProfilePage>
   var userService = UserService();
   static BlogsService _blogsService = BlogsService();
   static ProfileService _profileService = ProfileService();
-  static UserService _userService = UserService();
   SharedPreferences sharedPreferences;
   String email;
+  String name;
   var _profile =
       ProfileBloc(profileService: _profileService, blogsService: _blogsService);
-  var _login = LoginBloc(userService: _userService);
-  Future _userdata;
-  Future _data;
   List<Blogs> blogsList = [];
   @override
   void initState() {
@@ -60,6 +59,15 @@ class _ProfilePageState extends State<ProfilePage>
     }));
   }
 
+  void navigateToEditProfilePage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return new EditProfilePage(
+        name: name,
+        email: email,
+      );
+    }));
+  }
+
   Widget build(BuildContext ctx) {
     tabController = new TabController(length: 2, vsync: this);
     return new Scaffold(
@@ -71,19 +79,11 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                print('pressed signout');
-                BlocProvider.of<AuthenticationBloc>(context).add(
-                  AuthenticationLoggedOut(),
-                );
-                Navigator.pop(context, MaterialPageRoute(builder: (context) {
-                  return new LoginForm(
-                    userService: userService,
-                  );
-                }));
-              },
-            ),
+                icon: Icon(FontAwesomeIcons.userEdit),
+                onPressed: () {
+                  print('sending from profile');
+                  navigateToEditProfilePage();
+                }),
           ],
         ),
         body: SingleChildScrollView(

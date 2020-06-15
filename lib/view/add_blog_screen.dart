@@ -155,12 +155,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   void updateBlog() {
     _blog.add(
       UpdateBlog(
-        url: widget.blog.image,
-        image: File(widget.blog.image),
-        title: widget.blog.title,
-        description: _descriptionController.text,
-        category: 'play',
-      ),
+          url: widget.blog.image,
+          image: sampleImage,
+          title: _titleController.text,
+          description: _descriptionController.text,
+          category: 'play',
+          timeStamp: widget.blog.timeStamp),
     );
   }
 
@@ -381,7 +381,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
               onChanged: (value) {
-                print('value saved ${value} ${_myvalue}');
+                print('value saved ${value}');
                 _myvalue = value;
               },
             ),

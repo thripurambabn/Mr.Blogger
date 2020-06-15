@@ -31,3 +31,14 @@ class DeleteBlog extends ProfileEvent {
   @override
   String toString() => 'Deleted blog { blog: $key }';
 }
+
+class EditProfile extends ProfileEvent {
+  final String name;
+
+  EditProfile(this.name);
+  @override
+  List<Object> get props => [name];
+
+  @override
+  String toString() => 'Deleted blog { blog: $name }';
+}

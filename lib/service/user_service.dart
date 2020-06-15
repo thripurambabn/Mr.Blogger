@@ -39,7 +39,6 @@ class UserService {
   Future<void> signUp({String email, String password, String username}) async {
     try {
       final FirebaseAuth firebaseAuth1 = FirebaseAuth.instance;
-
       var result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,

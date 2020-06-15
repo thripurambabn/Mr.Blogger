@@ -74,6 +74,7 @@ class SearchBlog extends BlogsEvent {
 class UpdateBlog extends BlogsEvent {
   final File image;
   final String url, title, description, category;
+  int timeStamp;
 
   UpdateBlog({
     this.image,
@@ -81,9 +82,11 @@ class UpdateBlog extends BlogsEvent {
     this.title,
     this.description,
     this.category,
+    this.timeStamp,
   });
   @override
-  List<Object> get props => [image, url, title, description, category];
+  List<Object> get props =>
+      [image, url, title, description, category, timeStamp];
 
   @override
   String toString() => 'Updateblog { blog: $image }';

@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:medium_clap_flutter/medium_clap_flutter.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
@@ -42,10 +39,7 @@ class _HomepageState extends State<Homepage> {
     //listener for scroll event
     _scrollController.addListener(_onScroll);
     //inital call for get blogs
-    print('homepage');
     getBlogs();
-    // print('searching blog');
-    // _blogsServcie.searchBlogs(searchbar.text);
   }
 
 //events on scroll for pagiantion
@@ -134,10 +128,47 @@ class _HomepageState extends State<Homepage> {
               icon: cusIcon,
               onPressed: navigateToSerachPage,
             ),
-            IconButton(
-              icon: Icon(FontAwesomeIcons.userCircle),
-              onPressed: navigateToProfilePage,
-            ),
+            Container(
+              width: 50,
+              child: PopupMenuButton(
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem<String>(
+                      value: '1',
+                      child: FlatButton(
+                        onPressed: () {
+                          navigateToProfilePage();
+                        },
+                        child: Text('Profile',
+                            style: TextStyle(
+                                color: Colors.purple[800],
+                                fontFamily: 'Paficico')),
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: '2',
+                      child: FlatButton(
+                        child: Text('Logout',
+                            style: TextStyle(
+                                color: Colors.purple[800],
+                                fontFamily: 'Paficico')),
+                        onPressed: () async {
+                          BlocProvider.of<AuthenticationBloc>(context).add(
+                            AuthenticationLoggedOut(),
+                          );
+                          Navigator.pop(context,
+                              MaterialPageRoute(builder: (context) {
+                            return new LoginForm(
+                              userService: userService,
+                            );
+                          }));
+                        },
+                      ),
+                    )
+                  ];
+                },
+              ),
+            )
           ],
         ),
         //handles blog list view on state change
@@ -161,8 +192,6 @@ class _HomepageState extends State<Homepage> {
                       ? state.blogs.length
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
-                    // print(
-                    //     'user id=${state.uid} blogsid-${state.blogs[index].uid}');
                     return index >= state.blogs.length
                         ? bottomLoader()
                         : ListTile(
@@ -174,7 +203,6 @@ class _HomepageState extends State<Homepage> {
                               state.blogs[index].authorname,
                               state.blogs[index].title,
                               state.blogs[index].description,
-                              state.blogs[index].likes,
                               state.blogs[index].date,
                               state.blogs[index].time,
                               state.blogs[index].timeStamp,
@@ -208,16 +236,8 @@ class _HomepageState extends State<Homepage> {
   }
 
 //blog tile widget
-  Widget blogsUi(
-      String image,
-      String uid,
-      String authorname,
-      String title,
-      String description,
-      String likes,
-      String date,
-      String time,
-      int timeStamp) {
+  Widget blogsUi(String image, String uid, String authorname, String title,
+      String description, String date, String time, int timeStamp) {
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -300,7 +320,7 @@ class _HomepageState extends State<Homepage> {
                 ]),
             Row(
               children: <Widget>[
-                getClapButton(),
+                getClapButton(timeStamp),
                 clapcount(),
                 getCommentButton()
               ],
@@ -324,8 +344,9 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget getClapButton() {
+  Widget getClapButton(int timeStamp) {
     return new GestureDetector(
+        //  onTap: () => getlike(timeStamp),
         // onTapUp: onTapUp,
         // onTapDown: onTapDown,
         child: new Container(

@@ -79,7 +79,7 @@ class _DetailPageState extends State<DetailPage> {
                           value: '1',
                           child: FlatButton(
                             onPressed: () {
-                              //   print('sending ${widget.blogs.title}');
+                              print('sending ${widget.blogs.title}');
                               navigateToAddPage(widget.blogs);
                             },
                             child: Text('Edit',
