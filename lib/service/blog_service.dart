@@ -14,6 +14,7 @@ class BlogsService {
 //To fetch first set of blogs from the firebase database
   Future<List<Blogs>> getblogs() async {
     List<Blogs> blogsList = [];
+    List<String> likes = [];
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -23,15 +24,30 @@ class BlogsService {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
     for (var key in refkey) {
+      print('inside for ${data[key]['likes']}');
+      var tempLikes = [];
+      var likesList = new List<String>();
+      if (data[key]['likes'] != null) {
+        tempLikes = data[key]['likes'];
+        for (var like in tempLikes) {
+          print('inside for${like is String}');
+          likesList.add(like.toString());
+        }
+      }
+      print('${likesList}');
+      print('templikes${tempLikes}');
       Blogs blog = new Blogs(
           image: data[key]['image'],
           uid: data[key]['uid'],
           authorname: data[key]['authorname'],
           title: data[key]['title'],
           description: data[key]['description'],
+          likes: likesList,
           date: data[key]['date'],
           time: data[key]['time'],
           timeStamp: data[key]['timeStamp']);
+
+      print('likes of frst blog ${blog.title} ${blog.likes} ${blogsList}');
       blogsList.add(blog);
     }
     //sort blogs on timestamp
@@ -42,7 +58,7 @@ class BlogsService {
 //To fetch more blogs from the firebase database on scroll(pagination)
   Future<List<Blogs>> getMoreBlogs(List<Blogs> blogs) async {
     List<Blogs> blogsList = [];
-
+    // List<Likes> likes = [];
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
     Query blogsref = FirebaseDatabase.instance
         .reference()
@@ -62,6 +78,7 @@ class BlogsService {
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
+              likes: data[key]['likes'],
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
@@ -84,6 +101,7 @@ class BlogsService {
     String category,
   ) async {
     try {
+      List<String> likes = [];
       var dbkey = new DateTime.now();
       var formatdate = new DateFormat('MMM d,yyyy');
       var formattime = new DateFormat('EEEE, hh:mm aaa');
@@ -100,6 +118,7 @@ class BlogsService {
         'authorname': username,
         'title': _mytitlevalue,
         'description': _myvalue,
+        'likes': likes,
         'date': date,
         'time': time,
         'timeStamp': timeStamp,
@@ -172,6 +191,7 @@ class BlogsService {
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
+              likes: data[key]['likes'],
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
@@ -187,5 +207,33 @@ class BlogsService {
       print(e);
     }
     return blogsList;
+  }
+
+  Future setLikes(int blogtimeStamp, var uid, List<String> likes) async {
+    List<String> likesData = likes;
+    if (likes.contains(uid)) {
+      likesData.remove(uid);
+    } else {
+      likesData.add(uid);
+    }
+    print('kuch bhi ${likes}');
+
+    print('inside service ${likesData}');
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('timeStamp')
+        .equalTo(blogtimeStamp)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('blogs')
+          .child(event.snapshot.key)
+          .update({'likes': likesData});
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
   }
 }

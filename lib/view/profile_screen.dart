@@ -7,6 +7,7 @@ import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
+import 'package:mr_blogger/models/Likes.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
@@ -211,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage>
 
 //blog tile widget
   Widget blogsUi(String image, String uid, String authorname, String title,
-      String description, String likes, String date, String time) {
+      String description, List<String> likes, String date, String time) {
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -307,7 +308,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget blogsGridUi(String image, String uid, String authorname, String title,
-      String description, String likes, String date, String time) {
+      String description, List<String> likes, String date, String time) {
     return new Card(
       elevation: 15.0,
       margin: EdgeInsets.all(8.0),

@@ -6,6 +6,7 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/models/Likes.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
@@ -184,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
       String authorname,
       String title,
       String description,
-      String likes,
+      List<String> likes,
       String date,
       String time,
       int timeStamp) {

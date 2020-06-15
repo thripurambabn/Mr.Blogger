@@ -1,9 +1,8 @@
 import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mr_blogger/models/Likes.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 abstract class BlogsEvent extends Equatable {
   const BlogsEvent();
@@ -90,4 +89,16 @@ class UpdateBlog extends BlogsEvent {
 
   @override
   String toString() => 'Updateblog { blog: $image }';
+}
+
+class BlogLikes extends BlogsEvent {
+  final int timeStamp;
+  final List<String> likes;
+
+  BlogLikes(this.timeStamp, this.likes);
+  @override
+  List<Object> get props => [timeStamp, likes];
+
+  @override
+  String toString() => 'Updateblog { blog: $timeStamp }';
 }

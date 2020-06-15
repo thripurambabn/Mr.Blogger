@@ -141,7 +141,7 @@ class ProfileService {
       print('in profile update service ');
       FirebaseDatabase.instance
           .reference()
-          .child('blogs')
+          .child('users')
           .orderByChild('uid')
           .equalTo(user.uid)
           .onChildAdded

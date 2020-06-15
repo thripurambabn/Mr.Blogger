@@ -6,7 +6,9 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/models/Likes.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
@@ -97,6 +99,12 @@ class _HomepageState extends State<Homepage> {
     }));
   }
 
+  void setlike(int timeStamp, List<String> likes, String uid) {
+    print('like${timeStamp},${likes}');
+
+    _blog.add(BlogLikes(timeStamp, likes));
+  }
+
 //loading indicator while fetching more blogs
   Widget bottomLoader() {
     return Container(
@@ -162,6 +170,12 @@ class _HomepageState extends State<Homepage> {
                               userService: userService,
                             );
                           }));
+                          // Navigator.of(context).pushAndRemoveUntil(
+                          //     MaterialPageRoute(
+                          //         builder: (context) => LoginForm(
+                          //               userService: userService,
+                          //             )),
+                          //     (Route<dynamic> route) => false);
                         },
                       ),
                     )
@@ -192,6 +206,8 @@ class _HomepageState extends State<Homepage> {
                       ? state.blogs.length
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
+                    print(
+                        'present likes${state.blogs[index].title},${state.blogs[index].likes}');
                     return index >= state.blogs.length
                         ? bottomLoader()
                         : ListTile(
@@ -203,6 +219,7 @@ class _HomepageState extends State<Homepage> {
                               state.blogs[index].authorname,
                               state.blogs[index].title,
                               state.blogs[index].description,
+                              state.blogs[index].likes,
                               state.blogs[index].date,
                               state.blogs[index].time,
                               state.blogs[index].timeStamp,
@@ -236,8 +253,17 @@ class _HomepageState extends State<Homepage> {
   }
 
 //blog tile widget
-  Widget blogsUi(String image, String uid, String authorname, String title,
-      String description, String date, String time, int timeStamp) {
+  Widget blogsUi(
+    String image,
+    String uid,
+    String authorname,
+    String title,
+    String description,
+    List<String> likes,
+    String date,
+    String time,
+    int timeStamp,
+  ) {
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -320,8 +346,8 @@ class _HomepageState extends State<Homepage> {
                 ]),
             Row(
               children: <Widget>[
-                getClapButton(timeStamp),
-                clapcount(),
+                getClapButton(timeStamp, likes, uid),
+                clapcount(likes),
                 getCommentButton()
               ],
             ),
@@ -344,25 +370,29 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget getClapButton(int timeStamp) {
+  Widget getClapButton(int timeStamp, List<String> likes, String uid) {
     return new GestureDetector(
-        //  onTap: () => getlike(timeStamp),
+        onTap: () => setlike(timeStamp, likes, uid),
         // onTapUp: onTapUp,
         // onTapDown: onTapDown,
         child: new Container(
-      height: 20.0,
-      width: 20.0,
-      padding: new EdgeInsets.all(0.0),
-      decoration: new BoxDecoration(
-        borderRadius: new BorderRadius.circular(50.0),
-        color: Colors.white,
-      ),
-      child: new ImageIcon(new AssetImage("assets/images/clap.png"),
-          color: Colors.purple[500], size: 40.0),
-    ));
+          height: 20.0,
+          width: 20.0,
+          padding: new EdgeInsets.all(0.0),
+          decoration: new BoxDecoration(
+            borderRadius: new BorderRadius.circular(50.0),
+            color: Colors.white,
+          ),
+          child: likes.contains(uid)
+              ? Icon(Icons.favorite, color: Colors.purple[500], size: 20)
+              : Icon(Icons.favorite_border,
+                  //  new ImageIcon(new AssetImage("assets/images/clap.png"),
+                  color: Colors.purple[500],
+                  size: 20.0),
+        ));
   }
 
-  Widget clapcount() {
+  Widget clapcount(List<String> likes) {
     return new Opacity(
         opacity: 1.0,
         child: new Container(
@@ -374,7 +404,7 @@ class _HomepageState extends State<Homepage> {
             // ),
             child: new Center(
                 child: new Text(
-              '5',
+              likes.length.toString(),
               style: new TextStyle(color: Colors.grey[700], fontSize: 10.0),
             ))));
   }

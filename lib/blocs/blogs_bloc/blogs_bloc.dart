@@ -35,6 +35,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapSerachBlogToState(event);
     } else if (event is UpdateBlog) {
       yield* _mapUpdateBlogToState(event);
+    } else if (event is BlogLikes) {
+      yield* _mapBlogLikesToState(event);
     }
   }
 
@@ -128,6 +130,19 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         blogtimeStamp: event.timeStamp,
       );
       print('updated blog');
+      final List<Blogs> blog = await _blogsService.getblogs();
+      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapBlogLikesToState(BlogLikes event) async* {
+    try {
+      var user = await _userService.save();
+      print('inside bloc ${user.uid},${event.likes}');
+      await _blogsService.setLikes(event.timeStamp, user.uid, event.likes);
+      print('end of blog');
       final List<Blogs> blog = await _blogsService.getblogs();
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
