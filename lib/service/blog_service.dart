@@ -269,23 +269,34 @@ class BlogsService {
     });
   }
 
+  convertToCommentJson(List<Comment> listOfComments) {
+    List<Object> commentListObj = new List<Object>();
+    for (Comment c in listOfComments) {
+      commentListObj.add(c.toJson());
+    }
+
+    return commentListObj;
+  }
+
   Future setComments(int blogtimeStamp, String comment, var uid,
       List<Comment> comments) async {
     print(
         'values in Service timeStamp$blogtimeStamp,comment$comment,uid $uid,');
     var commentsData = comments;
-    var dbkey = new DateTime.now();
-    var formattime = new DateFormat('EEEE, hh:mm aaa');
-    String time = formattime.format(dbkey);
+    var timeStamp = new DateTime.now().millisecondsSinceEpoch;
     var username = await userService.getUserName();
     Comment commentobj = new Comment(
       username: username,
-      date: time,
+      date: timeStamp,
       comment: comment,
     );
     print('iam stuck');
     commentsData.add(commentobj);
     print('commentsList ${commentsData}');
+
+    List<Object> convertedComments = convertToCommentJson(commentsData);
+    print(convertedComments);
+
     FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -297,7 +308,7 @@ class BlogsService {
           .reference()
           .child('blogs')
           .child(event.snapshot.key)
-          .update({'comments': commentsData});
+          .update({'comments': convertedComments});
     }, onError: (Object o) {
       print('inside onerrod ${o}');
       final DatabaseError error = o;

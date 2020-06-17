@@ -1,6 +1,7 @@
 class Comment {
-  String usernamename, date, comment;
-  Comment({this.date, this.comment, username});
+  String username, comment;
+  int date;
+  Comment({this.date, this.comment, this.username});
 
   factory Comment.fromJson(Map<String, dynamic> parsedJson) {
     return Comment(
@@ -9,4 +10,12 @@ class Comment {
       comment: parsedJson['comment'] ?? '',
     );
   }
+
+  Map<String, dynamic> toJson() => _dimensionsToJson(this);
 }
+
+Map<String, dynamic> _dimensionsToJson(Comment comment) => <String, dynamic>{
+      'username': comment.username,
+      'date': comment.date,
+      'comment': comment.comment,
+    };

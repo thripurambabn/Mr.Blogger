@@ -9,6 +9,7 @@ import 'package:mr_blogger/service/blog_service.dart';
 class CommentsScreen extends StatefulWidget {
   final int timeStamp;
   final List<Comment> comments;
+
   final String uid;
   final String title;
   CommentsScreen(this.timeStamp, this.comments, this.uid, this.title);
@@ -63,28 +64,33 @@ class _CommentsScreenState extends State<CommentsScreen> {
         commentsList(),
         Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: TextField(
-            autocorrect: false,
-            textCapitalization: TextCapitalization.sentences,
-            controller: _commentController,
-            decoration: InputDecoration(
-              suffixIcon: IconButton(
-                icon: Icon(FontAwesomeIcons.paperPlane,
-                    color: Colors.purple[800]),
-                onPressed: () => {
-                  setComments(widget.timeStamp, _commentController.text,
-                      widget.comments, widget.uid)
-                },
+          child: TextFormField(
+              autocorrect: false,
+              textCapitalization: TextCapitalization.sentences,
+              controller: _commentController,
+              validator: (text) {
+                if (text == null || text.isEmpty) {
+                  return 'Text is empty';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(FontAwesomeIcons.paperPlane,
+                      color: Colors.purple[800]),
+                  onPressed: () => {
+                    setComments(widget.timeStamp, _commentController.text,
+                        widget.comments, widget.uid),
+                  },
+                ),
+                icon: Icon(
+                  FontAwesomeIcons.comment,
+                  color: Colors.purple[800],
+                ),
+                labelText: 'write your comment',
+              )
+              //   onSubmitted:
               ),
-              icon: Icon(
-                FontAwesomeIcons.comment,
-                color: Colors.purple[800],
-              ),
-              labelText: 'write your comment',
-            ),
-
-            //   onSubmitted:
-          ),
         ),
       ]),
     );
