@@ -76,7 +76,6 @@ class ProfileService {
         'date': date,
         'time': time,
       };
-      print('in update service ${url}');
       FirebaseDatabase.instance
           .reference()
           .child('blogs')
@@ -114,9 +113,7 @@ class ProfileService {
     var imageurl = await updateImage.onComplete;
     var imageurl1 = await imageurl.ref.getDownloadURL();
     url = imageurl1.toString();
-
     try {
-      print('-----------${url}');
       await updateBlog(url, mytitlevalue, myvalue, category, blogtimeStamp);
     } catch (e) {
       print(e.toString());
@@ -138,7 +135,6 @@ class ProfileService {
       var authordata = {
         'authorname': name,
       };
-      print('in profile update service ');
       FirebaseDatabase.instance
           .reference()
           .child('users')

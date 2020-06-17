@@ -6,9 +6,8 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
-import 'package:mr_blogger/models/Likes.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/models/user.dart';
+import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
@@ -69,9 +68,11 @@ class _HomepageState extends State<Homepage> {
   }
 
 //navigate to sign Up page
-  void navigateTocommentpPage() {
+  void navigateTocommentPage(
+      int timeStamp, List<Comment> comments, String uid, String title) {
+    print('sending ${timeStamp},${comments}');
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return CommentsScreen();
+      return CommentsScreen(timeStamp, comments, uid, title);
     }));
   }
 
@@ -101,7 +102,6 @@ class _HomepageState extends State<Homepage> {
 
   void setlike(int timeStamp, List<String> likes, String uid) {
     print('like${timeStamp},${likes}');
-
     _blog.add(BlogLikes(timeStamp, likes));
   }
 
@@ -206,8 +206,6 @@ class _HomepageState extends State<Homepage> {
                       ? state.blogs.length
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
-                    print(
-                        'present likes${state.blogs[index].title},${state.blogs[index].likes}');
                     return index >= state.blogs.length
                         ? bottomLoader()
                         : ListTile(
@@ -220,6 +218,7 @@ class _HomepageState extends State<Homepage> {
                               state.blogs[index].title,
                               state.blogs[index].description,
                               state.blogs[index].likes,
+                              state.blogs[index].comments,
                               state.blogs[index].date,
                               state.blogs[index].time,
                               state.blogs[index].timeStamp,
@@ -260,6 +259,7 @@ class _HomepageState extends State<Homepage> {
     String title,
     String description,
     List<String> likes,
+    List<Comment> comments,
     String date,
     String time,
     int timeStamp,
@@ -348,7 +348,8 @@ class _HomepageState extends State<Homepage> {
               children: <Widget>[
                 getClapButton(timeStamp, likes, uid),
                 clapcount(likes),
-                getCommentButton()
+                getCommentButton(timeStamp, comments, uid, title),
+                commentCount(comments),
               ],
             ),
             Container(
@@ -373,8 +374,6 @@ class _HomepageState extends State<Homepage> {
   Widget getClapButton(int timeStamp, List<String> likes, String uid) {
     return new GestureDetector(
         onTap: () => setlike(timeStamp, likes, uid),
-        // onTapUp: onTapUp,
-        // onTapDown: onTapDown,
         child: new Container(
           height: 20.0,
           width: 20.0,
@@ -383,16 +382,47 @@ class _HomepageState extends State<Homepage> {
             borderRadius: new BorderRadius.circular(50.0),
             color: Colors.white,
           ),
-          child: likes.contains(uid)
+          child: likes.contains(uid) == true
               ? Icon(Icons.favorite, color: Colors.purple[500], size: 20)
               : Icon(Icons.favorite_border,
-                  //  new ImageIcon(new AssetImage("assets/images/clap.png"),
-                  color: Colors.purple[500],
-                  size: 20.0),
+                  color: Colors.purple[500], size: 20.0),
         ));
   }
 
   Widget clapcount(List<String> likes) {
+    return new Opacity(
+        opacity: 1.0,
+        child: new Container(
+            height: 10,
+            width: 10.0,
+            child: new Center(
+                child: new Text(
+              likes.length.toString(),
+              style: new TextStyle(color: Colors.grey[700], fontSize: 10.0),
+            ))));
+  }
+
+  Widget getCommentButton(
+      int timeStamp, List<Comment> comments, String uid, String title) {
+    print('inside getcomment button ${timeStamp}, ${comments}');
+    return new GestureDetector(
+      child: new Container(
+        alignment: Alignment.center,
+        height: 30.0,
+        width: 30.0,
+        child: IconButton(
+            icon: Icon(
+              FontAwesomeIcons.comment,
+              color: Colors.purple[500],
+              size: 15.0,
+            ),
+            onPressed: () =>
+                navigateTocommentPage(timeStamp, comments, uid, title)),
+      ),
+    );
+  }
+
+  Widget commentCount(List<Comment> comments) {
     return new Opacity(
         opacity: 1.0,
         child: new Container(
@@ -404,26 +434,9 @@ class _HomepageState extends State<Homepage> {
             // ),
             child: new Center(
                 child: new Text(
-              likes.length.toString(),
+              comments.length.toString(),
               style: new TextStyle(color: Colors.grey[700], fontSize: 10.0),
             ))));
-  }
-
-  Widget getCommentButton() {
-    return new GestureDetector(
-      child: new Container(
-        alignment: Alignment.topCenter,
-        height: 30.0,
-        width: 30.0,
-        child: IconButton(
-            icon: Icon(
-              FontAwesomeIcons.comment,
-              color: Colors.purple[400],
-              size: 15.0,
-            ),
-            onPressed: navigateTocommentpPage),
-      ),
-    );
   }
 
   Widget errorUI() {

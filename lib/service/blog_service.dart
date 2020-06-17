@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/service/user_service.dart';
 
 class BlogsService {
@@ -14,7 +17,6 @@ class BlogsService {
 //To fetch first set of blogs from the firebase database
   Future<List<Blogs>> getblogs() async {
     List<Blogs> blogsList = [];
-    List<String> likes = [];
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -24,18 +26,34 @@ class BlogsService {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
     for (var key in refkey) {
-      print('inside for ${data[key]['likes']}');
       var tempLikes = [];
+      var tempComments;
+      var commentsList = new List<Comment>();
       var likesList = new List<String>();
       if (data[key]['likes'] != null) {
         tempLikes = data[key]['likes'];
         for (var like in tempLikes) {
-          print('inside for${like is String}');
           likesList.add(like.toString());
         }
       }
-      print('${likesList}');
-      print('templikes${tempLikes}');
+      if (data[key]['comments'] != null) {
+        //  print('comments------------ ${data[key]['comments']}');
+        tempComments = data[key]['comments'];
+        //tempComments.add(data[key]['comments']);
+        //print('tempcomment ${tempComments}');
+
+        for (var comment in tempComments) {
+          // print('comments inside for------------ ${comment}');
+          var newComment = new Comment(
+            username: comment['username'],
+            date: comment['date'],
+            comment: comment['comment'],
+          );
+          //  print('comment inside for ${comment}');
+          commentsList.add(newComment);
+          //print('commentList inside for ${commentsList}');
+        }
+      }
       Blogs blog = new Blogs(
           image: data[key]['image'],
           uid: data[key]['uid'],
@@ -43,11 +61,10 @@ class BlogsService {
           title: data[key]['title'],
           description: data[key]['description'],
           likes: likesList,
+          comments: commentsList,
           date: data[key]['date'],
           time: data[key]['time'],
           timeStamp: data[key]['timeStamp']);
-
-      print('likes of frst blog ${blog.title} ${blog.likes} ${blogsList}');
       blogsList.add(blog);
     }
     //sort blogs on timestamp
@@ -58,7 +75,6 @@ class BlogsService {
 //To fetch more blogs from the firebase database on scroll(pagination)
   Future<List<Blogs>> getMoreBlogs(List<Blogs> blogs) async {
     List<Blogs> blogsList = [];
-    // List<Likes> likes = [];
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
     Query blogsref = FirebaseDatabase.instance
         .reference()
@@ -71,14 +87,32 @@ class BlogsService {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
+
         for (var key in refkey) {
+          var tempLikes = [];
+          var likesList = new List<String>();
+          if (data[key]['likes'] != null) {
+            tempLikes = data[key]['likes'];
+            for (var like in tempLikes) {
+              likesList.add(like.toString());
+            }
+          }
+          var tempComments = [];
+          var commentsList = new List<Comment>();
+          if (data[key]['comments'] != null) {
+            tempComments = data[key]['comments'];
+            for (var comment in tempComments) {
+              commentsList.add(comment);
+            }
+          }
           Blogs blog = new Blogs(
               image: data[key]['image'],
               uid: data[key]['uid'],
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
-              likes: data[key]['likes'],
+              likes: likesList,
+              comments: commentsList,
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
@@ -102,6 +136,7 @@ class BlogsService {
   ) async {
     try {
       List<String> likes = [];
+      List<String> comments = [];
       var dbkey = new DateTime.now();
       var formatdate = new DateFormat('MMM d,yyyy');
       var formattime = new DateFormat('EEEE, hh:mm aaa');
@@ -119,6 +154,7 @@ class BlogsService {
         'title': _mytitlevalue,
         'description': _myvalue,
         'likes': likes,
+        'comments': comments,
         'date': date,
         'time': time,
         'timeStamp': timeStamp,
@@ -192,13 +228,12 @@ class BlogsService {
               title: data[key]['title'],
               description: data[key]['description'],
               likes: data[key]['likes'],
+              comments: data[key]['comments'],
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
           blogsList.clear();
           blogsList.add(blog);
-
-          print('-----blog in profile service ${blog.title}');
         }
       } else {
         print('there are no blogs of this user');
@@ -216,9 +251,6 @@ class BlogsService {
     } else {
       likesData.add(uid);
     }
-    print('kuch bhi ${likes}');
-
-    print('inside service ${likesData}');
     FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -232,6 +264,42 @@ class BlogsService {
           .child(event.snapshot.key)
           .update({'likes': likesData});
     }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+  }
+
+  Future setComments(int blogtimeStamp, String comment, var uid,
+      List<Comment> comments) async {
+    print(
+        'values in Service timeStamp$blogtimeStamp,comment$comment,uid $uid,');
+    var commentsData = comments;
+    var dbkey = new DateTime.now();
+    var formattime = new DateFormat('EEEE, hh:mm aaa');
+    String time = formattime.format(dbkey);
+    var username = await userService.getUserName();
+    Comment commentobj = new Comment(
+      username: username,
+      date: time,
+      comment: comment,
+    );
+    print('iam stuck');
+    commentsData.add(commentobj);
+    print('commentsList ${commentsData}');
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('timeStamp')
+        .equalTo(blogtimeStamp)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('blogs')
+          .child(event.snapshot.key)
+          .update({'comments': commentsData});
+    }, onError: (Object o) {
+      print('inside onerrod ${o}');
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
     });

@@ -36,23 +36,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-//mapping LoadingProfileDetails event with states
+//mapping Loading Profile Details event with states
   Stream<ProfileState> _mapLoadedProfileState() async* {
     yield ProfileLoading();
-    // try {
-    UserService _userService = new UserService();
-
-    List<Blogs> profileblogslist = await _profileService.getblogs();
-    await _userService.read();
-    final test = await _userService.save();
-    yield ProfileLoaded(
-        profileblogslist, test.displayName, test.email, test.uid);
+    try {
+      UserService _userService = new UserService();
+      List<Blogs> profileblogslist = await _profileService.getblogs();
+      await _userService.read();
+      final test = await _userService.save();
+      yield ProfileLoaded(
+          profileblogslist, test.displayName, test.email, test.uid);
+    } catch (e) {
+      yield ProfileNotLoaded();
+    }
   }
-  // catch (e) {
-  //   yield ProfileNotLoaded();
-  // }
-  // }
 
+//mapping Deleted Blog To State event with states
   Stream<ProfileState> _mapDeletedBlogToState(DeleteBlog event) async* {
     try {
       await _profileService.deleteBlog(event.key);
@@ -61,13 +60,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
+//mapping Edit Profile To State event with states
   Stream<ProfileState> _mapEditProfileToState(EditProfile event) async* {
     try {
       await _profileService.editProfile(event.name);
       List<Blogs> profileblogslist = await _profileService.getblogs();
       UserService _userService = new UserService();
       await _userService.read();
-      await _userService.save();
       final test = await _userService.save();
       yield ProfileLoaded(
           profileblogslist, test.displayName, test.email, test.uid);

@@ -37,6 +37,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapUpdateBlogToState(event);
     } else if (event is BlogLikes) {
       yield* _mapBlogLikesToState(event);
+    } else if (event is BlogComments) {
+      yield* _mapBlogCommentsToState(event);
     }
   }
 
@@ -110,9 +112,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapSerachBlogToState(SearchBlog event) async* {
     try {
       final List<Blogs> blog = await _blogsService.searchBlogs(event.searchkey);
-      print('serached blogs in bloc ');
       yield BlogsLoaded(blogs: blog, hasReachedMax: true);
-      print('loaded blogs');
     } catch (e) {
       print(e);
     }
@@ -120,7 +120,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapUpdateBlogToState(UpdateBlog event) async* {
     try {
-      print('insisde update bloc ${event.image}');
       await _profileService.updateImage(
         url: event.url,
         sampleImage: event.image,
@@ -129,7 +128,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         category: event.category,
         blogtimeStamp: event.timeStamp,
       );
-      print('updated blog');
       final List<Blogs> blog = await _blogsService.getblogs();
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
@@ -140,11 +138,25 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapBlogLikesToState(BlogLikes event) async* {
     try {
       var user = await _userService.save();
-      print('inside bloc ${user.uid},${event.likes}');
       await _blogsService.setLikes(event.timeStamp, user.uid, event.likes);
-      print('end of blog');
       final List<Blogs> blog = await _blogsService.getblogs();
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapBlogCommentsToState(BlogComments event) async* {
+    try {
+      var user = await _userService.save();
+      print(
+          'values in bloc timeStamp${event.timeStamp},comment${event.comments},uid ${user.uid}');
+
+      await _blogsService.setComments(
+          event.timeStamp, event.comment, user.uid, event.comments);
+      // final List<Blogs> blog = await _blogsService.getblogs();
+      // print('blogs inside bloc ${blog[0].comments}');
+      // yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print(e);
     }

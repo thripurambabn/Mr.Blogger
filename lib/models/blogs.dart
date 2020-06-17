@@ -1,8 +1,9 @@
-import 'package:mr_blogger/models/Likes.dart';
+import 'package:mr_blogger/models/comment.dart';
 
 class Blogs {
   String image, uid, authorname, title, description, date, time;
   List<String> likes;
+  List<Comment> comments;
   int timeStamp;
   Blogs(
       {this.image,
@@ -12,36 +13,22 @@ class Blogs {
       this.description,
       this.date,
       this.likes,
+      this.comments,
       this.time,
       this.timeStamp})
       : super();
 
   factory Blogs.fromJson(Map<String, dynamic> parsedJson) {
-    // if (parsedJson['likes'] != null) {
-    //   var likesObjsJson = parsedJson['likes'] as List;
-    //   List<Likes> _likes =
-    //       likesObjsJson.map((likesJson) => Likes.fromJson(likesJson)).toList();
     return Blogs(
         image: parsedJson['image'] ?? '',
         uid: parsedJson['uid'] ?? '',
         authorname: parsedJson['authorname'] ?? '',
         title: parsedJson['title'] ?? '',
         description: parsedJson['description'] ?? '',
-        likes: parsedJson['description'] ?? null,
+        likes: parsedJson['likes'] ?? null,
+        comments: parsedJson['comments'] ?? null,
         date: parsedJson['date'] ?? '',
         time: parsedJson['time'] ?? '',
         timeStamp: parsedJson['timeStamp'] ?? '');
   }
-
-  // Map<String, dynamic> toJSON() => {
-  //       'image': image,
-  //       'uid': uid,
-  //       'authorname': authorname,
-  //       'title': title,
-  //       'description': description,
-  //       'likes': likes,
-  //       'date': date,
-  //       'time': time,
-  //       'timeStamp': timeStamp
-  //     };
 }
