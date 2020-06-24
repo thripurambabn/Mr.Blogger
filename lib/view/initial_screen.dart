@@ -1,34 +1,17 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
-import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
-
 import 'package:mr_blogger/service/user_service.dart';
-
-import 'package:mr_blogger/view/login_screen.dart';
-import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/reg_screen.dart';
-import 'package:mr_blogger/view/reg_screen.dart';
-
-class InitialPage extends StatelessWidget {
-  UserService userService;
-
-  InitialPage({@required this.userService});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginBloc(userService: userService),
-      child: InitialScreen(),
-    );
-  }
-}
 
 class InitialScreen extends StatelessWidget {
-  UserService userService;
+  final UserService _userService;
+  InitialScreen({
+    Key key,
+    @required UserService userService,
+  })  : assert(userService != null),
+        _userService = userService,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -160,14 +143,22 @@ class InitialScreen extends StatelessWidget {
 
   void navigateTologinScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return LoginScreen(userService: userService);
+      return LoginScreen(
+        userService: _userService,
+      );
     }));
+    // Navigator.of(context).pushAndRemoveUntil(
+    //     MaterialPageRoute(
+    //         builder: (context) => LoginScreen(
+    //               userService: _userService,
+    //             )),
+    //     (Route<dynamic> route) => false);
   }
 
   void navigateToSignUpScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return RegisterScreen(
-        userService: userService,
+      return new RegisterScreen(
+        userService: _userService,
       );
     }));
   }

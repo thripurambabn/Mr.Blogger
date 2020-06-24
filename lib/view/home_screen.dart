@@ -13,6 +13,7 @@ import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/comment_screen.dart';
+import 'package:mr_blogger/view/initial_screen.dart';
 import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
 import 'package:mr_blogger/view/search_blog.dart';
@@ -58,14 +59,14 @@ class _HomepageState extends State<Homepage> {
     await _blog.add(FetchBlogs());
   }
 
-//navigate to sign Up page
-  void navigateToSignUpPage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return LoginScreen(
-        userService: userService,
-      );
-    }));
-  }
+// //navigate to sign Up page
+//   void navigateToSignUpPage(BuildContext context) {
+//     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+//       return LoginForm(
+//         userService: userService,
+//       );
+//     }));
+//   }
 
 //navigate to sign Up page
   void navigateTocommentPage(
@@ -100,6 +101,14 @@ class _HomepageState extends State<Homepage> {
     }));
   }
 
+  void navigateToinitialScreen() {
+    Navigator.pop(context, MaterialPageRoute(builder: (context) {
+      return InitialScreen(
+        userService: userService,
+      );
+    }));
+  }
+
   void setlike(int timeStamp, List<String> likes, String uid) {
     print('like${timeStamp},${likes}');
     _blog.add(BlogLikes(timeStamp, likes));
@@ -129,6 +138,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.purple[800],
           title: cusSearchBar,
           actions: <Widget>[
@@ -160,16 +170,11 @@ class _HomepageState extends State<Homepage> {
                             style: TextStyle(
                                 color: Colors.purple[800],
                                 fontFamily: 'Paficico')),
-                        onPressed: () async {
+                        onPressed: () {
                           BlocProvider.of<AuthenticationBloc>(context).add(
                             AuthenticationLoggedOut(),
                           );
-                          Navigator.pop(context,
-                              MaterialPageRoute(builder: (context) {
-                            return new LoginForm(
-                              userService: userService,
-                            );
-                          }));
+                          //navigateToinitialScreen();
                           // Navigator.of(context).pushAndRemoveUntil(
                           //     MaterialPageRoute(
                           //         builder: (context) => LoginForm(
@@ -243,10 +248,6 @@ class _HomepageState extends State<Homepage> {
               );
             }));
           },
-          // child: Text(
-          //   'Upload Your Blog',
-          //   style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-          // ),
           child: Icon(FontAwesomeIcons.solidEdit),
         ));
   }
@@ -353,7 +354,6 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
             Container(
-              //padding: EdgeInsets.fromLTRB(0, 0, 1, 0),
               margin: EdgeInsets.fromLTRB(0, 0, 0.5, 0),
               child: new Text(description ?? '',
                   maxLines: 2,
@@ -428,10 +428,6 @@ class _HomepageState extends State<Homepage> {
         child: new Container(
             height: 10,
             width: 10.0,
-            // decoration: new ShapeDecoration(
-            //   shape: new CircleBorder(side: BorderSide.none),
-            //   color: Colors.pink,
-            // ),
             child: new Center(
                 child: new Text(
               comments.length.toString(),

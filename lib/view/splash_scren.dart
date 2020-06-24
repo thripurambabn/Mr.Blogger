@@ -6,8 +6,7 @@ class SplashPage extends StatelessWidget {
     return Center(
         //child:
         child: Image(
-      image: NetworkImage(
-          'https://www.zestcarrental.com/blog/wp-content/uploads/2016/10/travel-blog-somegirl-min.jpg'),
+      image: NetworkImage('https://i.imgur.com/0ASNwkQ.gif'),
     )
         // Text('splash screen')
         );

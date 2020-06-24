@@ -80,6 +80,7 @@ class _LoginFormState extends State<LoginForm> {
         if (state.isSuccess) {
           BlocProvider.of<AuthenticationBloc>(context)
               .add(AuthenticationLoggedIn());
+          Navigator.pop(context);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(

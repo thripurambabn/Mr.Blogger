@@ -6,7 +6,7 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
-import 'package:mr_blogger/view/login_screen.dart';
+import 'package:mr_blogger/view/initial_screen.dart';
 import 'package:mr_blogger/view/splash_scren.dart';
 
 void main() {
@@ -29,8 +29,6 @@ void main() {
 class App extends StatelessWidget {
   final UserService _userService;
   final BlogsService _blogsService;
-  final GlobalKey<NavigatorState> navigatorKey =
-      new GlobalKey<NavigatorState>();
   App(
       {Key key,
       @required UserService userService,
@@ -47,7 +45,7 @@ class App extends StatelessWidget {
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is AuthenticationFailure) {
-            return LoginScreen(
+            return InitialScreen(
               userService: _userService,
             );
           }

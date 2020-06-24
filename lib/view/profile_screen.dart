@@ -56,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   void navigateToEditProfilePage() {
+    print('navigating to edit page');
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new EditProfilePage(
         name: name,

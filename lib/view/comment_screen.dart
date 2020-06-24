@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/comment.dart';
@@ -50,6 +51,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Comment> tempcomments = new List<Comment>();
     print(
         'Comments inside build ${widget.timeStamp},${widget.comments} ${_commentController.text}');
     return Scaffold(
@@ -79,8 +81,19 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   icon: Icon(FontAwesomeIcons.paperPlane,
                       color: Colors.purple[800]),
                   onPressed: () => {
+                    tempcomments = widget.comments,
+                    setState(() {
+                      widget.comments.add(Comment(
+                          comment: _commentController.text,
+                          date: widget.timeStamp,
+                          username: widget.uid));
+                      commentsList();
+                    }),
+                    tempcomments.removeLast(),
                     setComments(widget.timeStamp, _commentController.text,
-                        widget.comments, widget.uid),
+                        tempcomments, widget.uid),
+                    _commentController.clear(),
+                    tempcomments = new List<Comment>()
                   },
                 ),
                 icon: Icon(
@@ -106,7 +119,46 @@ class _CommentsScreenState extends State<CommentsScreen> {
         itemCount: widget.comments.length,
         itemBuilder: (BuildContext context, int index) {
           print('${widget.comments[index]}');
-          return ListTile(title: new Text(widget.comments[index].comment));
+          String readTimestamp(int commentTimeStamp) {
+            var now = DateTime.now();
+            var format = DateFormat('HH:mm a');
+            var date = DateTime.fromMillisecondsSinceEpoch(commentTimeStamp);
+            var diff = now.difference(date);
+            var time = '';
+
+            if (diff.inSeconds <= 0 ||
+                diff.inSeconds > 0 && diff.inMinutes == 0 ||
+                diff.inMinutes > 0 && diff.inHours == 0 ||
+                diff.inHours > 0 && diff.inDays == 0) {
+              time = format.format(date);
+            } else if (diff.inDays > 0 && diff.inDays < 7) {
+              if (diff.inDays == 1) {
+                time = diff.inDays.toString() + ' day ago';
+              } else {
+                time = diff.inDays.toString() + ' days ago';
+              }
+            } else {
+              if (diff.inDays == 7) {
+                time = (diff.inDays / 7).floor().toString() + ' week ago';
+              } else {
+                time = (diff.inDays / 7).floor().toString() + ' weeks ago';
+              }
+            }
+            return time;
+          }
+
+          return ListTile(
+            title: new Text(
+                '${widget.comments[index].username}: ${widget.comments[index].comment}'),
+            subtitle: Text(
+              '${readTimestamp(widget.comments[index].date)}',
+              style: TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey[500],
+              ),
+            ),
+          );
         },
       ),
     );

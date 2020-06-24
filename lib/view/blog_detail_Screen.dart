@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
@@ -184,10 +182,6 @@ class _DetailPageState extends State<DetailPage> {
                         height: 10,
                       ),
                       Container(
-                          //     margin: const EdgeInsets.all(15.0),
-                          //     decoration: BoxDecoration(
-                          //         color: Colors.white,
-                          //         borderRadius: BorderRadius.circular(30)),
                           padding: EdgeInsets.all(10.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
