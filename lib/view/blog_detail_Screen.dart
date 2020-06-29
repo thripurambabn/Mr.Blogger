@@ -76,7 +76,7 @@ class _DetailPageState extends State<DetailPage> {
                           child: FlatButton(
                             onPressed: () {
                               print(
-                                  'sending ${widget.blogs.title} ${widget.blogs.image} ${widget.blogs.description} ');
+                                  'sending ${widget.blogs.title} ${widget.blogs.image} ${widget.blogs.description}');
                               navigateToAddPage(widget.blogs);
                             },
                             child: Text('Edit',

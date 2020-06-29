@@ -213,31 +213,57 @@ class BlogsService {
 
 //To Search a blog in firebase
   Future searchBlogs(String searchKey) async {
+    print('search service ${searchKey}');
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
         .orderByChild('title')
         .startAt(searchKey)
         .endAt(searchKey + '\uf8ff');
+
     final DataSnapshot snapshot = await blogsref.once();
+
     try {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
 
         for (var key in refkey) {
+          print('test123 ${data[key]['likes']}');
+          List<String> likesList = [];
+          for (var like in data[key]['likes']) {
+            print('like ${like}');
+            likesList.add(like);
+          }
+
+          var tempComments;
+          var commentsList = new List<Comment>();
+          if (data[key]['comments'] != null) {
+            tempComments = data[key]['comments'];
+            for (var comment in tempComments) {
+              if (comment != null) {
+                var newComment = new Comment(
+                  username: comment['username'],
+                  date: comment['date'],
+                  comment: comment['comment'],
+                );
+                commentsList.add(newComment);
+              }
+            }
+          }
+
           Blogs blog = new Blogs(
               image: data[key]['image'],
               uid: data[key]['uid'],
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
-              likes: data[key]['likes'],
-              comments: data[key]['comments'],
+              likes: likesList,
+              comments: commentsList,
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
-          print('test1223');
+
           blogsList.clear();
           blogsList.add(blog);
         }
@@ -280,7 +306,6 @@ class BlogsService {
     for (Comment c in listOfComments) {
       commentListObj.add(c.toJson());
     }
-
     return commentListObj;
   }
 
@@ -296,8 +321,6 @@ class BlogsService {
     );
     commentsData.add(commentobj);
     List<Object> convertedComments = convertToCommentJson(commentsData);
-    print(convertedComments);
-
     FirebaseDatabase.instance
         .reference()
         .child('blogs')

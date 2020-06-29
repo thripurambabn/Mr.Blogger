@@ -129,13 +129,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 //fetch image from the gallery
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print('sending sample image${tempImage}');
     setState(() {
       sampleImage = tempImage;
     });
     var url = await _blogsServcie.uploadImage(sampleImage: sampleImage);
     setState(() {
-      // sampleImage = tempImage;
       imageUrl = url;
     });
   }
@@ -151,7 +149,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 //calls Upload Image event to add blog
   void addBlog() {
     //   validateandSave();
-    print('calling event upload blog');
     _blog.add(
       UploadBlog(
         url: imageUrl,
@@ -164,7 +161,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   void updateBlog() {
-    print('sending from update blog ${imageUrl}${widget.blog.image}');
     _blog.add(
       UpdateBlog(
           image: imageUrl,

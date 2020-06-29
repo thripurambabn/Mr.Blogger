@@ -94,6 +94,7 @@ class _SearchPageState extends State<SearchPage> {
                       textCapitalization: TextCapitalization.sentences,
                       controller: searchBlog,
                       onSubmitted: (searchBlog) {
+                        print('searching ${searchBlog}');
                         _blog.add(SearchBlog(searchBlog));
                       },
                     );
