@@ -159,17 +159,16 @@ class _RegisterFormState extends State<RegisterForm> {
                     height: 50,
                     width: 80,
                     child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Text('SignUp',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20.0)),
-                        onPressed: //isRegisterButtonEnabled(state)
-                            //?
-                            _onFormSubmitted
-                        //: null,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text('SignUp',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 20.0)),
+                      onPressed: isRegisterButtonEnabled(state)
+                          ? _onFormSubmitted
+                          : null,
+                    ),
                   ),
                 ],
               ),

@@ -41,10 +41,24 @@ class AddBlog extends BlogsEvent {
 }
 
 //Upload image event
-class UploadImage extends BlogsEvent {
+// class UploadImage extends BlogsEvent {
+//   final File image;
+//   final String url;
+//   const UploadImage({
+//     @required this.url,
+//     @required this.image,
+//   });
+//   @override
+//   List<Object> get props => [image, url];
+
+//   @override
+//   String toString() => 'ImageBlog { blog: $image }';
+// }
+
+class UploadBlog extends BlogsEvent {
   final File image;
   final String url, title, description, category;
-  const UploadImage({
+  const UploadBlog({
     @required this.url,
     @required this.image,
     @required this.title,
@@ -71,7 +85,7 @@ class SearchBlog extends BlogsEvent {
 }
 
 class UpdateBlog extends BlogsEvent {
-  final File image;
+  final String image;
   final String url, title, description, category;
   int timeStamp;
 
@@ -115,4 +129,16 @@ class BlogComments extends BlogsEvent {
 
   @override
   String toString() => 'Updateblog { blog: $timeStamp }';
+}
+
+class DeleteComments extends BlogsEvent {
+  final int blogsTimeStamp;
+  final int commentTimeStamp;
+
+  DeleteComments(this.blogsTimeStamp, this.commentTimeStamp);
+  @override
+  List<Object> get props => [blogsTimeStamp, commentTimeStamp];
+
+  @override
+  String toString() => 'Updateblog { blog: $blogsTimeStamp,$commentTimeStamp }';
 }

@@ -98,27 +98,30 @@ class ProfileService {
   }
 
   Future<void> updateImage(
-      {sampleImage,
-      url,
-      mytitlevalue,
-      myvalue,
-      category,
-      blogtimeStamp}) async {
+      {sampleImage, mytitlevalue, myvalue, category, blogtimeStamp}) async {
     String url;
-    final StorageReference iamgeref =
-        FirebaseStorage.instance.ref().child("Blog images");
-    var timekey = new DateTime.now();
-    final StorageUploadTask updateImage =
-        iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
-    var imageurl = await updateImage.onComplete;
-    var imageurl1 = await imageurl.ref.getDownloadURL();
-    url = imageurl1.toString();
+    // if (sampleImage != null) {
+    //   final StorageReference iamgeref =
+    //       FirebaseStorage.instance.ref().child("Blog images");
+    //   var timekey = new DateTime.now();
+    //   print('${sampleImage}');
+    //   final StorageUploadTask updateImage =
+    //       iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
+    //   print('testing inside update service');
+    //   var imageurl = await updateImage.onComplete;
+    //   var imageurl1 = await imageurl.ref.getDownloadURL();
+    //   print('test123');
+    //   url = imageurl1.toString();
+    // } else {
+    print('inside update service${sampleImage}');
     try {
-      await updateBlog(url, mytitlevalue, myvalue, category, blogtimeStamp);
+      await updateBlog(
+          sampleImage, mytitlevalue, myvalue, category, blogtimeStamp);
     } catch (e) {
       print(e.toString());
     }
   }
+  //}
 
   Future editProfile(name) async {
     try {

@@ -29,9 +29,11 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapLoadedBlogsState(event, state);
     } else if (event is AddBlog) {
       yield* _mapAddBlogState(event);
-    } else if (event is UploadImage) {
-      yield* _mapUploadImageToState(event);
-    } else if (event is SearchBlog) {
+    }
+    // else if (event is UploadImage) {
+    //   yield* _mapUploadImageToState(event);
+    //}
+    else if (event is SearchBlog) {
       yield* _mapSerachBlogToState(event);
     } else if (event is UpdateBlog) {
       yield* _mapUpdateBlogToState(event);
@@ -39,13 +41,17 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapBlogLikesToState(event);
     } else if (event is BlogComments) {
       yield* _mapBlogCommentsToState(event);
+    } else if (event is DeleteComments) {
+      yield* _mapDeleteCommentsToState(event);
+    } else if (event is UploadBlog) {
+      yield* _mapUploadBlogToState(event);
     }
   }
 
 //mapping Fetch Blogs event with blogs state
   Stream<BlogsState> _mapLoadedBlogsState(
       FetchBlogs event, BlogsState state) async* {
-    print('inside loaded');
+    //   print('inside loaded');
     final result = await _userService.read();
     final uid = await _userService.save();
     try {
@@ -93,21 +99,17 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   }
 
 // mapping Upload Image event with blogs state
-  Stream<BlogsState> _mapUploadImageToState(UploadImage event) async* {
-    try {
-      await _blogsService.uploadImage(
-        url: event.url,
-        sampleImage: event.image,
-        mytitlevalue: event.title,
-        myvalue: event.description,
-        category: event.category,
-      );
-      final List<Blogs> blog = await _blogsService.getblogs();
-      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
-    } catch (e) {
-      print('${e.toString()}');
-    }
-  }
+  // Stream<BlogsState> _mapUploadImageToState(UploadImage event) async* {
+  //   try {
+  //     print('inside service upload image');
+  //     await _blogsService.uploadImage(
+  //       sampleImage: event.image,
+  //     );
+  //     yield UploadImageSuccess();
+  //   } catch (e) {
+  //     print('${e.toString()}');
+  //   }
+  // }
 
   Stream<BlogsState> _mapSerachBlogToState(SearchBlog event) async* {
     try {
@@ -120,8 +122,10 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapUpdateBlogToState(UpdateBlog event) async* {
     try {
+      print('mapping update event to state ${event.image}');
+
       await _profileService.updateImage(
-        url: event.url,
+        //  url: event.url,
         sampleImage: event.image,
         mytitlevalue: event.title,
         myvalue: event.description,
@@ -149,14 +153,35 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapBlogCommentsToState(BlogComments event) async* {
     try {
       var user = await _userService.save();
-      print(
-          'values in bloc timeStamp${event.timeStamp},comment${event.comments},uid ${user.uid}');
-
       await _blogsService.setComments(
           event.timeStamp, event.comment, user.uid, event.comments);
-      // final List<Blogs> blog = await _blogsService.getblogs();
-      // print('blogs inside bloc ${blog[0].comments}');
-      // yield BlogsLoaded(blogs: blog, hasReachedMax: false);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapUploadBlogToState(UploadBlog event) async* {
+    try {
+      print('upload blog bloc');
+      await _blogsService.saveToDatabase(
+          event.url, event.title, event.description, event.category);
+      final List<Blogs> blog = await _blogsService.getblogs();
+      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
+    } catch (e) {
+      print('${e.toString()}');
+    }
+  }
+
+  Stream<BlogsState> _mapDeleteCommentsToState(DeleteComments event) async* {
+    try {
+      var user = await _userService.save();
+      print(
+          'values in bloc timeStamp${event.blogsTimeStamp},comment${event.commentTimeStamp}}');
+
+      await _blogsService.deleteComments(
+        event.blogsTimeStamp,
+        event.commentTimeStamp,
+      );
     } catch (e) {
       print(e);
     }

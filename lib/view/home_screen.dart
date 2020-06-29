@@ -404,7 +404,9 @@ class _HomepageState extends State<Homepage> {
 
   Widget getCommentButton(
       int timeStamp, List<Comment> comments, String uid, String title) {
-    print('inside getcomment button ${timeStamp}, ${comments}');
+    //  print('inside getcomment button ${timeStamp}, ${comments}');
+
+    // print('tempcomment ${tempComment}');
     return new GestureDetector(
       child: new Container(
         alignment: Alignment.center,

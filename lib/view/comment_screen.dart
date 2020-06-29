@@ -6,6 +6,8 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/service/blog_service.dart';
+import 'package:mr_blogger/view/home_screen.dart';
+import 'package:mr_blogger/view/loading_page.dart';
 
 class CommentsScreen extends StatefulWidget {
   final int timeStamp;
@@ -31,8 +33,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   void setComments(
       int timeStamp, String comment, List<Comment> comments, String uid) {
-    print(
-        'Comments inside setcomments ${timeStamp},${comments} ${_commentController.text}');
     _blog.add(BlogComments(
       timeStamp,
       _commentController.text,
@@ -41,19 +41,20 @@ class _CommentsScreenState extends State<CommentsScreen> {
     ));
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    setState(() {
-      commentsList();
-    });
+  deleteComments(int blogsTimeStamp, int commentTimeStamp) {
+    print(
+        'Comments inside deletecomments ${blogsTimeStamp},${commentTimeStamp}');
+    _blog.add(DeleteComments(
+      blogsTimeStamp,
+      commentTimeStamp,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     List<Comment> tempcomments = new List<Comment>();
-    print(
-        'Comments inside build ${widget.timeStamp},${widget.comments} ${_commentController.text}');
+    // print(
+    //     'Comments inside build ${widget.timeStamp},${widget.comments} ${_commentController.text}');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple[800],
@@ -101,12 +102,18 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   color: Colors.purple[800],
                 ),
                 labelText: 'write your comment',
-              )
-              //   onSubmitted:
-              ),
+              )),
         ),
       ]),
     );
+  }
+
+  void navigateToLoadingPage() {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return new Homepage();
+      },
+    ));
   }
 
   Widget commentsList() {
@@ -158,6 +165,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 color: Colors.grey[500],
               ),
             ),
+            trailing: IconButton(
+                icon: Icon(Icons.delete_forever),
+                onPressed: () {
+                  print('delete icon pressed');
+                  deleteComments(widget.timeStamp, widget.comments[index].date);
+                  navigateToLoadingPage();
+                }),
           );
         },
       ),

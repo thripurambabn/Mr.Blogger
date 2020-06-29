@@ -43,15 +43,18 @@ class BlogsService {
         //print('tempcomment ${tempComments}');
 
         for (var comment in tempComments) {
-          // print('comments inside for------------ ${comment}');
-          var newComment = new Comment(
-            username: comment['username'],
-            date: comment['date'],
-            comment: comment['comment'],
-          );
-          //  print('comment inside for ${comment}');
-          commentsList.add(newComment);
-          //print('commentList inside for ${commentsList}');
+          //   print('comments inside for------------ ${comment}');
+          if (comment != null) {
+            var newComment = new Comment(
+              username: comment['username'],
+              date: comment['date'],
+              comment: comment['comment'],
+            );
+
+            //  print('comment inside for ${comment}');
+            commentsList.add(newComment);
+            //print('commentList inside for ${commentsList}');
+          }
         }
       }
       Blogs blog = new Blogs(
@@ -135,6 +138,8 @@ class BlogsService {
     String category,
   ) async {
     try {
+      //  var url = uploadImage();
+      print('url:$url');
       List<String> likes = [];
       List<String> comments = [];
       var dbkey = new DateTime.now();
@@ -166,46 +171,45 @@ class BlogsService {
   }
 
 //To Upload image to the firebase storage
-  Future<void> uploadImage({
+  Future<String> uploadImage({
     sampleImage,
-    url,
-    mytitlevalue,
-    myvalue,
-    category,
   }) async {
     String url;
     // if (validateandSave()) {
+    print('inside service upload image');
     final StorageReference iamgeref =
         FirebaseStorage.instance.ref().child("Blog images");
     var timekey = new DateTime.now();
+    print('image -------${sampleImage}');
     final StorageUploadTask uploadImage =
         iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
     var imageurl = await uploadImage.onComplete;
     var imageurl1 = await imageurl.ref.getDownloadURL();
     url = imageurl1.toString();
-
-    try {
-      await saveToDatabase(
-        url,
-        mytitlevalue,
-        myvalue,
-        category,
-      );
-    } catch (e) {
-      print(e.toString());
-    }
+    print('url -------${url}');
+    return url;
+    // try {
+    //   await saveToDatabase(
+    //     url,
+    //     mytitlevalue,
+    //     myvalue,
+    //     category,
+    //   );
+    // } catch (e) {
+    //   print(e.toString());
+    // }
     // }
   }
 
 //To validate form and save
-  bool validateandSave() {
-    final formKey = new GlobalKey<FormState>();
-    final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-  }
+  // bool validateandSave() {
+  //   final formKey = new GlobalKey<FormState>();
+  //   final form = formKey.currentState;
+  //   if (form.validate()) {
+  //     form.save();
+  //     return true;
+  //   }
+  // }
 
 //To Search a blog in firebase
   Future searchBlogs(String searchKey) async {
@@ -220,6 +224,7 @@ class BlogsService {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
+
         for (var key in refkey) {
           Blogs blog = new Blogs(
               image: data[key]['image'],
@@ -232,6 +237,7 @@ class BlogsService {
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
+          print('test1223');
           blogsList.clear();
           blogsList.add(blog);
         }
@@ -280,8 +286,6 @@ class BlogsService {
 
   Future setComments(int blogtimeStamp, String comment, var uid,
       List<Comment> comments) async {
-    print(
-        'values in Service timeStamp$blogtimeStamp,comment$comment,uid $uid,');
     var commentsData = comments;
     var timeStamp = new DateTime.now().millisecondsSinceEpoch;
     var username = await userService.getUserName();
@@ -290,10 +294,7 @@ class BlogsService {
       date: timeStamp,
       comment: comment,
     );
-    print('iam stuck');
     commentsData.add(commentobj);
-    print('commentsList ${commentsData}');
-
     List<Object> convertedComments = convertToCommentJson(commentsData);
     print(convertedComments);
 
@@ -309,6 +310,46 @@ class BlogsService {
           .child('blogs')
           .child(event.snapshot.key)
           .update({'comments': convertedComments});
+    }, onError: (Object o) {
+      print('inside onerrod ${o}');
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+  }
+
+  Future deleteComments(
+    int blogsTimeStamp,
+    int commentTimeStamp,
+  ) async {
+    print('values in delete Service timeStamp$commentTimeStamp,');
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('timeStamp')
+        .equalTo(blogsTimeStamp)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('blogs')
+          .child(event.snapshot.key)
+          .child('comments')
+          .orderByChild('date')
+          .equalTo(commentTimeStamp)
+          .onChildAdded
+          .listen((commentEvent) {
+        //  print('listening comment event ${commentEvent.snapshot.key}');
+        FirebaseDatabase.instance
+            .reference()
+            .child('blogs')
+            .child(event.snapshot.key)
+            .child('comments')
+            .child(commentEvent.snapshot.key)
+            .remove();
+        //   .update({'comment': 'testsomething'});
+        print('deleted ${commentEvent.snapshot.key}');
+      });
+      print('snapshot key ${event.snapshot.key}');
     }, onError: (Object o) {
       print('inside onerrod ${o}');
       final DatabaseError error = o;

@@ -59,13 +59,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void navigateToProfilePage() {
-    // Timer(Duration(seconds: 8), () {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) {
-        return new ProfilePage();
-      },
-    ));
-    //  });
+    Timer(Duration(seconds: 8), () {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return new ProfilePage();
+        },
+      ));
+    });
     // Navigator.push(context, MaterialPageRoute(builder: (context) {
     //   return new ProfilePage();
     // }));

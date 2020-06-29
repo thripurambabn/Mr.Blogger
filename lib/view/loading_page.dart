@@ -19,8 +19,9 @@ class LoadingPage extends StatelessWidget {
 
     return Center(
         child: Image(
+      fit: BoxFit.cover,
       image: NetworkImage(
-          'https://cdn.dribbble.com/users/2016587/screenshots/4962637/squares-animation.gif'),
+          'https://i.pinimg.com/originals/07/bf/6f/07bf6f0f7d5dd64829822e95e97f908d.gif'),
     ));
   }
 }

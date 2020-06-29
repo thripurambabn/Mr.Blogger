@@ -75,3 +75,10 @@ class BlogsNotLoaded extends BlogsState {
   @override
   String toString() => 'blogsNotLoaded';
 }
+
+class UploadImageSuccess extends BlogsState {
+  @override
+  String toString() {
+    return 'Blogs loading';
+  }
+}

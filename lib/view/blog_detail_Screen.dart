@@ -46,16 +46,14 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   void navigateToAddPage(blog) {
-    Timer(Duration(seconds: 8), () {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) {
-          return new AddBlogScreen(
-            blog: blog,
-            isEdit: true,
-          );
-        },
-      ));
-    });
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return new AddBlogScreen(
+          blog: blog,
+          isEdit: true,
+        );
+      },
+    ));
   }
 
   @override
@@ -77,7 +75,8 @@ class _DetailPageState extends State<DetailPage> {
                           value: '1',
                           child: FlatButton(
                             onPressed: () {
-                              print('sending ${widget.blogs.title}');
+                              print(
+                                  'sending ${widget.blogs.title} ${widget.blogs.image} ${widget.blogs.description} ');
                               navigateToAddPage(widget.blogs);
                             },
                             child: Text('Edit',

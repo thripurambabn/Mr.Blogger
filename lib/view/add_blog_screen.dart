@@ -30,7 +30,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String _mytitlevalue;
   String category;
   String likes;
-  String url;
+  String imageUrl;
   bool isbuttondisabled = false;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -129,26 +129,32 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 //fetch image from the gallery
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-
+    print('sending sample image${tempImage}');
     setState(() {
       sampleImage = tempImage;
     });
+    var url = await _blogsServcie.uploadImage(sampleImage: sampleImage);
+    setState(() {
+      // sampleImage = tempImage;
+      imageUrl = url;
+    });
   }
 
-  bool validateandSave() {
-    final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-  }
+  // bool validateandSave() {
+  //   final form = formKey.currentState;
+  //   if (form.validate()) {
+  //     form.save();
+  //     return true;
+  //   }
+  // }
 
 //calls Upload Image event to add blog
   void addBlog() {
-    validateandSave();
+    //   validateandSave();
+    print('calling event upload blog');
     _blog.add(
-      UploadImage(
-        url: url,
+      UploadBlog(
+        url: imageUrl,
         image: sampleImage,
         title: _titleController.text,
         description: _descriptionController.text,
@@ -158,10 +164,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   void updateBlog() {
+    print('sending from update blog ${imageUrl}${widget.blog.image}');
     _blog.add(
       UpdateBlog(
-          url: widget.blog.image,
-          image: sampleImage,
+          image: imageUrl,
+          //  image: sampleImage,
           title: _titleController.text,
           description: _descriptionController.text,
           category: 'play',
@@ -181,7 +188,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   void navigateToHomePage() {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return new Homepage();
+        return Homepage();
       },
     ));
   }
@@ -291,7 +298,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           descriptionfield(),
           RaisedButton(
             child: Text(
-              widget.isEdit == true ? 'update blog' : 'uploade blog',
+              widget.isEdit == true ? 'update blog' : 'upload blog',
               style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
             ),
             color: Colors.purple[800],
@@ -392,7 +399,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
               onChanged: (value) {
-                print('value saved ${value}');
+                //  print('value saved ${value}');
                 _myvalue = value;
               },
             ),
