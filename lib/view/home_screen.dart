@@ -34,6 +34,7 @@ class _HomepageState extends State<Homepage> {
   final _scrollController = ScrollController();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   final _scrollThreshold = 200.0;
+  List<String> tempLikes = new List<String>();
 
   @override
   void initState() {
@@ -110,7 +111,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void setlike(int timeStamp, List<String> likes, String uid) {
-    print('like${timeStamp},${likes}');
+    print('like in UI setLike${timeStamp},${likes}');
     _blog.add(BlogLikes(timeStamp, likes));
   }
 
@@ -373,7 +374,14 @@ class _HomepageState extends State<Homepage> {
 
   Widget getClapButton(int timeStamp, List<String> likes, String uid) {
     return new GestureDetector(
-        onTap: () => setlike(timeStamp, likes, uid),
+        onTap: () => {
+              tempLikes = likes, // []
+              print('in UI  ${tempLikes}'),
+              likes.add(uid), // [uid]
+              print('in UI after add ${tempLikes}'),
+              setlike(timeStamp, tempLikes, uid), // (timeStamp,[uid],uid)
+              print('called setLikes'),
+            },
         child: new Container(
           height: 20.0,
           width: 20.0,
@@ -382,7 +390,7 @@ class _HomepageState extends State<Homepage> {
             borderRadius: new BorderRadius.circular(50.0),
             color: Colors.white,
           ),
-          child: likes.contains(uid) == true
+          child: tempLikes.contains(uid) == true
               ? Icon(Icons.favorite, color: Colors.purple[500], size: 20)
               : Icon(Icons.favorite_border,
                   color: Colors.purple[500], size: 20.0),
@@ -397,7 +405,7 @@ class _HomepageState extends State<Homepage> {
             width: 10.0,
             child: new Center(
                 child: new Text(
-              likes.length.toString(),
+              tempLikes.length.toString(),
               style: new TextStyle(color: Colors.grey[700], fontSize: 10.0),
             ))));
   }

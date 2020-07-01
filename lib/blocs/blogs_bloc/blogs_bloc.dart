@@ -43,6 +43,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapBlogCommentsToState(event);
     } else if (event is DeleteComments) {
       yield* _mapDeleteCommentsToState(event);
+    } else if (event is EditComments) {
+      yield* _mapEditCommentsToState(event);
     } else if (event is UploadBlog) {
       yield* _mapUploadBlogToState(event);
     }
@@ -51,8 +53,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 //mapping Fetch Blogs event with blogs state
   Stream<BlogsState> _mapLoadedBlogsState(
       FetchBlogs event, BlogsState state) async* {
-    //   print('inside loaded');
-    final result = await _userService.read();
     final uid = await _userService.save();
     try {
       if (state is BlogsLoading && !_hasReachedMax(state)) {
@@ -143,9 +143,10 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapBlogLikesToState(BlogLikes event) async* {
     try {
       var user = await _userService.save();
+      print('in bloc ${event.likes}');
       await _blogsService.setLikes(event.timeStamp, user.uid, event.likes);
-      final List<Blogs> blog = await _blogsService.getblogs();
-      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
+      // final List<Blogs> blog = await _blogsService.getblogs();
+      // yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print(e);
     }
@@ -176,13 +177,23 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapDeleteCommentsToState(DeleteComments event) async* {
     try {
       var user = await _userService.save();
-      print(
-          'values in bloc timeStamp${event.blogsTimeStamp},comment${event.commentTimeStamp}}');
-
       await _blogsService.deleteComments(
         event.blogsTimeStamp,
         event.commentTimeStamp,
       );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapEditCommentsToState(EditComments event) async* {
+    try {
+      //  var user = await _userService.save();
+      print(
+          'values in edit comment bloc timeStamp${event.blogsTimeStamp},comment${event.commentTimeStamp} ${event.comment}');
+
+      await _blogsService.editComments(
+          event.blogsTimeStamp, event.commentTimeStamp, event.comment);
     } catch (e) {
       print(e);
     }

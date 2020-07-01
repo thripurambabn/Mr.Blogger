@@ -58,7 +58,6 @@ class _RegisterFormState extends State<RegisterForm> {
         if (state.isSuccess) {
           BlocProvider.of<AuthenticationBloc>(context)
               .add(AuthenticationLoggedIn());
-          Navigator.of(context).pop();
         }
         if (state.isFailure) {
           Scaffold.of(context)
@@ -111,7 +110,9 @@ class _RegisterFormState extends State<RegisterForm> {
                     autovalidate: true,
                     textCapitalization: TextCapitalization.sentences,
                     validator: (_) {
-                      return !state.isUsernameValid ? 'Invalid username' : null;
+                      return !state.isUsernameValid
+                          ? 'Must be more than 8 characters'
+                          : null;
                     },
                   ),
                   SizedBox(
@@ -231,62 +232,68 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          Container(
-              height: 759,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      colors: [
-                        Colors.purple[400],
-                        Colors.purple[300],
-                        Colors.purple[900]
-                      ],
-                      end: FractionalOffset.topCenter),
-                  color: Colors.purpleAccent),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 70,
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text(
-                      "SignUp",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontFamily: 'Paficico'),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 545,
-                      alignment: Alignment.bottomCenter,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(60),
-                              topRight: Radius.circular(60))),
-                      child: BlocProvider<RegisterBloc>(
-                        create: (context) =>
-                            RegisterBloc(userService: _userService),
-                        child: RegisterForm(),
+          child: Column(
+            children: <Widget>[
+              Container(
+                  height: 759,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          colors: [
+                            Colors.purple[400],
+                            Colors.purple[300],
+                            Colors.purple[900]
+                          ],
+                          end: FractionalOffset.topCenter),
+                      color: Colors.purpleAccent),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 70,
                       ),
-                    ),
-                  )
-                ],
-              )),
-        ],
-      ),
-    ));
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          "SignUp",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                              fontFamily: 'Paficico'),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 545,
+                          alignment: Alignment.bottomCenter,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(60),
+                                  topRight: Radius.circular(60))),
+                          child: BlocProvider<RegisterBloc>(
+                            create: (context) =>
+                                RegisterBloc(userService: _userService),
+                            child: RegisterForm(),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+            ],
+          ),
+        ));
   }
 }

@@ -23,9 +23,10 @@ class CommentsScreen extends StatefulWidget {
 
 class _CommentsScreenState extends State<CommentsScreen> {
   TextEditingController _commentController = TextEditingController();
+
   static BlogsService _blogsServcie = BlogsService();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
-
+  bool isEdit = false;
   @override
   void initState() {
     super.initState();
@@ -48,6 +49,12 @@ class _CommentsScreenState extends State<CommentsScreen> {
       blogsTimeStamp,
       commentTimeStamp,
     ));
+  }
+
+  editComments(int blogsTimeStamp, int commentTimeStamp, String comment) {
+    print(
+        'Comments inside edit comments ${blogsTimeStamp},${commentTimeStamp} ${comment}');
+    _blog.add(EditComments(blogsTimeStamp, commentTimeStamp, comment));
   }
 
   @override
@@ -117,6 +124,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   Widget commentsList() {
+    List<Comment> tempcomments = new List<Comment>();
     return Expanded(
       child: ListView.builder(
         key: Key(widget.uid),
@@ -155,24 +163,52 @@ class _CommentsScreenState extends State<CommentsScreen> {
           }
 
           return ListTile(
-            title: new Text(
-                '${widget.comments[index].username}: ${widget.comments[index].comment}'),
-            subtitle: Text(
-              '${readTimestamp(widget.comments[index].date)}',
-              style: TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey[500],
+              title: new Text(
+                  '${widget.comments[index].username}: ${widget.comments[index].comment}'),
+              subtitle: Text(
+                '${readTimestamp(widget.comments[index].date)}',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[500],
+                ),
               ),
-            ),
-            trailing: IconButton(
-                icon: Icon(Icons.delete_forever),
-                onPressed: () {
-                  print('delete icon pressed');
-                  deleteComments(widget.timeStamp, widget.comments[index].date);
-                  navigateToLoadingPage();
-                }),
-          );
+              trailing: Wrap(
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.delete_forever),
+                      onPressed: () {
+                        deleteComments(
+                            widget.timeStamp, widget.comments[index].date);
+                        print('delete icon pressed');
+                        tempcomments = widget.comments;
+                        setState(() {
+                          widget.comments.remove(widget.comments[index]);
+                          commentsList();
+                        });
+                        tempcomments = new List<Comment>();
+                      }),
+                  IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        tempcomments = widget.comments;
+                        setState(() {
+                          widget.comments.add(Comment(
+                              comment: _commentController.text,
+                              date: widget.timeStamp,
+                              username: widget.uid));
+                          commentsList();
+                        });
+                        tempcomments.removeLast();
+                        print('edit icon pressed');
+                        editComments(
+                            widget.timeStamp,
+                            widget.comments[index].date,
+                            widget.comments[index].comment);
+                        tempcomments = new List<Comment>();
+                      })
+                ],
+              ));
         },
       ),
     );

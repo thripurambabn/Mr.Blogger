@@ -100,12 +100,19 @@ class BlogsService {
               likesList.add(like.toString());
             }
           }
-          var tempComments = [];
+          var tempComments;
           var commentsList = new List<Comment>();
           if (data[key]['comments'] != null) {
             tempComments = data[key]['comments'];
             for (var comment in tempComments) {
-              commentsList.add(comment);
+              if (comment != null) {
+                var newComment = new Comment(
+                  username: comment['username'],
+                  date: comment['date'],
+                  comment: comment['comment'],
+                );
+                commentsList.add(newComment);
+              }
             }
           }
           Blogs blog = new Blogs(
@@ -280,8 +287,10 @@ class BlogsService {
     List<String> likesData = likes;
     if (likes.contains(uid)) {
       likesData.remove(uid);
+      print('likes removed to the list');
     } else {
       likesData.add(uid);
+      print('likes added to the list');
     }
     FirebaseDatabase.instance
         .reference()
@@ -371,6 +380,43 @@ class BlogsService {
             .remove();
         //   .update({'comment': 'testsomething'});
         print('deleted ${commentEvent.snapshot.key}');
+      });
+      print('snapshot key ${event.snapshot.key}');
+    }, onError: (Object o) {
+      print('inside onerrod ${o}');
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+  }
+
+  Future editComments(
+      int blogsTimeStamp, int commentTimeStamp, String comment) async {
+    print('values in edit comment Service $commentTimeStamp  $comment,');
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('timeStamp')
+        .equalTo(blogsTimeStamp)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('blogs')
+          .child(event.snapshot.key)
+          .child('comments')
+          .orderByChild('date')
+          .equalTo(commentTimeStamp)
+          .onChildAdded
+          .listen((commentEvent) {
+        //  print('listening comment event ${commentEvent.snapshot.key}');
+        FirebaseDatabase.instance
+            .reference()
+            .child('blogs')
+            .child(event.snapshot.key)
+            .child('comments')
+            .child(commentEvent.snapshot.key)
+            .update({'comment': comment});
+        print('edited ${comment}');
       });
       print('snapshot key ${event.snapshot.key}');
     }, onError: (Object o) {

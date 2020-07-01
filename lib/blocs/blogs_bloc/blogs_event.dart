@@ -142,3 +142,16 @@ class DeleteComments extends BlogsEvent {
   @override
   String toString() => 'Updateblog { blog: $blogsTimeStamp,$commentTimeStamp }';
 }
+
+class EditComments extends BlogsEvent {
+  final int blogsTimeStamp;
+  final int commentTimeStamp;
+  final String comment;
+
+  EditComments(this.blogsTimeStamp, this.commentTimeStamp, this.comment);
+  @override
+  List<Object> get props => [blogsTimeStamp, commentTimeStamp, comment];
+
+  @override
+  String toString() => 'Updateblog { blog: $blogsTimeStamp,$commentTimeStamp }';
+}
