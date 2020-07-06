@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -34,7 +35,6 @@ class _HomepageState extends State<Homepage> {
   final _scrollController = ScrollController();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   final _scrollThreshold = 200.0;
-  List<String> tempLikes = new List<String>();
 
   @override
   void initState() {
@@ -212,6 +212,7 @@ class _HomepageState extends State<Homepage> {
                       ? state.blogs.length
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
+                    //print('state of blogs ${state.blogs[index].likes}');
                     return index >= state.blogs.length
                         ? bottomLoader()
                         : ListTile(
@@ -288,25 +289,16 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
             SizedBox(height: 10.0),
-            Image.network(
-              image ??
-                  Container(
-                    color: Colors.purple[50],
-                    height: 240,
-                    width: MediaQuery.of(context).size.width / 1.2,
-                  ),
+            CachedNetworkImage(
+              imageUrl: image,
               fit: BoxFit.cover,
               height: 240,
               width: MediaQuery.of(context).size.width / 1.2,
-              loadingBuilder: (context, child, progress) {
-                return progress == null
-                    ? child
-                    : Container(
-                        color: Colors.purple[50],
-                        height: 300,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                      );
-              },
+              placeholder: (context, url) => CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
             SizedBox(
               height: 10,
@@ -375,12 +367,14 @@ class _HomepageState extends State<Homepage> {
   Widget getClapButton(int timeStamp, List<String> likes, String uid) {
     return new GestureDetector(
         onTap: () => {
-              tempLikes = likes, // []
-              print('in UI  ${tempLikes}'),
-              likes.add(uid), // [uid]
-              print('in UI after add ${tempLikes}'),
-              setlike(timeStamp, tempLikes, uid), // (timeStamp,[uid],uid)
-              print('called setLikes'),
+              setState(() {
+                if (likes.contains(uid)) {
+                  likes.remove(uid);
+                } else {
+                  likes.add(uid);
+                }
+              }),
+              setlike(timeStamp, likes, uid),
             },
         child: new Container(
           height: 20.0,
@@ -390,7 +384,7 @@ class _HomepageState extends State<Homepage> {
             borderRadius: new BorderRadius.circular(50.0),
             color: Colors.white,
           ),
-          child: tempLikes.contains(uid) == true
+          child: likes.contains(uid) == true
               ? Icon(Icons.favorite, color: Colors.purple[500], size: 20)
               : Icon(Icons.favorite_border,
                   color: Colors.purple[500], size: 20.0),
@@ -405,7 +399,7 @@ class _HomepageState extends State<Homepage> {
             width: 10.0,
             child: new Center(
                 child: new Text(
-              tempLikes.length.toString(),
+              likes.length.toString(),
               style: new TextStyle(color: Colors.grey[700], fontSize: 10.0),
             ))));
   }

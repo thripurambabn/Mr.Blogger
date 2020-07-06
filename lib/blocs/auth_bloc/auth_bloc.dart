@@ -50,7 +50,6 @@ class AuthenticationBloc
 //mapping Authentication Failure with authentication state
   Stream<AuthenticationState> _mapAuthenticationLoggedOutToState() async* {
     yield AuthenticationFailure();
-
     _userService.signOut();
   }
 }

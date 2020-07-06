@@ -32,6 +32,7 @@ class BlogsService {
       var likesList = new List<String>();
       if (data[key]['likes'] != null) {
         tempLikes = data[key]['likes'];
+        print('likes------------ ${data[key]['likes']}');
         for (var like in tempLikes) {
           likesList.add(like.toString());
         }
@@ -284,14 +285,11 @@ class BlogsService {
   }
 
   Future setLikes(int blogtimeStamp, var uid, List<String> likes) async {
-    List<String> likesData = likes;
-    if (likes.contains(uid)) {
-      likesData.remove(uid);
-      print('likes removed to the list');
-    } else {
-      likesData.add(uid);
-      print('likes added to the list');
-    }
+    // List<String> likesData = new List<String>();
+    // print('likesdata ${likesData}');
+    // likesData = likes;
+
+    print('likesdata after adding to thr list in service ${blogtimeStamp}');
     FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -299,11 +297,13 @@ class BlogsService {
         .equalTo(blogtimeStamp)
         .onChildAdded
         .listen((Event event) {
+      print('event ${event.snapshot.value}');
       FirebaseDatabase.instance
           .reference()
           .child('blogs')
           .child(event.snapshot.key)
-          .update({'likes': likesData});
+          .update({'likes': likes});
+      print('likesData ${likes}');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');

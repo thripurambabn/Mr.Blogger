@@ -67,8 +67,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Icon cusIcon = Icon(Icons.search);
-  Widget cusSearchBar = Text('Mr.Blogger',
-      style: TextStyle(color: Colors.white, fontFamily: 'Paficico'));
+  Widget cusSearchBar =
+      Text('', style: TextStyle(color: Colors.white, fontFamily: 'Paficico'));
   final TextEditingController searchBlog = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -94,7 +94,6 @@ class _SearchPageState extends State<SearchPage> {
                       textCapitalization: TextCapitalization.sentences,
                       controller: searchBlog,
                       onSubmitted: (searchBlog) {
-                        print('searching ${searchBlog}');
                         _blog.add(SearchBlog(searchBlog));
                       },
                     );
@@ -132,10 +131,18 @@ class _SearchPageState extends State<SearchPage> {
                 builder: (context, state) {
                   //Loading state
                   if (state is BlogsLoading) {
-                    return Image.network(
-                      'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
-                      alignment: Alignment.center,
-                    );
+                    return Column(children: <Widget>[
+                      Image.network(
+                        'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
+                        alignment: Alignment.center,
+                      ),
+                      Text('wait iam searching.....',
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.normal,
+                              fontFamily: 'Paficico',
+                              color: Colors.purple))
+                    ]);
                   } //Loaded state
                   else if (state is BlogsLoaded) {
                     return ListView.builder(
@@ -290,6 +297,5 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 Widget errorUI() {
-  return new SnackBar(
-      content: Text('Something went wrong try after sometime!!'));
+  return new Center(child: Text('there are no blogs of this name'));
 }

@@ -286,7 +286,14 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 70,
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
                   ),
                   Container(
                     alignment: Alignment.center,

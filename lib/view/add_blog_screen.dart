@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
@@ -128,9 +129,15 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //fetch image from the gallery
   Future getImage() async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    print('selecting and image');
+    final _picker = ImagePicker();
+    //   var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await _picker.getImage(source: ImageSource.gallery, imageQuality: 85);
+    final File file = File(pickedFile.path);
+    print('selected a image');
     setState(() {
-      sampleImage = tempImage;
+      sampleImage = file;
     });
     var url = await _blogsServcie.uploadImage(sampleImage: sampleImage);
     setState(() {

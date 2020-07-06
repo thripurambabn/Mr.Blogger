@@ -27,6 +27,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   static BlogsService _blogsServcie = BlogsService();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   bool isEdit = false;
+  int commentIndex;
   @override
   void initState() {
     super.initState();
@@ -59,7 +60,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Comment> tempcomments = new List<Comment>();
+    // List<Comment> tempcomments = new List<Comment>();
     // print(
     //     'Comments inside build ${widget.timeStamp},${widget.comments} ${_commentController.text}');
     return Scaffold(
@@ -75,35 +76,58 @@ class _CommentsScreenState extends State<CommentsScreen> {
         Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
               autocorrect: false,
               textCapitalization: TextCapitalization.sentences,
               controller: _commentController,
               validator: (text) {
                 if (text == null || text.isEmpty) {
-                  return 'Text is empty';
+                  return 'Comment cant be empty';
                 }
                 return null;
               },
               decoration: InputDecoration(
                 suffixIcon: IconButton(
-                  icon: Icon(FontAwesomeIcons.paperPlane,
-                      color: Colors.purple[800]),
-                  onPressed: () => {
-                    tempcomments = widget.comments,
-                    setState(() {
-                      widget.comments.add(Comment(
-                          comment: _commentController.text,
-                          date: widget.timeStamp,
-                          username: widget.uid));
-                      commentsList();
-                    }),
-                    tempcomments.removeLast(),
-                    setComments(widget.timeStamp, _commentController.text,
-                        tempcomments, widget.uid),
-                    _commentController.clear(),
-                    tempcomments = new List<Comment>()
-                  },
-                ),
+                    icon: Icon(FontAwesomeIcons.paperPlane,
+                        color: Colors.purple[800]),
+                    onPressed: () => {
+                          if (commentIndex != null)
+                            {
+                              widget.comments[commentIndex].comment =
+                                  _commentController.text,
+                              (!_commentController.text.isEmpty)
+                                  ? {
+                                      setState(() {
+                                        commentsList();
+                                      }),
+                                      editComments(
+                                        widget.timeStamp,
+                                        widget.comments[commentIndex].date,
+                                        _commentController.text,
+                                      ),
+                                      _commentController.clear(),
+                                    }
+                                  : null,
+                              commentIndex = null,
+                            }
+                          else
+                            {
+                              (!_commentController.text.isEmpty)
+                                  ? {
+                                      setState(() {
+                                        commentsList();
+                                      }),
+                                      setComments(
+                                          widget.timeStamp,
+                                          _commentController.text,
+                                          widget.comments,
+                                          widget.uid),
+                                      _commentController.clear(),
+                                    }
+                                  : null
+                            }
+                        }),
                 icon: Icon(
                   FontAwesomeIcons.comment,
                   color: Colors.purple[800],
@@ -124,7 +148,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   Widget commentsList() {
-    List<Comment> tempcomments = new List<Comment>();
+    // List<Comment> tempcomments = new List<Comment>();
     return Expanded(
       child: ListView.builder(
         key: Key(widget.uid),
@@ -164,49 +188,66 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
           return ListTile(
               title: new Text(
-                  '${widget.comments[index].username}: ${widget.comments[index].comment}'),
-              subtitle: Text(
-                '${readTimestamp(widget.comments[index].date)}',
+                '${widget.comments[index].username}',
+                textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey[500],
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[600],
                 ),
               ),
+              subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      '${widget.comments[index].comment}',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                    Text(
+                      '${readTimestamp(widget.comments[index].date)}',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 8.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ]),
               trailing: Wrap(
                 children: <Widget>[
                   IconButton(
-                      icon: Icon(Icons.delete_forever),
+                      icon: Icon(
+                        Icons.edit,
+                        size: 18,
+                      ),
+                      onPressed: () {
+                        _commentController.text =
+                            widget.comments[index].comment;
+                        setState(() {
+                          commentIndex = index;
+                        });
+                      }),
+                  IconButton(
+                      icon: Icon(
+                        Icons.delete_forever,
+                        size: 18,
+                      ),
                       onPressed: () {
                         deleteComments(
                             widget.timeStamp, widget.comments[index].date);
                         print('delete icon pressed');
-                        tempcomments = widget.comments;
+                        //tempcomments = widget.comments;
                         setState(() {
                           widget.comments.remove(widget.comments[index]);
                           commentsList();
                         });
-                        tempcomments = new List<Comment>();
+                        //tempcomments = new List<Comment>();
                       }),
-                  IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        tempcomments = widget.comments;
-                        setState(() {
-                          widget.comments.add(Comment(
-                              comment: _commentController.text,
-                              date: widget.timeStamp,
-                              username: widget.uid));
-                          commentsList();
-                        });
-                        tempcomments.removeLast();
-                        print('edit icon pressed');
-                        editComments(
-                            widget.timeStamp,
-                            widget.comments[index].date,
-                            widget.comments[index].comment);
-                        tempcomments = new List<Comment>();
-                      })
                 ],
               ));
         },
