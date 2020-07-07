@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -256,7 +257,7 @@ class _HomepageState extends State<Homepage> {
 
 //blog tile widget
   Widget blogsUi(
-    String image,
+    List<String> images,
     String uid,
     String authorname,
     String title,
@@ -267,6 +268,23 @@ class _HomepageState extends State<Homepage> {
     String time,
     int timeStamp,
   ) {
+    List<CachedNetworkImage> networkImages = List<CachedNetworkImage>();
+    for (var image in images) {
+      print('each image ${image}');
+      networkImages.add(
+        CachedNetworkImage(
+          imageUrl: image,
+          fit: BoxFit.cover,
+          height: 240,
+          width: MediaQuery.of(context).size.width / 1.2,
+          placeholder: (context, url) => CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      );
+    }
+    print('image in home ui ${title}${networkImages}');
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -289,17 +307,86 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
             SizedBox(height: 10.0),
-            CachedNetworkImage(
-              imageUrl: image,
-              fit: BoxFit.cover,
-              height: 240,
-              width: MediaQuery.of(context).size.width / 1.2,
-              placeholder: (context, url) => CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
+            // CachedNetworkImage(
+            //   imageUrl: image,
+            //   fit: BoxFit.cover,
+            //   height: 240,
+            //   width: MediaQuery.of(context).size.width / 1.2,
+            //   placeholder: (context, url) => CircularProgressIndicator(
+            //     valueColor:
+            //         new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+            //   ),
+            //   errorWidget: (context, url, error) => Icon(Icons.error),
+            // ),
+            SizedBox(
+                height: 200.0,
+                width: 350.0,
+                child: Carousel(
+                  images: [
+                    CachedNetworkImage(
+                      imageUrl: images[0],
+                      fit: BoxFit.cover,
+                      height: 240,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      placeholder: (context, url) => CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            Colors.purple[800]),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                    CachedNetworkImage(
+                      imageUrl: images[1],
+                      fit: BoxFit.cover,
+                      height: 240,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      placeholder: (context, url) => CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            Colors.purple[800]),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                    CachedNetworkImage(
+                      imageUrl: images[2],
+                      fit: BoxFit.cover,
+                      height: 240,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      placeholder: (context, url) => CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            Colors.purple[800]),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                    CachedNetworkImage(
+                      imageUrl: images[3],
+                      fit: BoxFit.cover,
+                      height: 240,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      placeholder: (context, url) => CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            Colors.purple[800]),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                    CachedNetworkImage(
+                      imageUrl: images[4],
+                      fit: BoxFit.cover,
+                      height: 240,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      placeholder: (context, url) => CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            Colors.purple[800]),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ],
+                  dotSize: 8.0,
+                  dotSpacing: 15.0,
+                  dotColor: Colors.purple[800],
+                  indicatorBgPadding: 5.0,
+                  autoplay: false,
+                  dotBgColor: Colors.white.withOpacity(0),
+                  borderRadius: true,
+                )),
             SizedBox(
               height: 10,
             ),

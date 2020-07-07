@@ -1,3 +1,4 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
@@ -184,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
 
 //blog tile widget
   Widget blogsUi(
-      String image,
+      List<String> image,
       String uid,
       String authorname,
       String title,
@@ -215,26 +216,28 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
             SizedBox(height: 10.0),
-            Image.network(
-              image ??
-                  Container(
-                    color: Colors.purple[50],
-                    height: 240,
-                    width: MediaQuery.of(context).size.width / 1.2,
-                  ),
-              fit: BoxFit.cover,
-              height: 240,
-              width: MediaQuery.of(context).size.width / 1.2,
-              loadingBuilder: (context, child, progress) {
-                return progress == null
-                    ? child
-                    : Container(
-                        color: Colors.purple[50],
-                        height: 300,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                      );
-              },
-            ),
+
+            Carousel(
+                  images: [image],
+                ) ??
+                Container(
+                  color: Colors.purple[50],
+                  height: 240,
+                  width: MediaQuery.of(context).size.width / 1.2,
+                ),
+            // fit: BoxFit.cover,
+            // height: 240,
+            // width: MediaQuery.of(context).size.width / 1.2,
+            // loadingBuilder: (context, child, progress) {
+            //   return progress == null
+            //       ? child
+            //       : Container(
+            //           color: Colors.purple[50],
+            //           height: 300,
+            //           width: MediaQuery.of(context).size.width / 1.2,
+            //         );
+            // },
+
             SizedBox(
               height: 10,
             ),

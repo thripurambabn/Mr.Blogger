@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
@@ -13,6 +11,7 @@ import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 import 'package:mr_blogger/view/loading_page.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AddBlogScreen extends StatefulWidget {
   final bool isEdit;
@@ -31,8 +30,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String _mytitlevalue;
   String category;
   String likes;
-  String imageUrl;
+  List<String> imageUrl;
   bool isbuttondisabled = false;
+  List<Asset> images = List<Asset>();
+  List<String> imageUrlList = List<String>();
+  String _error = 'No Error Dectected';
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -72,7 +74,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             ),
             body: SingleChildScrollView(
               child: new Center(
-                child: sampleImage == null ? beforeUpload() : enableUplaod(),
+                child:
+                    imageUrlList.length == 0 ? beforeUpload() : enableUplaod(),
               ),
             ),
           ),
@@ -129,20 +132,71 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //fetch image from the gallery
   Future getImage() async {
-    print('selecting and image');
-    final _picker = ImagePicker();
-    //   var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-    final pickedFile =
-        await _picker.getImage(source: ImageSource.gallery, imageQuality: 85);
-    final File file = File(pickedFile.path);
-    print('selected a image');
+    // print('selecting and image');
+    // final _picker = ImagePicker();
+    // final pickedFile =
+    //     await _picker.getImage(source: ImageSource.gallery, imageQuality: 85);
+    // final File file = File(pickedFile.path);
+    // print('selected a image');
+    // setState(() {
+    //   sampleImage = file;
+    // });
+    // print('sampleimage $sampleImage');
+    // var url = await _blogsServcie.uploadImage(sampleImage: sampleImage);
+    // setState(() {
+    //   imageUrl = url;
+    // });
+    List<Asset> resultList = List<Asset>();
+    String error = 'No Error Dectected';
+
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 10,
+        enableCamera: true,
+        selectedAssets: images,
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          actionBarColor: "#abcdef",
+          actionBarTitle: "Example App",
+          allViewTitle: "All Photos",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#000000",
+        ),
+      );
+    } on Exception catch (e) {
+      error = e.toString();
+    }
+    if (!mounted) return;
     setState(() {
-      sampleImage = file;
+      images = resultList;
+      _error = error;
     });
-    var url = await _blogsServcie.uploadImage(sampleImage: sampleImage);
+    print('result list ${resultList}');
+    for (var image in resultList) {
+      var url = await _blogsServcie.uploadImage(sampleImage: image);
+      imageUrlList.add(url);
+    }
     setState(() {
-      imageUrl = url;
+      imageUrl = imageUrlList;
     });
+    print('resulturl list ${imageUrlList}');
+  }
+
+  Widget buildGridView() {
+    print('inside grid view');
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 3,
+      children: List.generate(images.length, (index) {
+        Asset asset = images[index];
+        print('images[index] ${images[index]}');
+        return AssetThumb(
+          asset: asset,
+          width: 300,
+          height: 300,
+        );
+      }),
+    );
   }
 
   // bool validateandSave() {
@@ -158,7 +212,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     //   validateandSave();
     _blog.add(
       UploadBlog(
-        url: imageUrl,
+        url: imageUrlList,
         image: sampleImage,
         title: _titleController.text,
         description: _descriptionController.text,
@@ -170,7 +224,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   void updateBlog() {
     _blog.add(
       UpdateBlog(
-          image: imageUrl,
+          image: imageUrlList,
           //  image: sampleImage,
           title: _titleController.text,
           description: _descriptionController.text,
@@ -198,6 +252,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view after entering the blog details
   Widget enableUplaod() {
+    print('inside enable Upload');
     return new Container(
       child: new Form(
         key: formKey,
@@ -212,12 +267,15 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               height: 20,
             ),
             InkWell(
-              child: Image.file(
-                sampleImage,
-                height: 255.0,
-                width: 340,
-              ),
               onTap: getImage,
+              child:
+                  // Image.file(
+                  //   sampleImage,
+                  //   height: 255.0,
+                  //   width: 340,
+                  // ),
+
+                  buildGridView(),
             ),
             SizedBox(
               height: 10.0,
@@ -248,6 +306,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view before entering the blog details
   beforeUpload() {
+    print('inside before Upload');
     return new Container(
       child: Column(
         children: <Widget>[
@@ -261,7 +320,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           ),
           isEdit
               ? InkWell(
-                  child: Image.network(widget.blog.image),
+                  child: buildGridView(),
+                  //Image.network(widget.blog.image),
                   onTap: getImage,
                 )
               : InkWell(

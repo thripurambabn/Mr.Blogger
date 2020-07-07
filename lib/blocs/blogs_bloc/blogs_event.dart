@@ -57,7 +57,8 @@ class AddBlog extends BlogsEvent {
 
 class UploadBlog extends BlogsEvent {
   final File image;
-  final String url, title, description, category;
+  final String title, description, category;
+  final List<String> url;
   const UploadBlog({
     @required this.url,
     @required this.image,
@@ -85,7 +86,7 @@ class SearchBlog extends BlogsEvent {
 }
 
 class UpdateBlog extends BlogsEvent {
-  final String image;
+  final List<String> image;
   final String url, title, description, category;
   int timeStamp;
 

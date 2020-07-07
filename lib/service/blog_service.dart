@@ -1,9 +1,6 @@
-import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
@@ -27,39 +24,44 @@ class BlogsService {
     var data = snapshot.value;
     for (var key in refkey) {
       var tempLikes = [];
+      var tempImages = [];
       var tempComments;
       var commentsList = new List<Comment>();
       var likesList = new List<String>();
+      var imagesList = new List<String>();
       if (data[key]['likes'] != null) {
         tempLikes = data[key]['likes'];
-        print('likes------------ ${data[key]['likes']}');
+
         for (var like in tempLikes) {
           likesList.add(like.toString());
         }
       }
+      if (data[key]['image'] != null) {
+        // print('data[images] ${data[key]['image']}');
+        tempImages = data[key]['image'];
+        for (var image in tempImages) {
+          //print('image $image');
+          if (image != null) {
+            imagesList.add(image);
+          }
+        }
+        // print('images after for ${imagesList}');
+      }
       if (data[key]['comments'] != null) {
-        //  print('comments------------ ${data[key]['comments']}');
         tempComments = data[key]['comments'];
-        //tempComments.add(data[key]['comments']);
-        //print('tempcomment ${tempComments}');
-
         for (var comment in tempComments) {
-          //   print('comments inside for------------ ${comment}');
           if (comment != null) {
             var newComment = new Comment(
               username: comment['username'],
               date: comment['date'],
               comment: comment['comment'],
             );
-
-            //  print('comment inside for ${comment}');
             commentsList.add(newComment);
-            //print('commentList inside for ${commentsList}');
           }
         }
       }
       Blogs blog = new Blogs(
-          image: data[key]['image'],
+          image: imagesList,
           uid: data[key]['uid'],
           authorname: data[key]['authorname'],
           title: data[key]['title'],
@@ -116,8 +118,19 @@ class BlogsService {
               }
             }
           }
+          var tempImages = [];
+          var imagesList = new List<String>();
+          if (data[key]['image'] != null) {
+            tempImages = data[key]['image'];
+
+            for (var image in tempImages) {
+              if (image != null) {
+                imagesList.add(image);
+              }
+            }
+          }
           Blogs blog = new Blogs(
-              image: data[key]['image'],
+              image: imagesList,
               uid: data[key]['uid'],
               authorname: data[key]['authorname'],
               title: data[key]['title'],
@@ -127,6 +140,7 @@ class BlogsService {
               date: data[key]['date'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
+          print('images inside blog ${blog.image}');
           blogsList.add(blog);
         }
       }
@@ -135,12 +149,13 @@ class BlogsService {
     }
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
+
     return blogsList;
   }
 
 //To add new blog to the firebase database
   Future<void> saveToDatabase(
-    String url,
+    List<String> url,
     String _mytitlevalue,
     String _myvalue,
     String category,
@@ -185,12 +200,14 @@ class BlogsService {
     String url;
     // if (validateandSave()) {
     print('inside service upload image');
+    ByteData byteData = await sampleImage.requestOriginal(quality: 70);
+    List<int> imageData = byteData.buffer.asUint8List();
+
     final StorageReference iamgeref =
         FirebaseStorage.instance.ref().child("Blog images");
-    var timekey = new DateTime.now();
-    print('image -------${sampleImage}');
-    final StorageUploadTask uploadImage =
-        iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
+    // var timekey = new DateTime.now();
+    //print('image -------$sampleImage');
+    final StorageUploadTask uploadImage = iamgeref.putData(imageData);
     var imageurl = await uploadImage.onComplete;
     var imageurl1 = await imageurl.ref.getDownloadURL();
     url = imageurl1.toString();

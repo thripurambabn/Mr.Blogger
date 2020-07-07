@@ -1,8 +1,9 @@
 import 'package:mr_blogger/models/comment.dart';
 
 class Blogs {
-  String image, uid, authorname, title, description, date, time;
+  String uid, authorname, title, description, date, time;
   List<String> likes;
+  List<String> image;
   List<Comment> comments;
   int timeStamp;
   Blogs(

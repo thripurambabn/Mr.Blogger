@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
@@ -183,23 +184,26 @@ class _DetailPageState extends State<DetailPage> {
                       Container(
                           padding: EdgeInsets.all(10.0),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: Image.network(
-                              widget.blogs.image,
-                              fit: BoxFit.cover,
-                              height: 280,
-                              width: 350,
-                              loadingBuilder: (context, child, progress) {
-                                return progress == null
-                                    ? child
-                                    : Container(
-                                        color: Colors.purple[50],
-                                        height: 300,
-                                        width: 400,
-                                      );
-                              },
-                            ),
-                          )),
+                              borderRadius: BorderRadius.circular(5),
+                              child:
+                                  //  Image.network(
+                                  //   widget.blogs.image,
+                                  //   fit: BoxFit.cover,
+                                  //   height: 280,
+                                  //   width: 350,
+                                  //   loadingBuilder: (context, child, progress) {
+                                  //     return progress == null
+                                  //         ? child
+                                  //         : Container(
+                                  //             color: Colors.purple[50],
+                                  //             height: 300,
+                                  //             width: 400,
+                                  //           );
+                                  //   },
+                                  // ),
+                                  Carousel(
+                                images: [widget.blogs.image],
+                              ))),
                       SizedBox(
                         height: 10,
                       ),

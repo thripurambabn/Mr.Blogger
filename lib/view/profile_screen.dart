@@ -1,3 +1,4 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -207,8 +208,15 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
 //blog tile widget
-  Widget blogsUi(String image, String uid, String authorname, String title,
-      String description, List<String> likes, String date, String time) {
+  Widget blogsUi(
+      List<String> image,
+      String uid,
+      String authorname,
+      String title,
+      String description,
+      List<String> likes,
+      String date,
+      String time) {
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -231,20 +239,23 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
             SizedBox(height: 10.0),
-            Image.network(
-              image,
-              fit: BoxFit.cover,
-              height: 240,
-              width: MediaQuery.of(context).size.width / 1.2,
-              loadingBuilder: (context, child, progress) {
-                return progress == null
-                    ? child
-                    : Container(
-                        color: Colors.purple[50],
-                        height: 240,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                      );
-              },
+            // Image.network(
+            //   image,
+            //   fit: BoxFit.cover,
+            //   height: 240,
+            //   width: MediaQuery.of(context).size.width / 1.2,
+            //   loadingBuilder: (context, child, progress) {
+            //     return progress == null
+            //         ? child
+            //         : Container(
+            //             color: Colors.purple[50],
+            //             height: 240,
+            //             width: MediaQuery.of(context).size.width / 1.2,
+            //           );
+            //   },
+            // ),
+            Carousel(
+              images: [image],
             ),
             SizedBox(
               height: 10,
@@ -303,8 +314,15 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget blogsGridUi(String image, String uid, String authorname, String title,
-      String description, List<String> likes, String date, String time) {
+  Widget blogsGridUi(
+      List<String> image,
+      String uid,
+      String authorname,
+      String title,
+      String description,
+      List<String> likes,
+      String date,
+      String time) {
     return new Card(
       elevation: 15.0,
       margin: EdgeInsets.all(8.0),
@@ -327,21 +345,24 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
             SizedBox(height: 10.0),
-            Image.network(
-              image,
-              fit: BoxFit.cover,
-              height: 160,
-              width: MediaQuery.of(context).size.width / 1.2,
-              loadingBuilder: (context, child, progress) {
-                return progress == null
-                    ? child
-                    : Container(
-                        color: Colors.purple[50],
-                        height: 200,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                      );
-              },
-            ),
+            // Image.network(
+            //   image,
+            //   fit: BoxFit.cover,
+            //   height: 160,
+            //   width: MediaQuery.of(context).size.width / 1.2,
+            //   loadingBuilder: (context, child, progress) {
+            //     return progress == null
+            //         ? child
+            //         : Container(
+            //             color: Colors.purple[50],
+            //             height: 200,
+            //             width: MediaQuery.of(context).size.width / 1.2,
+            //           );
+            //   },
+            // ),
+            Carousel(
+              images: [image],
+            )
           ],
         ),
       ),
