@@ -138,6 +138,19 @@ class _HomepageState extends State<Homepage> {
   final TextEditingController searchBlog = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    void popUpmenuChoice(String choice) {
+      if (choice == '1') {
+        navigateToProfilePage();
+      } else if (choice == '2') {
+        BlocProvider.of<AuthenticationBloc>(context)
+            .add(AuthenticationLoggedOut());
+        Navigator.popUntil(
+          context,
+          ModalRoute.withName(Navigator.defaultRouteName),
+        );
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -148,43 +161,35 @@ class _HomepageState extends State<Homepage> {
               icon: cusIcon,
               onPressed: navigateToSerachPage,
             ),
-            Container(
-              width: 50,
-              child: PopupMenuButton(
-                itemBuilder: (BuildContext context) {
-                  return [
-                    PopupMenuItem<String>(
+            // Container(
+            //   width: 50,
+            //   child:
+            PopupMenuButton(
+              onCanceled: () {
+                print("You have canceled the menu.");
+              },
+              onSelected: popUpmenuChoice,
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem<String>(
                       value: '1',
-                      child: FlatButton(
-                        onPressed: () {
-                          navigateToProfilePage();
-                        },
-                        child: Text('Profile',
-                            style: TextStyle(
-                                color: Colors.purple[800],
-                                fontFamily: 'Paficico')),
-                      ),
-                    ),
-                    PopupMenuItem<String>(
-                      value: '2',
-                      child: FlatButton(
-                        child: Text('Logout',
-                            style: TextStyle(
-                                color: Colors.purple[800],
-                                fontFamily: 'Paficico')),
-                        onPressed: () {
-                          BlocProvider.of<AuthenticationBloc>(context).add(
-                            AuthenticationLoggedOut(),
-                          );
-                        },
-                      ),
-                    )
-                  ];
-                },
-              ),
-            )
+                      child: Text('Profile',
+                          style: TextStyle(
+                              color: Colors.purple[800],
+                              fontFamily: 'Paficico'))),
+                  PopupMenuItem<String>(
+                    value: '2',
+                    child: Text('Logout',
+                        style: TextStyle(
+                            color: Colors.purple[800], fontFamily: 'Paficico')),
+                  )
+                ];
+              },
+            ),
+            // )
           ],
         ),
+
         //handles blog list view on state change
         body: Container(
           child: BlocBuilder<BlogsBloc, BlogsState>(
@@ -306,6 +311,7 @@ class _HomepageState extends State<Homepage> {
                 height: 200.0,
                 width: 350.0,
                 child: Carousel(
+                  boxFit: BoxFit.contain,
                   images: cachednetworkImages,
                   dotSize: 8.0,
                   dotSpacing: 15.0,

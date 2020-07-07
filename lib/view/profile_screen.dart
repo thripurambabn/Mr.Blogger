@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -95,9 +99,26 @@ class _ProfilePageState extends State<ProfilePage>
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
-                    return profileUi(state.displayName, state.email);
+                    print('image url in profile main ui ${state.imageUrl}');
+                    return profileUi(
+                        state.displayName, state.email, state.imageUrl);
                   } else if (state is ProfileNotLoaded) {
-                    return errorUI();
+                    return Text(
+                      'Something went wrong please try again later',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10.0,
+                              color: Colors.purple[200],
+                              offset: Offset(8.0, 8.0),
+                            ),
+                          ],
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Paficico',
+                          color: Colors.purple),
+                    );
                   }
                 },
               ),
@@ -209,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage>
 
 //blog tile widget
   Widget blogsUi(
-      List<String> image,
+      List<String> images,
       String uid,
       String authorname,
       String title,
@@ -217,6 +238,25 @@ class _ProfilePageState extends State<ProfilePage>
       List<String> likes,
       String date,
       String time) {
+    List<CachedNetworkImage> cachednetworkImages = List<CachedNetworkImage>();
+    for (var image in images) {
+      cachednetworkImages.add(
+        CachedNetworkImage(
+          imageUrl: image,
+          fit: BoxFit.cover,
+          height: 240,
+          width: MediaQuery.of(context).size.width / 1.2,
+          placeholder: (context, url) => SizedBox(
+              height: 20,
+              width: 30,
+              child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+              )),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      );
+    }
     return new Card(
       elevation: 10.0,
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -239,24 +279,19 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
             SizedBox(height: 10.0),
-            // Image.network(
-            //   image,
-            //   fit: BoxFit.cover,
-            //   height: 240,
-            //   width: MediaQuery.of(context).size.width / 1.2,
-            //   loadingBuilder: (context, child, progress) {
-            //     return progress == null
-            //         ? child
-            //         : Container(
-            //             color: Colors.purple[50],
-            //             height: 240,
-            //             width: MediaQuery.of(context).size.width / 1.2,
-            //           );
-            //   },
-            // ),
-            Carousel(
-              images: [image],
-            ),
+            SizedBox(
+                height: 200.0,
+                width: 350.0,
+                child: Carousel(
+                  images: cachednetworkImages,
+                  dotSize: 8.0,
+                  dotSpacing: 15.0,
+                  dotColor: Colors.purple[800],
+                  indicatorBgPadding: 5.0,
+                  autoplay: false,
+                  dotBgColor: Colors.white.withOpacity(0),
+                  borderRadius: true,
+                )),
             SizedBox(
               height: 10,
             ),
@@ -315,7 +350,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget blogsGridUi(
-      List<String> image,
+      List<String> images,
       String uid,
       String authorname,
       String title,
@@ -323,6 +358,25 @@ class _ProfilePageState extends State<ProfilePage>
       List<String> likes,
       String date,
       String time) {
+    List<CachedNetworkImage> cachednetworkImages = List<CachedNetworkImage>();
+    for (var image in images) {
+      cachednetworkImages.add(
+        CachedNetworkImage(
+          imageUrl: image,
+          fit: BoxFit.cover,
+          height: 240,
+          width: MediaQuery.of(context).size.width / 1.2,
+          placeholder: (context, url) => SizedBox(
+              height: 20,
+              width: 30,
+              child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+              )),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      );
+    }
     return new Card(
       elevation: 15.0,
       margin: EdgeInsets.all(8.0),
@@ -345,24 +399,19 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
             SizedBox(height: 10.0),
-            // Image.network(
-            //   image,
-            //   fit: BoxFit.cover,
-            //   height: 160,
-            //   width: MediaQuery.of(context).size.width / 1.2,
-            //   loadingBuilder: (context, child, progress) {
-            //     return progress == null
-            //         ? child
-            //         : Container(
-            //             color: Colors.purple[50],
-            //             height: 200,
-            //             width: MediaQuery.of(context).size.width / 1.2,
-            //           );
-            //   },
-            // ),
-            Carousel(
-              images: [image],
-            )
+            SizedBox(
+                height: 200.0,
+                width: 350.0,
+                child: Carousel(
+                  images: cachednetworkImages,
+                  dotSize: 8.0,
+                  dotSpacing: 15.0,
+                  dotColor: Colors.purple[800],
+                  indicatorBgPadding: 5.0,
+                  autoplay: false,
+                  dotBgColor: Colors.white.withOpacity(0),
+                  borderRadius: true,
+                )),
           ],
         ),
       ),
@@ -371,7 +420,7 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 //user deatils widget
-Widget profileUi(String username, String email) {
+Widget profileUi(String username, String email, String imageUrl) {
   return new Column(children: <Widget>[
     Container(
       child: Stack(
@@ -405,7 +454,7 @@ Widget profileUi(String username, String email) {
               decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(
+                    image: NetworkImage(imageUrl ??
                         'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
                   ),
                   shape: BoxShape.circle,

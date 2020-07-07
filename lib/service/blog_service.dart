@@ -222,34 +222,6 @@ class BlogsService {
     print('url -------${urlList}');
     return url;
   }
-  //  Future<String> uploadImage({
-  //   sampleImage,
-  // }) async {
-  //   String url;
-  //   // if (validateandSave()) {
-  //   print('inside service upload image');
-  //   final StorageReference iamgeref =
-  //       FirebaseStorage.instance.ref().child("Blog images");
-  //   var timekey = new DateTime.now();
-  //   print('image -------${sampleImage}');
-  //   final StorageUploadTask uploadImage =
-  //       iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
-  //   var imageurl = await uploadImage.onComplete;
-  //   var imageurl1 = await imageurl.ref.getDownloadURL();
-  //   url = imageurl1.toString();
-  //   print('url -------${url}');
-  //   return url;
-  // }
-
-//To validate form and save
-  // bool validateandSave() {
-  //   final formKey = new GlobalKey<FormState>();
-  //   final form = formKey.currentState;
-  //   if (form.validate()) {
-  //     form.save();
-  //     return true;
-  //   }
-  // }
 
 //To Search a blog in firebase
   Future searchBlogs(String searchKey) async {

@@ -210,7 +210,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     _blog.add(
       UpdateBlog(
           image: imageUrlList,
-          //image: sampleImage,
           title: _titleController.text,
           description: _descriptionController.text,
           category: dropdownValue,
@@ -272,7 +271,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                   : () {
                       setState(() => isbuttondisabled = !isbuttondisabled);
                       widget.isEdit == true ? updateBlog() : addBlog();
-                      navigateToLoadingPage();
+                      Center(
+                          child: Image(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                            'https://i.pinimg.com/originals/07/bf/6f/07bf6f0f7d5dd64829822e95e97f908d.gif'),
+                      ));
                     },
             )
           ],
@@ -283,10 +287,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view before entering the blog details
   beforeUpload() {
-    print('inside before Upload ${widget.blog.category}');
     List<NetworkImage> networkImages = List<NetworkImage>();
     if (widget.blog != null) {
       for (var image in widget.blog.image) {
+        imageUrlList.add(image);
         networkImages.add(
           NetworkImage(image),
         );

@@ -17,6 +17,10 @@ class Validators {
     return _passwordRegExp.hasMatch(password);
   }
 
+  static isValidConfirmPassword(String password) {
+    return _passwordRegExp.hasMatch(password);
+  }
+
   static isValidUsername(String username) {
     return _usernameRegExp.hasMatch(username);
   }

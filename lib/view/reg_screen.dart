@@ -6,8 +6,16 @@ import 'package:mr_blogger/blocs/reg_bloc/reg_bloc.dart';
 import 'package:mr_blogger/blocs/reg_bloc/reg_event.dart';
 import 'package:mr_blogger/blocs/reg_bloc/reg_state.dart';
 import 'package:mr_blogger/service/user_service.dart';
+import 'package:mr_blogger/view/login_screen.dart';
 
 class RegisterForm extends StatefulWidget {
+  final UserService _userService;
+
+  RegisterForm({Key key, @required UserService userService})
+      : assert(userService != null),
+        _userService = userService,
+        super(key: key);
+
   State<RegisterForm> createState() => _RegisterFormState();
 }
 
@@ -15,12 +23,18 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  bool _passobscureText = true;
+  bool _confrmobscureText = true;
+  UserService get _userService => widget._userService;
 
   RegisterBloc _registerBloc;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty &&
       _passwordController.text.isNotEmpty &&
+      _confirmPasswordController.text.isNotEmpty &&
       _usernameController.text.isNotEmpty;
 
   bool isRegisterButtonEnabled(RegisterState state) {
@@ -33,6 +47,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc = BlocProvider.of<RegisterBloc>(context);
     _emailController.addListener(_onEmailChanged);
     _passwordController.addListener(_onPasswordChanged);
+    _confirmPasswordController.addListener(_onConfirmPasswordChanged);
     _usernameController.addListener(_onUserNameChanged);
   }
 
@@ -56,8 +71,16 @@ class _RegisterFormState extends State<RegisterForm> {
             );
         }
         if (state.isSuccess) {
-          BlocProvider.of<AuthenticationBloc>(context)
-              .add(AuthenticationLoggedIn());
+          // BlocProvider.of<AuthenticationBloc>(context)
+          //     .add(AuthenticationStarted());
+          print('poped reg screen');
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return LoginScreen(userService: _userService);
+            }),
+          );
         }
         if (state.isFailure) {
           Scaffold.of(context)
@@ -79,7 +102,7 @@ class _RegisterFormState extends State<RegisterForm> {
       child: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
           return Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
             child: Form(
               child: ListView(
                 children: <Widget>[
@@ -89,13 +112,13 @@ class _RegisterFormState extends State<RegisterForm> {
                       "You are stranger only once",
                       style: TextStyle(
                         fontFamily: 'Paficico',
-                        fontSize: 30.0,
+                        fontSize: 28.0,
                         color: Colors.purple[700],
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextFormField(
                     controller: _usernameController,
@@ -138,20 +161,77 @@ class _RegisterFormState extends State<RegisterForm> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: Icon(
-                        Icons.lock,
-                        color: Colors.purple[800],
+                      controller: _passwordController,
+                      obscureText: _passobscureText,
+                      autocorrect: false,
+                      autovalidate: true,
+                      decoration: new InputDecoration(
+                        icon: Icon(
+                          Icons.lock,
+                          color: Colors.purple[800],
+                        ),
+                        hintText: 'enter your password',
+                        labelText: 'password',
+                        suffixIcon: new GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _passobscureText = !_passobscureText;
+                            });
+                          },
+                          child: new Icon(_passobscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                        ),
                       ),
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    autocorrect: false,
-                    autovalidate: true,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
-                    },
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        return !state.isPasswordValid
+                            ? 'Invalid Password'
+                            : null;
+                      }),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: _confrmobscureText,
+                      autocorrect: false,
+                      autovalidate: true,
+                      decoration: new InputDecoration(
+                        icon: Icon(
+                          Icons.lock,
+                          color: Colors.purple[800],
+                        ),
+                        hintText: 'confirm your password',
+                        labelText: 'confirm password',
+                        suffixIcon: new GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _confrmobscureText = !_confrmobscureText;
+                            });
+                          },
+                          child: new Icon(_confrmobscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                        ),
+                      ),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        print(
+                            'value befor return $value ${_confirmPasswordController.text} ${_passwordController.text}');
+                        return !state.isConfirmPasswordValid ||
+                                _confirmPasswordController.text !=
+                                    _passwordController.text
+                            ? 'doesnt match'
+                            : null;
+                      }),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    'Note: Password should contain Minimum eight characters, at least one letter and one number.',
+                    style: TextStyle(color: Colors.black, fontSize: 12.0),
+                    textAlign: TextAlign.left,
                   ),
                   SizedBox(
                     height: 20,
@@ -160,6 +240,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     height: 50,
                     width: 80,
                     child: RaisedButton(
+                      color: Colors.purple[800],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -184,6 +265,7 @@ class _RegisterFormState extends State<RegisterForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _usernameController.dispose();
     super.dispose();
   }
@@ -199,6 +281,13 @@ class _RegisterFormState extends State<RegisterForm> {
   void _onPasswordChanged() {
     _registerBloc.add(
       RegisterPasswordChanged(password: _passwordController.text),
+    );
+  }
+
+  void _onConfirmPasswordChanged() {
+    _registerBloc.add(
+      RegisterConfirmPasswordChanged(
+          confirmPassword: _confirmPasswordController.text),
     );
   }
 
@@ -232,10 +321,6 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.purple[400],
-        //   leading:
-        // ),
         body: SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -291,7 +376,9 @@ class RegisterScreen extends StatelessWidget {
                       child: BlocProvider<RegisterBloc>(
                         create: (context) =>
                             RegisterBloc(userService: _userService),
-                        child: RegisterForm(),
+                        child: RegisterForm(
+                          userService: _userService,
+                        ),
                       ),
                     ),
                   )

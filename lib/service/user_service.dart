@@ -39,29 +39,32 @@ class UserService {
   Future<void> signUp({String email, String password, String username}) async {
     try {
       final FirebaseAuth firebaseAuth1 = FirebaseAuth.instance;
-      var result = await _firebaseAuth.createUserWithEmailAndPassword(
+      print('stuck-2 $email $password $username');
+      await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      print('stuck-1');
       final FirebaseUser user = await firebaseAuth1.currentUser();
-
+      print('stuck0');
       var addusername = UserUpdateInfo();
       addusername.displayName = username;
       await user.updateProfile(addusername);
       await user.reload();
-
+      print('stuck1');
       var data = {
         'uid': user.uid,
         'username': username,
         'email': email,
         'password': password,
       };
+      print('stuck2');
       await FirebaseDatabase.instance
           .reference()
           .child('users')
           .push()
           .set(data);
-
+      print('data $data');
       return user.uid;
     } catch (e) {
       print('failure in saving it ro the db');
@@ -110,10 +113,12 @@ class UserService {
     final uid = user.uid;
     final displayName = user.displayName;
     final email = user.email;
+    // final photoUrl = user.photoUrl ?? '';
     print('inside read service ${uid}');
     prefs.setString("displayName", displayName);
     prefs.setString("email", email);
     prefs.setString('uid', uid);
+    //  prefs.setString('photoUrl', photoUrl);
   }
 
 //to write data to local storage
@@ -124,8 +129,13 @@ class UserService {
     );
     final email = prefs.getString("email");
     final uid = prefs.getString('uid');
-    Users user = new Users(displayName: displayName, email: email, uid: uid);
-    print('user in service ${user.uid}');
+    // final imageUrl = prefs.getString('photoUrl');
+    Users user = new Users(
+      displayName: displayName,
+      email: email,
+      uid: uid,
+    ); // imageUrl: imageUrl);
+
     return user;
   }
 }

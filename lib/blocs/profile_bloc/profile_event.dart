@@ -34,10 +34,11 @@ class DeleteBlog extends ProfileEvent {
 
 class EditProfile extends ProfileEvent {
   final String name;
+  final String imageUrl;
 
-  EditProfile(this.name);
+  EditProfile(this.name, this.imageUrl);
   @override
-  List<Object> get props => [name];
+  List<Object> get props => [name, imageUrl];
 
   @override
   String toString() => 'Deleted blog { blog: $name }';

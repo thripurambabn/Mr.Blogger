@@ -80,7 +80,7 @@ class _LoginFormState extends State<LoginForm> {
         if (state.isSuccess) {
           BlocProvider.of<AuthenticationBloc>(context)
               .add(AuthenticationLoggedIn());
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -158,12 +158,14 @@ class _LoginFormState extends State<LoginForm> {
                           height: 50,
                           width: 40,
                           child: RaisedButton(
+                            color: Colors.purple[800],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: Text(
                               'Login',
                               style: TextStyle(
+                                color: Colors.white,
                                 fontSize: 20.0,
                               ),
                             ),

@@ -9,14 +9,6 @@ class LoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // void navigateToHomePage() {
-    //   Navigator.push(context, MaterialPageRoute(
-    //     builder: (context) {
-    //       return new Homepage();
-    //     },
-    //   ));
-    // }
-
     return Center(
         child: Image(
       fit: BoxFit.cover,

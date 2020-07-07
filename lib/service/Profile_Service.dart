@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/user_service.dart';
@@ -7,6 +9,7 @@ import 'package:mr_blogger/service/user_service.dart';
 class ProfileService {
   var userService = UserService();
   List<Blogs> blogsList = [];
+  var userData;
 
 //To fetch blogs of logged in user
   Future getblogs() async {
@@ -39,6 +42,29 @@ class ProfileService {
       print(e);
     }
     return blogsList;
+  }
+
+  Future getProfileDetails() async {
+    var userid = await userService.getUserID();
+    DatabaseReference blogsref =
+        FirebaseDatabase.instance.reference().child('users');
+    final DataSnapshot snapshot =
+        await blogsref.orderByChild('uid').equalTo(userid).once();
+    try {
+      if (snapshot.value != null) {
+        var refkey = snapshot.value.keys;
+        var data = snapshot.value;
+        print('snap shot value in profiledetails service $data');
+        print('refkey value in profiledetails service $refkey');
+        userData = data;
+      } else {
+        print('there are no blogs of this user');
+      }
+    } catch (e) {
+      print(e);
+    }
+    print('returning $userData');
+    return userData;
   }
 
 //To delete a blog from firebase
@@ -97,6 +123,24 @@ class ProfileService {
     }
   }
 
+  Future<String> uploadProfileImage({
+    sampleImage,
+  }) async {
+    String url;
+    print('inside service upload image');
+    final StorageReference iamgeref =
+        FirebaseStorage.instance.ref().child("Blog images");
+    var timekey = new DateTime.now();
+    print('image -------${sampleImage}');
+    final StorageUploadTask uploadImage =
+        iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
+    var imageurl = await uploadImage.onComplete;
+    var imageurl1 = await imageurl.ref.getDownloadURL();
+    url = imageurl1.toString();
+    print('url -------${url}');
+    return url;
+  }
+
   Future<void> updateImage(
       {sampleImage, mytitlevalue, myvalue, category, blogtimeStamp}) async {
     print('inside update service${sampleImage}');
@@ -108,18 +152,18 @@ class ProfileService {
     }
   }
 
-  Future editProfile(name) async {
+  Future editProfile(String name, String imageUrl) async {
     try {
       final FirebaseAuth firebaseAuth1 = FirebaseAuth.instance;
       final FirebaseUser user = await firebaseAuth1.currentUser();
       var addusername = UserUpdateInfo();
 
       addusername.displayName = name;
+      addusername.photoUrl = imageUrl;
       await user.updateProfile(addusername);
       await user.reload();
-      var data = {
-        'username': name,
-      };
+      print('inside edit profile service $name $imageUrl');
+      var data = {'username': name, 'photoUrl': imageUrl};
       var authordata = {
         'authorname': name,
       };

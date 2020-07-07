@@ -5,16 +5,22 @@ class RegisterState {
   final bool isUsernameValid;
   final bool isEmailValid;
   final bool isPasswordValid;
+  final bool isConfirmPasswordValid;
   final bool isSubmitting;
   final bool isSuccess;
   final bool isFailure;
 
-  bool get isFormValid => isEmailValid && isPasswordValid && isUsernameValid;
+  bool get isFormValid =>
+      isEmailValid &&
+      isPasswordValid &&
+      isUsernameValid &&
+      isConfirmPasswordValid;
 
   RegisterState({
     @required this.isUsernameValid,
     @required this.isEmailValid,
     @required this.isPasswordValid,
+    @required this.isConfirmPasswordValid,
     @required this.isSubmitting,
     @required this.isSuccess,
     @required this.isFailure,
@@ -25,6 +31,7 @@ class RegisterState {
       isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
+      isConfirmPasswordValid: true,
       isSubmitting: false,
       isSuccess: false,
       isFailure: false,
@@ -36,6 +43,7 @@ class RegisterState {
       isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
+      isConfirmPasswordValid: true,
       isSubmitting: true,
       isSuccess: false,
       isFailure: false,
@@ -48,6 +56,7 @@ class RegisterState {
       isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
+      isConfirmPasswordValid: true,
       isSubmitting: false,
       isSuccess: false,
       isFailure: true,
@@ -60,21 +69,24 @@ class RegisterState {
       isUsernameValid: true,
       isEmailValid: true,
       isPasswordValid: true,
+      isConfirmPasswordValid: true,
       isSubmitting: false,
       isSuccess: true,
       isFailure: false,
     );
   }
 
-  RegisterState update({
-    bool isUsernameValid,
-    bool isEmailValid,
-    bool isPasswordValid,
-  }) {
+  RegisterState update(
+      {bool isUsernameValid,
+      bool isEmailValid,
+      bool isPasswordValid,
+      bool isConfirmPasswordValid}) {
+    print('inside update $isPasswordValid,$isConfirmPasswordValid');
     return copyWith(
       isUsernameValid: isUsernameValid,
       isEmailValid: isEmailValid,
       isPasswordValid: isPasswordValid,
+      isConfirmPasswordValid: isConfirmPasswordValid,
       isSubmitting: false,
       isSuccess: false,
       isFailure: false,
@@ -85,6 +97,7 @@ class RegisterState {
     bool isUsernameValid,
     bool isEmailValid,
     bool isPasswordValid,
+    bool isConfirmPasswordValid,
     bool isSubmitEnabled,
     bool isSubmitting,
     bool isSuccess,
@@ -94,6 +107,8 @@ class RegisterState {
       isUsernameValid: isUsernameValid ?? this.isUsernameValid,
       isEmailValid: isEmailValid ?? this.isEmailValid,
       isPasswordValid: isPasswordValid ?? this.isPasswordValid,
+      isConfirmPasswordValid:
+          isConfirmPasswordValid ?? this.isConfirmPasswordValid,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isSuccess: isSuccess ?? this.isSuccess,
       isFailure: isFailure ?? this.isFailure,
@@ -105,7 +120,8 @@ class RegisterState {
     return '''RegisterState {
       isUsernameValid:$isEmailValid,
       isEmailValid: $isEmailValid,
-      isPasswordValid: $isPasswordValid,      
+      isPasswordValid: $isPasswordValid,    
+      isConfirmPasswordValid:$isConfirmPasswordValid,  
       isSubmitting: $isSubmitting,
       isSuccess: $isSuccess,
       isFailure: $isFailure,

@@ -75,6 +75,15 @@ class _DetailPageState extends State<DetailPage> {
         ),
       );
     }
+    void popUpmenuChoice(String choice) {
+      if (choice == '1') {
+        navigateToAddPage(widget.blogs);
+      } else if (choice == '2') {
+        _profile.add(DeleteBlog(widget.blogs.title));
+        Navigator.of(context).pop();
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
@@ -86,35 +95,23 @@ class _DetailPageState extends State<DetailPage> {
                 child: Visibility(
                   visible: widget.blogs.uid == widget.uid,
                   child: PopupMenuButton(
+                    onSelected: popUpmenuChoice,
                     itemBuilder: (BuildContext context) {
                       return [
                         PopupMenuItem<String>(
                           value: '1',
-                          child: FlatButton(
-                            onPressed: () {
-                              print(
-                                  'sending ${widget.blogs.category} ${widget.blogs.title} ${widget.blogs.image} ${widget.blogs.description}');
-                              navigateToAddPage(widget.blogs);
-                            },
-                            child: Text('Edit',
-                                style: TextStyle(
-                                    color: Colors.purple[800],
-                                    fontFamily: 'Paficico')),
-                          ),
+                          child: Text('Edit',
+                              style: TextStyle(
+                                  color: Colors.purple[800],
+                                  fontFamily: 'Paficico')),
+                          //  ),
                         ),
                         PopupMenuItem<String>(
                           value: '2',
-                          child: FlatButton(
-                            child: Text('Delete',
-                                style: TextStyle(
-                                    color: Colors.purple[800],
-                                    fontFamily: 'Paficico')),
-                            onPressed: () async {
-                              print('delete pressed');
-                              _profile.add(DeleteBlog(widget.blogs.title));
-                              navigateToHomePage();
-                            },
-                          ),
+                          child: Text('Delete',
+                              style: TextStyle(
+                                  color: Colors.purple[800],
+                                  fontFamily: 'Paficico')),
                         )
                       ];
                     },

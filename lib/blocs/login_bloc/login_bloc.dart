@@ -59,7 +59,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     yield state.update(
       isEmailValid: Validators.isValidEmail(email),
     );
-    // _userService.read();
   }
 
 //mapping Login Password Changed event with state
@@ -67,15 +66,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     yield state.update(
       isPasswordValid: Validators.isValidPassword(password),
     );
-    //_userService.read();
   }
 
 //mapping Login With Google event with state
   Stream<LoginState> _mapLoginWithGooglePressedToState() async* {
     try {
       await _userService.signInWithGoogle();
+      await _userService.read();
       yield LoginState.success();
-      _userService.read();
     } catch (_) {
       yield LoginState.failure();
     }

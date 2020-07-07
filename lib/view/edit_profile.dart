@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
@@ -38,6 +40,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   SharedPreferences sharedPreferences;
   TextEditingController _nameController = TextEditingController();
   String email;
+  File sampleImage;
+  String imageUrl;
   var _profile =
       ProfileBloc(profileService: _profileService, blogsService: _blogsService);
   List<Blogs> blogsList = [];
@@ -52,9 +56,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void saveprofile() {
-    print('in edit profile ui----------------${_nameController.text},');
+    print(
+        'in edit profile ui----------------${_nameController.text} ${imageUrl},');
     _profile.add(
-      EditProfile(_nameController.text),
+      EditProfile(_nameController.text, imageUrl),
     );
   }
 
@@ -66,9 +71,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         },
       ));
     });
-    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-    //   return new ProfilePage();
-    // }));
   }
 
   Widget build(BuildContext ctx) {
@@ -83,6 +85,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             IconButton(
               icon: Icon(FontAwesomeIcons.save),
               onPressed: () {
+                print('imageUrl near save profile${imageUrl}');
                 saveprofile();
                 navigateToProfilePage();
               },
@@ -109,6 +112,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ]),
         )));
+  }
+
+  Future getImage() async {
+    print('selecting and image');
+    final _picker = ImagePicker();
+    final pickedFile =
+        await _picker.getImage(source: ImageSource.gallery, imageQuality: 85);
+    final File file = File(pickedFile.path);
+    print('selected a image');
+    setState(() {
+      sampleImage = file;
+    });
+    var url =
+        await _profileService.uploadProfileImage(sampleImage: sampleImage);
+    print('image url');
+    setState(() {
+      imageUrl = url;
+    });
+    print('imageUrl $imageUrl');
   }
 
 //user deatils widget
@@ -139,20 +161,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ],
             ),
             Positioned(
-              top: 30.0,
-              child: Container(
-                height: 150.0,
-                width: 150.0,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
-                    ),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 6.0)),
-              ),
-            ),
+                top: 30.0,
+                child: InkWell(
+                  onTap: () => {print('tapping'), getImage()},
+                  child: Container(
+                    height: 150.0,
+                    width: 150.0,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 6.0)),
+                  ),
+                )),
           ],
         ),
       ),
@@ -181,7 +205,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget errorUI() {
     return new Center(
         child: Text(
-      'You have no blogs!☹️...Add Now🥳',
+      'Couldnt load your info..please try again later',
       textAlign: TextAlign.center,
       style: TextStyle(
           shadows: [

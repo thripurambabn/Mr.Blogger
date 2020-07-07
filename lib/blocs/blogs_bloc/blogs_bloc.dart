@@ -124,7 +124,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapUpdateBlogToState(UpdateBlog event) async* {
     try {
       print('mapping update event to state ${event.image}');
-
       await _profileService.updateImage(
         //  url: event.url,
         sampleImage: event.image,
@@ -134,6 +133,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         blogtimeStamp: event.timeStamp,
       );
       final List<Blogs> blog = await _blogsService.getblogs();
+      print('calling blogs loading');
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print(e);

@@ -40,14 +40,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Stream<ProfileState> _mapLoadedProfileState() async* {
     yield ProfileLoading();
     try {
-      UserService _userService = new UserService();
+      print('calling getProfileDetails');
+      var test = await _profileService.getProfileDetails();
+      print('called getProfileDetails');
       List<Blogs> profileblogslist = await _profileService.getblogs();
-      await _userService.read();
-      final test = await _userService.save();
-      yield ProfileLoaded(
-          profileblogslist, test.displayName, test.email, test.uid);
+      print('details in bloc  ${test}');
+      yield ProfileLoaded(profileblogslist, test.displayName, test.email,
+          test.uid, test.photoUrl);
     } catch (e) {
-      yield ProfileNotLoaded();
+      print(e);
     }
   }
 
@@ -58,25 +59,27 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       UserService _userService = new UserService();
       final test = await _userService.save();
       List<Blogs> profileblogslist = await _profileService.getblogs();
-      yield ProfileLoaded(
-          profileblogslist, test.displayName, test.email, test.uid);
+      yield ProfileLoaded(profileblogslist, test.displayName, test.email,
+          test.uid, test.imageUrl);
     } catch (e) {
       print(e);
+      yield ProfileNotLoaded();
     }
   }
 
 //mapping Edit Profile To State event with states
   Stream<ProfileState> _mapEditProfileToState(EditProfile event) async* {
     try {
-      await _profileService.editProfile(event.name);
+      await _profileService.editProfile(event.name, event.imageUrl);
       List<Blogs> profileblogslist = await _profileService.getblogs();
       UserService _userService = new UserService();
       await _userService.read();
       final test = await _userService.save();
-      yield ProfileLoaded(
-          profileblogslist, test.displayName, test.email, test.uid);
+      yield ProfileLoaded(profileblogslist, test.displayName, test.email,
+          test.uid, test.imageUrl);
     } catch (e) {
       print(e);
+      yield ProfileNotLoaded();
     }
   }
 }
