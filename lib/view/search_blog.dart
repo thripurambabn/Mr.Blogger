@@ -216,7 +216,6 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
             SizedBox(height: 10.0),
-
             Carousel(
                   images: [image],
                 ) ??
@@ -225,19 +224,6 @@ class _SearchPageState extends State<SearchPage> {
                   height: 240,
                   width: MediaQuery.of(context).size.width / 1.2,
                 ),
-            // fit: BoxFit.cover,
-            // height: 240,
-            // width: MediaQuery.of(context).size.width / 1.2,
-            // loadingBuilder: (context, child, progress) {
-            //   return progress == null
-            //       ? child
-            //       : Container(
-            //           color: Colors.purple[50],
-            //           height: 300,
-            //           width: MediaQuery.of(context).size.width / 1.2,
-            //         );
-            // },
-
             SizedBox(
               height: 10,
             ),

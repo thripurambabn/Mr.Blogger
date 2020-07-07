@@ -110,6 +110,7 @@ class UserService {
     final uid = user.uid;
     final displayName = user.displayName;
     final email = user.email;
+    print('inside read service ${uid}');
     prefs.setString("displayName", displayName);
     prefs.setString("email", email);
     prefs.setString('uid', uid);
@@ -121,7 +122,6 @@ class UserService {
     final displayName = prefs.getString(
       "displayName",
     );
-    
     final email = prefs.getString("email");
     final uid = prefs.getString('uid');
     Users user = new Users(displayName: displayName, email: email, uid: uid);

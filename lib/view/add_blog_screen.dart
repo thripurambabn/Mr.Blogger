@@ -386,7 +386,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         child: DropdownButton<String>(
           isExpanded: true,
           hint: widget.isEdit == true
-              ? widget.blog.category
+              ? Text(widget.blog.category)
               : Text(
                   "Select category",
                   style: TextStyle(color: Colors.purple[200]),

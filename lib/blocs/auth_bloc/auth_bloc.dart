@@ -35,7 +35,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
     final isSignedIn = await _userService.isSignedIn();
     if (isSignedIn) {
-      final name = await _userService.getUser().toString();
+      final name = _userService.getUser().toString();
       yield AuthenticationSuccess(name);
     } else {
       yield AuthenticationFailure();
@@ -44,7 +44,7 @@ class AuthenticationBloc
 
 //mapping Authentication Logged In with authentication state
   Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
-    yield AuthenticationSuccess(await _userService.getUser().toString());
+    yield AuthenticationSuccess(_userService.getUser().toString());
   }
 
 //mapping Authentication Failure with authentication state

@@ -303,8 +303,8 @@ class _HomepageState extends State<Homepage> {
             ),
             SizedBox(height: 10.0),
             SizedBox(
-                height: 20.0,
-                width: 35.0,
+                height: 200.0,
+                width: 350.0,
                 child: Carousel(
                   images: cachednetworkImages,
                   dotSize: 8.0,
