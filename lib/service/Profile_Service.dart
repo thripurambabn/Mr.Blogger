@@ -28,6 +28,7 @@ class ProfileService {
               description: data[key]['description'],
               date: data[key]['date'],
               time: data[key]['time'],
+              category: data[key]['category'],
               timeStamp: data[key]['timeStamp']);
           blogsList.add(blog);
         }
@@ -98,20 +99,6 @@ class ProfileService {
 
   Future<void> updateImage(
       {sampleImage, mytitlevalue, myvalue, category, blogtimeStamp}) async {
-    String url;
-    // if (sampleImage != null) {
-    //   final StorageReference iamgeref =
-    //       FirebaseStorage.instance.ref().child("Blog images");
-    //   var timekey = new DateTime.now();
-    //   print('${sampleImage}');
-    //   final StorageUploadTask updateImage =
-    //       iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
-    //   print('testing inside update service');
-    //   var imageurl = await updateImage.onComplete;
-    //   var imageurl1 = await imageurl.ref.getDownloadURL();
-    //   print('test123');
-    //   url = imageurl1.toString();
-    // } else {
     print('inside update service${sampleImage}');
     try {
       await updateBlog(
@@ -120,7 +107,6 @@ class ProfileService {
       print(e.toString());
     }
   }
-  //}
 
   Future editProfile(name) async {
     try {

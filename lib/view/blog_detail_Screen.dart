@@ -93,7 +93,7 @@ class _DetailPageState extends State<DetailPage> {
                           child: FlatButton(
                             onPressed: () {
                               print(
-                                  'sending ${widget.blogs.title} ${widget.blogs.image} ${widget.blogs.description}');
+                                  'sending ${widget.blogs.category} ${widget.blogs.title} ${widget.blogs.image} ${widget.blogs.description}');
                               navigateToAddPage(widget.blogs);
                             },
                             child: Text('Edit',
@@ -130,7 +130,7 @@ class _DetailPageState extends State<DetailPage> {
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: new Text(
-                  'Category',
+                  widget.blogs.category ?? 'category',
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 15,

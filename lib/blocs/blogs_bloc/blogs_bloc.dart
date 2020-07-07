@@ -164,7 +164,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapUploadBlogToState(UploadBlog event) async* {
     try {
-      print('upload blog bloc');
+      print('upload blog bloc ${event.category}');
       await _blogsService.saveToDatabase(
           event.url, event.title, event.description, event.category);
       final List<Blogs> blog = await _blogsService.getblogs();

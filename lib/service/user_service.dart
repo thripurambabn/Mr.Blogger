@@ -121,9 +121,11 @@ class UserService {
     final displayName = prefs.getString(
       "displayName",
     );
+    
     final email = prefs.getString("email");
     final uid = prefs.getString('uid');
     Users user = new Users(displayName: displayName, email: email, uid: uid);
+    print('user in service ${user.uid}');
     return user;
   }
 }

@@ -23,6 +23,7 @@ class BlogsService {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
     for (var key in refkey) {
+      print('category ${data[key]['category']}');
       var tempLikes = [];
       var tempImages = [];
       var tempComments;
@@ -69,6 +70,7 @@ class BlogsService {
           likes: likesList,
           comments: commentsList,
           date: data[key]['date'],
+          category: data[key]['category'],
           time: data[key]['time'],
           timeStamp: data[key]['timeStamp']);
       blogsList.add(blog);
@@ -95,6 +97,7 @@ class BlogsService {
         var data = snapshot.value;
 
         for (var key in refkey) {
+          print('category ${data[key]['category']}');
           var tempLikes = [];
           var likesList = new List<String>();
           if (data[key]['likes'] != null) {
@@ -139,6 +142,7 @@ class BlogsService {
               comments: commentsList,
               date: data[key]['date'],
               time: data[key]['time'],
+              category: data[key]['category'],
               timeStamp: data[key]['timeStamp']);
           print('images inside blog ${blog.image}');
           blogsList.add(blog);
@@ -162,7 +166,7 @@ class BlogsService {
   ) async {
     try {
       //  var url = uploadImage();
-      print('url:$url');
+      print('category ${category}');
       List<String> likes = [];
       List<String> comments = [];
       var dbkey = new DateTime.now();
@@ -183,6 +187,7 @@ class BlogsService {
         'description': _myvalue,
         'likes': likes,
         'comments': comments,
+        'category': category,
         'date': date,
         'time': time,
         'timeStamp': timeStamp,
@@ -199,10 +204,8 @@ class BlogsService {
   }) async {
     String url;
     // if (validateandSave()) {
-    print('inside service upload image');
-    ByteData byteData = await sampleImage.requestOriginal(quality: 70);
+    ByteData byteData = await sampleImage.requestOriginal(quality: 50);
     List<int> imageData = byteData.buffer.asUint8List();
-    print('imageData ${imageData}');
     var timekey = new DateTime.now();
     final StorageReference iamgeref = FirebaseStorage.instance
         .ref()

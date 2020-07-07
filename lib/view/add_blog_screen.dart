@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:carousel_pro/carousel_pro.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -35,6 +37,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   List<Asset> images = List<Asset>();
   List<String> imageUrlList = List<String>();
   String _error = 'No Error Dectected';
+  String dropdownValue;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -132,20 +135,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //fetch image from the gallery
   Future getImage() async {
-    // print('selecting and image');
-    // final _picker = ImagePicker();
-    // final pickedFile =
-    //     await _picker.getImage(source: ImageSource.gallery, imageQuality: 85);
-    // final File file = File(pickedFile.path);
-    // print('selected a image');
-    // setState(() {
-    //   sampleImage = file;
-    // });
-    // print('sampleimage $sampleImage');
-    // var url = await _blogsServcie.uploadImage(sampleImage: sampleImage);
-    // setState(() {
-    //   imageUrl = url;
-    // });
     List<Asset> resultList = List<Asset>();
     String error = 'No Error Dectected';
 
@@ -157,7 +146,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
         materialOptions: MaterialOptions(
           actionBarColor: "#abcdef",
-          actionBarTitle: "Example App",
+          actionBarTitle: "Mr.Blogger",
           allViewTitle: "All Photos",
           useDetailsView: false,
           selectCircleStrokeColor: "#000000",
@@ -171,7 +160,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       images = resultList;
       _error = error;
     });
-    print('result list ${resultList}');
     for (var image in resultList) {
       var url = await _blogsServcie.uploadImage(sampleImage: image);
       imageUrlList.add(url);
@@ -179,17 +167,14 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     setState(() {
       imageUrl = imageUrlList;
     });
-    print('resulturl list ${imageUrlList}');
   }
 
   Widget buildGridView() {
-    print('inside grid view');
     return GridView.count(
       shrinkWrap: true,
       crossAxisCount: 3,
       children: List.generate(images.length, (index) {
         Asset asset = images[index];
-        print('images[index] ${images[index]}');
         return AssetThumb(
           asset: asset,
           width: 300,
@@ -216,7 +201,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         image: sampleImage,
         title: _titleController.text,
         description: _descriptionController.text,
-        category: category,
+        category: dropdownValue,
       ),
     );
   }
@@ -225,10 +210,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     _blog.add(
       UpdateBlog(
           image: imageUrlList,
-          //  image: sampleImage,
+          //image: sampleImage,
           title: _titleController.text,
           description: _descriptionController.text,
-          category: 'play',
+          category: dropdownValue,
           timeStamp: widget.blog.timeStamp),
     );
   }
@@ -252,7 +237,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view after entering the blog details
   Widget enableUplaod() {
-    print('inside enable Upload');
     return new Container(
       child: new Form(
         key: formKey,
@@ -268,14 +252,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             ),
             InkWell(
               onTap: getImage,
-              child:
-                  // Image.file(
-                  //   sampleImage,
-                  //   height: 255.0,
-                  //   width: 340,
-                  // ),
-
-                  buildGridView(),
+              child: buildGridView(),
             ),
             SizedBox(
               height: 10.0,
@@ -306,7 +283,15 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view before entering the blog details
   beforeUpload() {
-    print('inside before Upload');
+    print('inside before Upload ${widget.blog.category}');
+    List<NetworkImage> networkImages = List<NetworkImage>();
+    if (widget.blog != null) {
+      for (var image in widget.blog.image) {
+        networkImages.add(
+          NetworkImage(image),
+        );
+      }
+    }
     return new Container(
       child: Column(
         children: <Widget>[
@@ -320,8 +305,19 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           ),
           isEdit
               ? InkWell(
-                  child: buildGridView(),
-                  //Image.network(widget.blog.image),
+                  child: SizedBox(
+                      height: 200.0,
+                      width: 350.0,
+                      child: Carousel(
+                        images: networkImages,
+                        dotSize: 8.0,
+                        dotSpacing: 15.0,
+                        dotColor: Colors.purple[800],
+                        indicatorBgPadding: 5.0,
+                        autoplay: false,
+                        dotBgColor: Colors.white.withOpacity(0),
+                        borderRadius: true,
+                      )),
                   onTap: getImage,
                 )
               : InkWell(
@@ -381,7 +377,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   dropbox() {
-    String dropdownValue;
     return Container(
       width: 340,
       padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
@@ -390,10 +385,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           isExpanded: true,
-          hint: Text(
-            "Select category",
-            style: TextStyle(color: Colors.purple[200]),
-          ),
+          hint: widget.isEdit == true
+              ? widget.blog.category
+              : Text(
+                  "Select category",
+                  style: TextStyle(color: Colors.purple[200]),
+                ),
           isDense: true,
           value: dropdownValue,
           icon: Icon(FontAwesomeIcons.sortDown),
@@ -404,11 +401,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             height: 2,
             color: Colors.deepPurpleAccent,
           ),
-          onChanged: (String newValue) {
-            setState(() {
-              dropdownValue = newValue;
-            });
-          },
           items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
@@ -416,13 +408,17 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               child: Text(value),
             );
           }).toList(),
+          onChanged: (String newValue) {
+            setState(() {
+              dropdownValue = newValue;
+            });
+          },
         ),
       ),
     );
   }
 
   descriptionfield() {
-    //print('inside description ${widget.blog.description} ${isEdit}');
     return Container(
         child: Column(
       children: <Widget>[

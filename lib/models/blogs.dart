@@ -1,11 +1,12 @@
 import 'package:mr_blogger/models/comment.dart';
 
 class Blogs {
-  String uid, authorname, title, description, date, time;
+  String uid, authorname, title, description, date, time, category;
   List<String> likes;
   List<String> image;
   List<Comment> comments;
   int timeStamp;
+
   Blogs(
       {this.image,
       this.uid,
@@ -15,11 +16,13 @@ class Blogs {
       this.date,
       this.likes,
       this.comments,
+      this.category,
       this.time,
       this.timeStamp})
       : super();
 
   factory Blogs.fromJson(Map<String, dynamic> parsedJson) {
+    print('category in model ${parsedJson['category']}');
     return Blogs(
         image: parsedJson['image'] ?? '',
         uid: parsedJson['uid'] ?? '',
@@ -29,6 +32,7 @@ class Blogs {
         likes: parsedJson['likes'] ?? null,
         comments: parsedJson['comments'] ?? null,
         date: parsedJson['date'] ?? '',
+        category: parsedJson['category'] ?? '',
         time: parsedJson['time'] ?? '',
         timeStamp: parsedJson['timeStamp'] ?? '');
   }

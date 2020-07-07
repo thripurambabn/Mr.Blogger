@@ -125,7 +125,7 @@ class _HomepageState extends State<Homepage> {
           width: 33,
           height: 33,
           child: CircularProgressIndicator(
-            strokeWidth: 1.5,
+            strokeWidth: 0.5,
           ),
         ),
       ),
@@ -176,13 +176,6 @@ class _HomepageState extends State<Homepage> {
                           BlocProvider.of<AuthenticationBloc>(context).add(
                             AuthenticationLoggedOut(),
                           );
-                          //navigateToinitialScreen();
-                          // Navigator.of(context).pushAndRemoveUntil(
-                          //     MaterialPageRoute(
-                          //         builder: (context) => LoginForm(
-                          //               userService: userService,
-                          //             )),
-                          //     (Route<dynamic> route) => false);
                         },
                       ),
                     )
@@ -213,7 +206,7 @@ class _HomepageState extends State<Homepage> {
                       ? state.blogs.length
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
-                    //print('state of blogs ${state.blogs[index].likes}');
+                    // print('state of blogs ${state.uid}');
                     return index >= state.blogs.length
                         ? bottomLoader()
                         : ListTile(
@@ -276,9 +269,13 @@ class _HomepageState extends State<Homepage> {
           fit: BoxFit.cover,
           height: 240,
           width: MediaQuery.of(context).size.width / 1.2,
-          placeholder: (context, url) => CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
-          ),
+          placeholder: (context, url) => SizedBox(
+              height: 20,
+              width: 30,
+              child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+              )),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       );
@@ -305,20 +302,9 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
             SizedBox(height: 10.0),
-            // CachedNetworkImage(
-            //   imageUrl: image,
-            //   fit: BoxFit.cover,
-            //   height: 240,
-            //   width: MediaQuery.of(context).size.width / 1.2,
-            //   placeholder: (context, url) => CircularProgressIndicator(
-            //     valueColor:
-            //         new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
-            //   ),
-            //   errorWidget: (context, url, error) => Icon(Icons.error),
-            // ),
             SizedBox(
-                height: 200.0,
-                width: 350.0,
+                height: 20.0,
+                width: 35.0,
                 child: Carousel(
                   images: cachednetworkImages,
                   dotSize: 8.0,
@@ -435,9 +421,6 @@ class _HomepageState extends State<Homepage> {
 
   Widget getCommentButton(
       int timeStamp, List<Comment> comments, String uid, String title) {
-    //  print('inside getcomment button ${timeStamp}, ${comments}');
-
-    // print('tempcomment ${tempComment}');
     return new GestureDetector(
       child: new Container(
         alignment: Alignment.center,
