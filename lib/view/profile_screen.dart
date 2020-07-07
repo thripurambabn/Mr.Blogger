@@ -437,6 +437,21 @@ Widget profileUi(String username, String email) {
 }
 
 Widget errorUI() {
-  return new SnackBar(
-      content: Text('Something went wrong try after sometime!!'));
+  return new Center(
+      child: Text(
+    'There are no blogs yet!☹️...\nAdd Yours Now🥳',
+    textAlign: TextAlign.center,
+    style: TextStyle(
+        shadows: [
+          Shadow(
+            blurRadius: 10.0,
+            color: Colors.purple[200],
+            offset: Offset(8.0, 8.0),
+          ),
+        ],
+        fontSize: 25.0,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Paficico',
+        color: Colors.purple),
+  ));
 }

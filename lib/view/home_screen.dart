@@ -268,10 +268,9 @@ class _HomepageState extends State<Homepage> {
     String time,
     int timeStamp,
   ) {
-    List<CachedNetworkImage> networkImages = List<CachedNetworkImage>();
+    List<CachedNetworkImage> cachednetworkImages = List<CachedNetworkImage>();
     for (var image in images) {
-      print('each image ${image}');
-      networkImages.add(
+      cachednetworkImages.add(
         CachedNetworkImage(
           imageUrl: image,
           fit: BoxFit.cover,
@@ -284,7 +283,6 @@ class _HomepageState extends State<Homepage> {
         ),
       );
     }
-    print('image in home ui ${title}${networkImages}');
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -322,63 +320,7 @@ class _HomepageState extends State<Homepage> {
                 height: 200.0,
                 width: 350.0,
                 child: Carousel(
-                  images: [
-                    CachedNetworkImage(
-                      imageUrl: images[0],
-                      fit: BoxFit.cover,
-                      height: 240,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                            Colors.purple[800]),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    CachedNetworkImage(
-                      imageUrl: images[1],
-                      fit: BoxFit.cover,
-                      height: 240,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                            Colors.purple[800]),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    CachedNetworkImage(
-                      imageUrl: images[2],
-                      fit: BoxFit.cover,
-                      height: 240,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                            Colors.purple[800]),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    CachedNetworkImage(
-                      imageUrl: images[3],
-                      fit: BoxFit.cover,
-                      height: 240,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                            Colors.purple[800]),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    CachedNetworkImage(
-                      imageUrl: images[4],
-                      fit: BoxFit.cover,
-                      height: 240,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                            Colors.purple[800]),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                  ],
+                  images: cachednetworkImages,
                   dotSize: 8.0,
                   dotSpacing: 15.0,
                   dotColor: Colors.purple[800],
@@ -527,7 +469,22 @@ class _HomepageState extends State<Homepage> {
   }
 
   Widget errorUI() {
-    return new SnackBar(
-        content: Text('Something went wrong try after sometime!!'));
+    return new Center(
+        child: Text(
+      'There are no blogs yet!☹️...\nAdd Yours Now🥳',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          shadows: [
+            Shadow(
+              blurRadius: 10.0,
+              color: Colors.purple[200],
+              offset: Offset(8.0, 8.0),
+            ),
+          ],
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Paficico',
+          color: Colors.purple),
+    ));
   }
 }

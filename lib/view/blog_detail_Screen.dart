@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
@@ -59,6 +60,21 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<CachedNetworkImage> cachednetworkImages = List<CachedNetworkImage>();
+    for (var image in widget.blogs.image) {
+      cachednetworkImages.add(
+        CachedNetworkImage(
+          imageUrl: image,
+          fit: BoxFit.cover,
+          height: 240,
+          width: MediaQuery.of(context).size.width / 1.2,
+          placeholder: (context, url) => CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      );
+    }
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
@@ -184,26 +200,21 @@ class _DetailPageState extends State<DetailPage> {
                       Container(
                           padding: EdgeInsets.all(10.0),
                           child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child:
-                                  //  Image.network(
-                                  //   widget.blogs.image,
-                                  //   fit: BoxFit.cover,
-                                  //   height: 280,
-                                  //   width: 350,
-                                  //   loadingBuilder: (context, child, progress) {
-                                  //     return progress == null
-                                  //         ? child
-                                  //         : Container(
-                                  //             color: Colors.purple[50],
-                                  //             height: 300,
-                                  //             width: 400,
-                                  //           );
-                                  //   },
-                                  // ),
-                                  Carousel(
-                                images: [widget.blogs.image],
-                              ))),
+                            borderRadius: BorderRadius.circular(5),
+                            child: SizedBox(
+                                height: 200.0,
+                                width: 350.0,
+                                child: Carousel(
+                                  images: cachednetworkImages,
+                                  dotSize: 8.0,
+                                  dotSpacing: 15.0,
+                                  dotColor: Colors.purple[800],
+                                  indicatorBgPadding: 5.0,
+                                  autoplay: false,
+                                  dotBgColor: Colors.white.withOpacity(0),
+                                  borderRadius: true,
+                                )),
+                          )),
                       SizedBox(
                         height: 10,
                       ),

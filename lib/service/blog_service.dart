@@ -202,29 +202,41 @@ class BlogsService {
     print('inside service upload image');
     ByteData byteData = await sampleImage.requestOriginal(quality: 70);
     List<int> imageData = byteData.buffer.asUint8List();
+    print('imageData ${imageData}');
+    var timekey = new DateTime.now();
+    final StorageReference iamgeref = FirebaseStorage.instance
+        .ref()
+        .child("Blog images")
+        .child(timekey.toString() + '.jpg');
 
-    final StorageReference iamgeref =
-        FirebaseStorage.instance.ref().child("Blog images");
-    // var timekey = new DateTime.now();
     //print('image -------$sampleImage');
     final StorageUploadTask uploadImage = iamgeref.putData(imageData);
     var imageurl = await uploadImage.onComplete;
     var imageurl1 = await imageurl.ref.getDownloadURL();
     url = imageurl1.toString();
-    print('url -------${url}');
+    List<String> urlList = List<String>();
+    urlList.add(url);
+    print('url -------${urlList}');
     return url;
-    // try {
-    //   await saveToDatabase(
-    //     url,
-    //     mytitlevalue,
-    //     myvalue,
-    //     category,
-    //   );
-    // } catch (e) {
-    //   print(e.toString());
-    // }
-    // }
   }
+  //  Future<String> uploadImage({
+  //   sampleImage,
+  // }) async {
+  //   String url;
+  //   // if (validateandSave()) {
+  //   print('inside service upload image');
+  //   final StorageReference iamgeref =
+  //       FirebaseStorage.instance.ref().child("Blog images");
+  //   var timekey = new DateTime.now();
+  //   print('image -------${sampleImage}');
+  //   final StorageUploadTask uploadImage =
+  //       iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
+  //   var imageurl = await uploadImage.onComplete;
+  //   var imageurl1 = await imageurl.ref.getDownloadURL();
+  //   url = imageurl1.toString();
+  //   print('url -------${url}');
+  //   return url;
+  // }
 
 //To validate form and save
   // bool validateandSave() {
