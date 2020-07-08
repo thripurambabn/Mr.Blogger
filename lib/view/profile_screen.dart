@@ -199,16 +199,20 @@ class _ProfilePageState extends State<ProfilePage>
                           shrinkWrap: true,
                           itemCount: state.blogs.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return GridTile(
-                                child: blogsGridUi(
-                                    state.blogs[index].image,
-                                    state.blogs[index].uid,
-                                    state.blogs[index].authorname,
-                                    state.blogs[index].title,
-                                    state.blogs[index].description,
-                                    state.blogs[index].likes,
-                                    state.blogs[index].date,
-                                    state.blogs[index].time));
+                            if (state.blogs.length == 0) {
+                              return Text('There are no blogs yet');
+                            } else {
+                              return GridTile(
+                                  child: blogsGridUi(
+                                      state.blogs[index].image,
+                                      state.blogs[index].uid,
+                                      state.blogs[index].authorname,
+                                      state.blogs[index].title,
+                                      state.blogs[index].description,
+                                      state.blogs[index].likes,
+                                      state.blogs[index].date,
+                                      state.blogs[index].time));
+                            }
                           },
                         );
                       } else if (state is ProfileNotLoaded) {
@@ -423,64 +427,72 @@ Widget profileUi(
         alignment: Alignment.bottomCenter,
         overflow: Overflow.visible,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  height: 110.0,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          colors: [
-                            Colors.purple[400],
-                            Colors.purple[300],
-                            Colors.purple[900]
-                          ],
-                          end: FractionalOffset.topCenter),
-                      color: Colors.purpleAccent),
-                ),
-              )
-            ],
-          ),
           Positioned(
-            top: 30.0,
+            top: 0,
             child: Container(
-              height: 150.0,
-              width: 150.0,
+              width: MediaQuery.of(context).size.width,
+              height: 110.0,
               decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(imageUrl ??
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
-                  ),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 6.0)),
+                  gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      colors: [
+                        Colors.purple[400],
+                        Colors.purple[300],
+                        Colors.purple[900]
+                      ],
+                      end: FractionalOffset.topCenter),
+                  color: Colors.purpleAccent),
             ),
           ),
-          // Positioned(
-          //     top: 115,
-          //     left: 200,
-          // child:
 
-          RawMaterialButton(
-            onPressed: () =>
-                {buttonPressed(username, email, imageUrl, context)},
-            elevation: 0,
-            fillColor: Colors.white,
-            child: Icon(
-              Icons.edit,
-              size: 25.0,
-              color: Colors.purple[800],
-            ),
-            padding: EdgeInsets.all(0.0),
-            shape: CircleBorder(),
-          ),
-          // )
+          // Positioned(
+          //   top: 115,
+          //   left: 200,
+
+          //   child:
+
+          // ),
+          Container(
+              // top: 30.0,
+              padding: EdgeInsets.fromLTRB(60, 30, 60, 0),
+              alignment: Alignment.center,
+              child: Stack(children: <Widget>[
+                Container(
+                  height: 150.0,
+                  width: 150.0,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(imageUrl ??
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
+                      ),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 6.0)),
+                ),
+                Positioned(
+                  top: 100,
+                  left: 80,
+                  //alignment: Alignment.bottomRight,
+                  child: RawMaterialButton(
+                    onPressed: () =>
+                        {buttonPressed(username, email, imageUrl, context)},
+                    elevation: 0,
+                    fillColor: Colors.white,
+                    child: Icon(
+                      Icons.edit,
+                      size: 25.0,
+                      color: Colors.purple[800],
+                    ),
+                    padding: EdgeInsets.all(0.0),
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ])),
         ],
       ),
     ),
     SizedBox(
-      height: 70,
+      height: 10,
     ),
     Text(
       username,

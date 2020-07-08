@@ -166,7 +166,6 @@ class BlogsService {
   ) async {
     try {
       //  var url = uploadImage();
-      print('category ${category}');
       List<String> likes = [];
       List<String> comments = [];
       var dbkey = new DateTime.now();
@@ -219,7 +218,6 @@ class BlogsService {
     url = imageurl1.toString();
     List<String> urlList = List<String>();
     urlList.add(url);
-    print('url -------${urlList}');
     return url;
   }
 
@@ -232,22 +230,21 @@ class BlogsService {
         .orderByChild('title')
         .startAt(searchKey)
         .endAt(searchKey + '\uf8ff');
-
     final DataSnapshot snapshot = await blogsref.once();
 
     try {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
-
         for (var key in refkey) {
-          print('test123 ${data[key]['likes']}');
-          List<String> likesList = [];
-          for (var like in data[key]['likes']) {
-            print('like ${like}');
-            likesList.add(like);
+          var tempLikes = [];
+          var likesList = new List<String>();
+          if (data[key]['likes'] != null) {
+            tempLikes = data[key]['likes'];
+            for (var like in tempLikes) {
+              likesList.add(like.toString());
+            }
           }
-
           var tempComments;
           var commentsList = new List<Comment>();
           if (data[key]['comments'] != null) {
@@ -263,9 +260,19 @@ class BlogsService {
               }
             }
           }
+          var tempImages = [];
+          var imagesList = new List<String>();
+          if (data[key]['image'] != null) {
+            tempImages = data[key]['image'];
 
+            for (var image in tempImages) {
+              if (image != null) {
+                imagesList.add(image);
+              }
+            }
+          }
           Blogs blog = new Blogs(
-              image: data[key]['image'],
+              image: imagesList,
               uid: data[key]['uid'],
               authorname: data[key]['authorname'],
               title: data[key]['title'],
@@ -274,14 +281,17 @@ class BlogsService {
               comments: commentsList,
               date: data[key]['date'],
               time: data[key]['time'],
+              category: data[key]['category'],
               timeStamp: data[key]['timeStamp']);
 
           blogsList.clear();
+          print('blogs in service ${blog.title}');
           blogsList.add(blog);
         }
-      } else {
-        print('there are no blogs of this user');
       }
+      // else {
+      //   print('there are no blogs of this user');
+      // }
     } catch (e) {
       print(e);
     }

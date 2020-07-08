@@ -41,6 +41,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     //listener for scroll event
+    print('iam home');
     _scrollController.addListener(_onScroll);
     //inital call for get blogs
     getBlogs();
@@ -242,12 +243,16 @@ class _HomepageState extends State<Homepage> {
           backgroundColor: Colors.purple[800],
           onPressed: () {
             //navigate to add blog screen
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return new AddBlogScreen(
-                blog: null,
-                isEdit: false,
-              );
-            }));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    settings: RouteSettings(name: "homePage"),
+                    builder: (context) {
+                      return new AddBlogScreen(
+                        blog: null,
+                        isEdit: false,
+                      );
+                    }));
           },
           child: Icon(FontAwesomeIcons.solidEdit),
         ));
@@ -274,13 +279,14 @@ class _HomepageState extends State<Homepage> {
           fit: BoxFit.cover,
           height: 240,
           width: MediaQuery.of(context).size.width / 1.2,
-          placeholder: (context, url) => SizedBox(
-              height: 20,
-              width: 30,
-              child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
-              )),
+          placeholder: (context, url) => Center(
+              child: SizedBox(
+            height: 40,
+            width: 40,
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+            ),
+          )),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       );
@@ -293,21 +299,17 @@ class _HomepageState extends State<Homepage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text(
-                  title ?? '',
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Paficico',
-                      color: Colors.purple),
-                  textAlign: TextAlign.left,
-                ),
-              ],
+            Text(
+              title ?? '',
+              style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Paficico',
+                  color: Colors.purple),
+              textAlign: TextAlign.left,
             ),
             SizedBox(height: 10.0),
-            SizedBox(
+            Container(
                 height: 200.0,
                 width: 350.0,
                 child: Carousel(

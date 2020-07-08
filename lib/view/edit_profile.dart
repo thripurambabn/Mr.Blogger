@@ -139,7 +139,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
 //user deatils widget
-  Widget profileUi(String username, String imageUrl) {
+  Widget profileUi(String username, String currentimageUrl) {
     return new Column(children: <Widget>[
       Container(
         child: Stack(
@@ -175,8 +175,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage(widget.imageUrl ??
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
+                          image: NetworkImage(imageUrl != null
+                              ? imageUrl
+                              : widget.imageUrl ??
+                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
                         ),
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 6.0)),

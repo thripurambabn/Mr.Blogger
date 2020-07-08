@@ -38,13 +38,15 @@ class _DetailPageState extends State<DetailPage> {
 
 //Navigate to homepage
   void navigateToHomePage() {
-    Timer(Duration(seconds: 8), () {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) {
-          return new Homepage();
-        },
-      ));
-    });
+    // Timer(Duration(seconds: 8), () {
+    //   Navigator.push(context, MaterialPageRoute(
+    //     builder: (context) {
+    //       return new Homepage();
+    //     },
+    //   ));
+    // });
+    print('navigating back');
+    WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
   }
 
   void navigateToAddPage(blog) {

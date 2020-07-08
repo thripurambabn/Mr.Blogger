@@ -40,7 +40,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   String dropdownValue;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-
+  bool imageLoading = false;
   //instance of blog Service and User Service
   var userService = UserService();
   static BlogsService _blogsServcie = BlogsService();
@@ -55,7 +55,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         bloc: _blog,
         listener: (context, state) {
           if (state is BlogsLoaded) {
-            navigateToHomePage();
+            return navigateToHomePage();
           }
         },
         child: new WillPopScope(
@@ -77,8 +77,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             ),
             body: SingleChildScrollView(
               child: new Center(
-                child:
-                    imageUrlList.length == 0 ? beforeUpload() : enableUplaod(),
+                child: imageUrl == null ? beforeUpload() : enableUplaod(),
               ),
             ),
           ),
@@ -156,34 +155,55 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       error = e.toString();
     }
     if (!mounted) return;
+    print('result list$resultList');
     setState(() {
       images = resultList;
       _error = error;
+      imageLoading = true;
+      imageUrl = null;
     });
+    List<String> urlList = List<String>();
     for (var image in resultList) {
       var url = await _blogsServcie.uploadImage(sampleImage: image);
-      imageUrlList.add(url);
+      urlList.add(url);
     }
+    print('image url before setState $imageUrl $imageUrlList');
     setState(() {
-      imageUrl = imageUrlList;
+      imageUrl = urlList;
+      imageLoading = false;
     });
   }
 
   Widget buildGridView() {
-    return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 3,
-      children: List.generate(images.length, (index) {
-        Asset asset = images[index];
-        return AssetThumb(
-          asset: asset,
-          width: 300,
-          height: 300,
+    List<NetworkImage> networkImages = List<NetworkImage>();
+    print('image url in befor for $imageUrl}');
+    if (imageUrl != null) {
+      for (var image in imageUrl) {
+        networkImages.add(
+          NetworkImage(image),
         );
-      }),
-    );
-  }
+      }
 
+      if (networkImages.length > 0) {
+        return InkWell(
+            child: SizedBox(
+                height: 240.0,
+                width: MediaQuery.of(context).size.width,
+                child: Carousel(
+                  images: networkImages,
+                  dotSize: 8.0,
+                  dotSpacing: 15.0,
+                  dotColor: Colors.purple[800],
+                  indicatorBgPadding: 5.0,
+                  autoplay: false,
+                  dotBgColor: Colors.white.withOpacity(0),
+                  borderRadius: true,
+                )));
+      } else {
+        return Text('error in loading');
+      }
+    }
+  }
   // bool validateandSave() {
   //   final form = formKey.currentState;
   //   if (form.validate()) {
@@ -197,7 +217,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     //   validateandSave();
     _blog.add(
       UploadBlog(
-        url: imageUrlList,
+        url: imageUrl,
         image: sampleImage,
         title: _titleController.text,
         description: _descriptionController.text,
@@ -209,7 +229,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   void updateBlog() {
     _blog.add(
       UpdateBlog(
-          image: imageUrlList,
+          image: imageUrl,
           title: _titleController.text,
           description: _descriptionController.text,
           category: dropdownValue,
@@ -227,6 +247,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   void navigateToHomePage() {
+    //int count = 0;
+    print('navigation back to home');
+    //  Navigator.of(context).pop();
+    //Navigator.popUntil(context, ModalRoute.withName("homePage"));
+    // print('iam home poped ');
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
         return Homepage();
@@ -236,6 +261,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view after entering the blog details
   Widget enableUplaod() {
+    print('enable upload');
     return new Container(
       child: new Form(
         key: formKey,
@@ -250,9 +276,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               height: 20,
             ),
             InkWell(
-              onTap: getImage,
-              child: buildGridView(),
-            ),
+                onTap: getImage,
+                child: Container(
+                    color: Colors.purple[50],
+                    alignment: Alignment.center,
+                    height: 240,
+                    child: buildGridView())),
             SizedBox(
               height: 10.0,
             ),
@@ -269,14 +298,18 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               onPressed: isbuttondisabled
                   ? null
                   : () {
-                      setState(() => isbuttondisabled = !isbuttondisabled);
+                      setState(() => {
+                            print('setting inside enable upload'),
+                            isbuttondisabled = !isbuttondisabled
+                          });
                       widget.isEdit == true ? updateBlog() : addBlog();
-                      Center(
-                          child: Image(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://i.pinimg.com/originals/07/bf/6f/07bf6f0f7d5dd64829822e95e97f908d.gif'),
-                      ));
+                      // Center(
+                      //     child: Image(
+                      //   fit: BoxFit.cover,
+                      //   image: NetworkImage(
+                      //       'https://i.pinimg.com/originals/07/bf/6f/07bf6f0f7d5dd64829822e95e97f908d.gif'),
+                      // ));
+                      navigateToLoadingPage();
                     },
             )
           ],
@@ -287,6 +320,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
 //view before entering the blog details
   beforeUpload() {
+    print('before upload');
     List<NetworkImage> networkImages = List<NetworkImage>();
     if (widget.blog != null) {
       for (var image in widget.blog.image) {
@@ -310,8 +344,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           isEdit
               ? InkWell(
                   child: SizedBox(
-                      height: 200.0,
-                      width: 350.0,
+                      height: 240.0,
+                      width: MediaQuery.of(context).size.width,
                       child: Carousel(
                         images: networkImages,
                         dotSize: 8.0,
@@ -324,37 +358,48 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                       )),
                   onTap: getImage,
                 )
-              : InkWell(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
-                    color: Colors.purple[300],
-                    alignment: Alignment.center,
-                    height: 240,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.solidImages,
-                          ),
-                          tooltip: 'Add photo',
-                          iconSize: 50,
-                          color: Colors.white,
-                          splashColor: Colors.purple,
-                          onPressed: getImage,
+              : imageLoading
+                  ? Container(
+                      color: Colors.purple[100],
+                      height: 240,
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                          child: Text('Loading your images...',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.purple,
+                                  fontFamily: 'Paficico'))))
+                  : InkWell(
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                        color: Colors.purple[200],
+                        alignment: Alignment.center,
+                        height: 240,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.solidImages,
+                              ),
+                              tooltip: 'Add photo',
+                              iconSize: 50,
+                              color: Colors.white,
+                              splashColor: Colors.purple,
+                              onPressed: getImage,
+                            ),
+                            Text(
+                              'Add Photo',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.purple, fontFamily: 'Paficico'),
+                            )
+                          ],
                         ),
-                        Text(
-                          'Add Photo',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.purple, fontFamily: 'Paficico'),
-                        )
-                      ],
+                        width: 340,
+                      ),
+                      onTap: getImage,
                     ),
-                    width: 340,
-                  ),
-                  onTap: getImage,
-                ),
           SizedBox(
             height: 10,
           ),
@@ -365,15 +410,17 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
             ),
             color: Colors.purple[800],
-            onPressed: isbuttondisabled
-                ? null
-                : () {
-                    setState(() => isbuttondisabled = !isbuttondisabled);
-
-                    widget.isEdit == true ? updateBlog() : addBlog();
-
-                    navigateToLoadingPage();
-                  },
+            onPressed: null,
+            // onPressed: isbuttondisabled
+            //     ? null
+            //     : () {
+            //         setState(() => {
+            //               print('setting inside disable upload'),
+            //               isbuttondisabled = !isbuttondisabled
+            //             });
+            //         widget.isEdit == true ? updateBlog() : addBlog();
+            //         //  navigateToLoadingPage();
+            //       },
           )
         ],
       ),

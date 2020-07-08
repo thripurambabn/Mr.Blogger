@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,7 @@ class _SearchPageState extends State<SearchPage> {
   final _scrollController = ScrollController();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   final _scrollThreshold = 200.0;
+  bool searching = false;
   @override
   void initState() {
     super.initState();
@@ -68,64 +70,41 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Icon cusIcon = Icon(Icons.search);
-  Widget cusSearchBar =
-      Text('', style: TextStyle(color: Colors.white, fontFamily: 'Paficico'));
   final TextEditingController searchBlog = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],
-          title: cusSearchBar,
-          actions: <Widget>[
-            IconButton(
-              icon: cusIcon,
-              onPressed: () => {
-                setState(() {
-                  if (this.cusIcon.icon == Icons.search) {
-                    this.cusIcon = Icon(Icons.cancel);
-                    this.cusSearchBar = TextField(
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(border: InputBorder.none),
-                      style: TextStyle(
-                        color: Colors.purple[300],
-                        fontSize: 20.0,
-                      ),
-                      cursorColor: Colors.purple[400],
-                      textCapitalization: TextCapitalization.sentences,
-                      controller: searchBlog,
-                      onSubmitted: (searchBlog) {
-                        _blog.add(SearchBlog(searchBlog));
-                      },
-                    );
-                  } else {
-                    this.cusIcon = Icon(Icons.search);
-                    this.cusSearchBar = Text('',
-                        style: TextStyle(
-                            color: Colors.white, fontFamily: 'Paficico'));
-                  }
-                }),
-              },
+          title: TextField(
+            autofocus: true,
+            textInputAction: TextInputAction.go,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon: IconButton(
+                onPressed: () => searchBlog.clear(),
+                icon: Icon(Icons.cancel, color: Colors.white),
+              ),
             ),
-          ],
+            style: TextStyle(
+              color: Colors.purple[300],
+              fontSize: 20.0,
+            ),
+            cursorColor: Colors.purple[400],
+            textCapitalization: TextCapitalization.sentences,
+            controller: searchBlog,
+            onSubmitted: (searchBlog) {
+              setState(() {
+                searching = true;
+              });
+              _blog.add(SearchBlog(searchBlog));
+            },
+          ),
         ),
         //handles blog list view on state change
         body: SingleChildScrollView(
             child: Container(
           child: Column(children: <Widget>[
-            Container(
-              padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Results for "${searchBlog.text}"...',
-                style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'Paficico',
-                    color: Colors.purple),
-                textAlign: TextAlign.left,
-              ),
-            ),
             Container(
               child: BlocBuilder<BlogsBloc, BlogsState>(
                 bloc: _blog,
@@ -146,33 +125,50 @@ class _SearchPageState extends State<SearchPage> {
                     ]);
                   } //Loaded state
                   else if (state is BlogsLoaded) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      physics: ScrollPhysics(),
-                      itemCount: state.hasReachedMax
-                          ? state.blogs.length
-                          : state.blogs.length + 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        return index >= state.blogs.length
-                            ? bottomLoader()
-                            : ListTile(
-                                onTap: () =>
-                                    navigateToDetailPage(state.blogs[index]),
-                                title: blogsUi(
-                                  state.blogs[index].image,
-                                  state.blogs[index].uid,
-                                  state.blogs[index].authorname,
-                                  state.blogs[index].title,
-                                  state.blogs[index].description,
-                                  state.blogs[index].likes,
-                                  state.blogs[index].date,
-                                  state.blogs[index].time,
-                                  state.blogs[index].timeStamp,
-                                ));
-                      },
-                      controller: _scrollController,
-                    ); //error state
+                    print('state of blogs in search ui ${state.blogs.length}');
+                    return Column(children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Results for "${searchBlog.text}"...',
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.normal,
+                              fontFamily: 'Paficico',
+                              color: Colors.purple),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        physics: ScrollPhysics(),
+                        itemCount: state.hasReachedMax
+                            ? state.blogs.length
+                            : state.blogs.length + 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          return index >= state.blogs.length
+                              ? bottomLoader()
+                              : ListTile(
+                                  onTap: () =>
+                                      navigateToDetailPage(state.blogs[index]),
+                                  title: blogsUi(
+                                    state.blogs[index].image,
+                                    state.blogs[index].uid,
+                                    state.blogs[index].authorname,
+                                    state.blogs[index].title,
+                                    state.blogs[index].description,
+                                    state.blogs[index].likes,
+                                    state.blogs[index].date,
+                                    state.blogs[index].time,
+                                    state.blogs[index].timeStamp,
+                                  ));
+                        },
+                        controller: _scrollController,
+                      )
+                    ]);
+                    //error state
                   } else if (state is BlogsNotLoaded) {
                     return errorUI();
                   }
@@ -185,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
 
 //blog tile widget
   Widget blogsUi(
-      List<String> image,
+      List<String> images,
       String uid,
       String authorname,
       String title,
@@ -194,6 +190,25 @@ class _SearchPageState extends State<SearchPage> {
       String date,
       String time,
       int timeStamp) {
+    List<CachedNetworkImage> cachednetworkImages = List<CachedNetworkImage>();
+    for (var image in images) {
+      cachednetworkImages.add(
+        CachedNetworkImage(
+          imageUrl: image,
+          fit: BoxFit.cover,
+          height: 240,
+          width: MediaQuery.of(context).size.width / 1.2,
+          placeholder: (context, url) => SizedBox(
+              height: 20,
+              width: 30,
+              child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+              )),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      );
+    }
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -216,9 +231,20 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
             SizedBox(height: 10.0),
-            Carousel(
-                  images: [image],
-                ) ??
+            SizedBox(
+                    height: 200.0,
+                    width: 350.0,
+                    child: Carousel(
+                      boxFit: BoxFit.contain,
+                      images: cachednetworkImages,
+                      dotSize: 8.0,
+                      dotSpacing: 15.0,
+                      dotColor: Colors.purple[800],
+                      indicatorBgPadding: 5.0,
+                      autoplay: false,
+                      dotBgColor: Colors.white.withOpacity(0),
+                      borderRadius: true,
+                    )) ??
                 Container(
                   color: Colors.purple[50],
                   height: 240,

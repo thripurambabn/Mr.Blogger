@@ -54,7 +54,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 //mapping Deleted Blog To State event with states
   Stream<ProfileState> _mapDeletedBlogToState(DeleteBlog event) async* {
     try {
-      await _profileService.deleteBlog(event.key);
+      _profileService.deleteBlog(event.key);
       UserService _userService = new UserService();
       final test = await _userService.save();
       List<Blogs> profileblogslist = await _profileService.getblogs();
