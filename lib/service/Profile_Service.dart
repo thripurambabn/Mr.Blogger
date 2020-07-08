@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/models/comment.dart';
+import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/user_service.dart';
 
 class ProfileService {
@@ -22,17 +24,58 @@ class ProfileService {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
+
         for (var key in refkey) {
+          var tempLikes = [];
+          var tempImages = [];
+          var tempComments;
+          var commentsList = new List<Comment>();
+          var likesList = new List<String>();
+          var imagesList = new List<String>();
+          if (data[key]['likes'] != null) {
+            tempLikes = data[key]['likes'];
+
+            for (var like in tempLikes) {
+              likesList.add(like.toString());
+            }
+          }
+          if (data[key]['image'] != null) {
+            tempImages = data[key]['image'];
+            for (var image in tempImages) {
+              //print('image $image');
+              if (image != null) {
+                imagesList.add(image);
+              }
+            }
+            // print('images after for ${imagesList}');
+          }
+          if (data[key]['comments'] != null) {
+            tempComments = data[key]['comments'];
+            for (var comment in tempComments) {
+              if (comment != null) {
+                var newComment = new Comment(
+                  username: comment['username'],
+                  date: comment['date'],
+                  comment: comment['comment'],
+                );
+                commentsList.add(newComment);
+              }
+            }
+          }
           Blogs blog = new Blogs(
-              image: data[key]['image'],
+              image: imagesList,
               uid: data[key]['uid'],
               authorname: data[key]['authorname'],
               title: data[key]['title'],
               description: data[key]['description'],
+              likes: likesList,
+              comments: commentsList,
               date: data[key]['date'],
-              time: data[key]['time'],
               category: data[key]['category'],
+              time: data[key]['time'],
               timeStamp: data[key]['timeStamp']);
+
+          blogsList.clear();
           blogsList.add(blog);
         }
       } else {
@@ -54,16 +97,21 @@ class ProfileService {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
-        print('snap shot value in profiledetails service $data');
-        print('refkey value in profiledetails service $refkey');
-        userData = data;
+
+        for (var key in refkey) {
+          Users user = new Users(
+              uid: data[key]['uid'],
+              displayName: data[key]['username'],
+              email: data[key]['email'],
+              imageUrl: data[key]['photoUrl']);
+          userData = user;
+        }
       } else {
         print('there are no blogs of this user');
       }
     } catch (e) {
       print(e);
     }
-    print('returning $userData');
     return userData;
   }
 

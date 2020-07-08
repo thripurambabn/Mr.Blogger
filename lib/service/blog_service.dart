@@ -23,7 +23,6 @@ class BlogsService {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
     for (var key in refkey) {
-      print('category ${data[key]['category']}');
       var tempLikes = [];
       var tempImages = [];
       var tempComments;
@@ -145,6 +144,7 @@ class BlogsService {
               category: data[key]['category'],
               timeStamp: data[key]['timeStamp']);
           print('images inside blog ${blog.image}');
+          blogsList.clear();
           blogsList.add(blog);
         }
       }

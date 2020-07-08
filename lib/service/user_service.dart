@@ -67,7 +67,7 @@ class UserService {
       print('data $data');
       return user.uid;
     } catch (e) {
-      print('failure in saving it ro the db');
+      print('failure in saving it ro the db $e');
     }
   }
 

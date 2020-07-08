@@ -40,13 +40,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Stream<ProfileState> _mapLoadedProfileState() async* {
     yield ProfileLoading();
     try {
-      print('calling getProfileDetails');
       var test = await _profileService.getProfileDetails();
-      print('called getProfileDetails');
+
       List<Blogs> profileblogslist = await _profileService.getblogs();
-      print('details in bloc  ${test}');
+
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
-          test.uid, test.photoUrl);
+          test.uid, test.imageUrl);
     } catch (e) {
       print(e);
     }

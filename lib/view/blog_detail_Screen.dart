@@ -80,7 +80,7 @@ class _DetailPageState extends State<DetailPage> {
         navigateToAddPage(widget.blogs);
       } else if (choice == '2') {
         _profile.add(DeleteBlog(widget.blogs.title));
-        Navigator.of(context).pop();
+        navigateToHomePage();
       }
     }
 

@@ -25,8 +25,10 @@ class EditProfilePage extends StatefulWidget {
   final Users user;
   final String name;
   final String email;
+  final String imageUrl;
 
-  const EditProfilePage({Key key, this.user, this.name, this.email})
+  const EditProfilePage(
+      {Key key, this.user, this.name, this.email, this.imageUrl})
       : super(key: key);
 
   _EditProfilePageState createState() => _EditProfilePageState();
@@ -48,18 +50,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     //calls loaded profile details event
+
     _profile.add(
       LoadedProfileDeatils(),
     );
-
+    print('details received by edit page ${widget.imageUrl} ${widget.name} ');
+    _nameController.text = widget.name != null ? widget.name : '';
     super.initState();
   }
 
   void saveprofile() {
     print(
         'in edit profile ui----------------${_nameController.text} ${imageUrl},');
+    var newUrl = imageUrl ?? widget.imageUrl;
     _profile.add(
-      EditProfile(_nameController.text, imageUrl),
+      EditProfile(_nameController.text, newUrl),
     );
   }
 
@@ -103,7 +108,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
-                    return profileUi(state.displayName);
+                    return profileUi(state.displayName, state.imageUrl);
                   } else if (state is ProfileNotLoaded) {
                     return errorUI();
                   }
@@ -134,7 +139,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
 //user deatils widget
-  Widget profileUi(String username) {
+  Widget profileUi(String username, String imageUrl) {
     return new Column(children: <Widget>[
       Container(
         child: Stack(
@@ -170,7 +175,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage(
+                          image: NetworkImage(widget.imageUrl ??
                               'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
                         ),
                         shape: BoxShape.circle,

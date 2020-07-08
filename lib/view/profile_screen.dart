@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -16,7 +12,6 @@ import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/edit_profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   final Users user;
@@ -34,9 +29,9 @@ class _ProfilePageState extends State<ProfilePage>
   var userService = UserService();
   static BlogsService _blogsService = BlogsService();
   static ProfileService _profileService = ProfileService();
-  SharedPreferences sharedPreferences;
   String email;
   String name;
+  String imageUrl;
   var _profile =
       ProfileBloc(profileService: _profileService, blogsService: _blogsService);
   List<Blogs> blogsList = [];
@@ -60,15 +55,16 @@ class _ProfilePageState extends State<ProfilePage>
     }));
   }
 
-  void navigateToEditProfilePage() {
-    print('navigating to edit page');
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new EditProfilePage(
-        name: name,
-        email: email,
-      );
-    }));
-  }
+  // void navigateToEditProfilePage() {
+  //   print('navigating to edit page $name $email $imageUrl');
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return new EditProfilePage(
+  //       name: name,
+  //       email: email,
+  //       imageUrl: imageUrl,
+  //     );
+  //   }));
+  // }
 
   Widget build(BuildContext ctx) {
     tabController = new TabController(length: 2, vsync: this);
@@ -79,14 +75,14 @@ class _ProfilePageState extends State<ProfilePage>
             'Profile',
             style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
           ),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(FontAwesomeIcons.userEdit),
-                onPressed: () {
-                  print('sending from profile');
-                  navigateToEditProfilePage();
-                }),
-          ],
+          // actions: <Widget>[
+          //   IconButton(
+          //       icon: Icon(FontAwesomeIcons.userEdit),
+          //       onPressed: () {
+          //         print('sending from profile');
+          //         navigateToEditProfilePage();
+          //       }),
+          // ],
         ),
         body: SingleChildScrollView(
             child: Container(
@@ -99,9 +95,8 @@ class _ProfilePageState extends State<ProfilePage>
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
-                    print('image url in profile main ui ${state.imageUrl}');
-                    return profileUi(
-                        state.displayName, state.email, state.imageUrl);
+                    return profileUi(state.displayName, state.email,
+                        state.imageUrl, context);
                   } else if (state is ProfileNotLoaded) {
                     return Text(
                       'Something went wrong please try again later',
@@ -320,7 +315,7 @@ class _ProfilePageState extends State<ProfilePage>
                   new Text(
                     time,
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 13.0,
                       fontWeight: FontWeight.w400,
                       color: Colors.grey[500],
                     ),
@@ -420,7 +415,8 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 //user deatils widget
-Widget profileUi(String username, String email, String imageUrl) {
+Widget profileUi(
+    String username, String email, String imageUrl, BuildContext context) {
   return new Column(children: <Widget>[
     Container(
       child: Stack(
@@ -461,6 +457,25 @@ Widget profileUi(String username, String email, String imageUrl) {
                   border: Border.all(color: Colors.white, width: 6.0)),
             ),
           ),
+          // Positioned(
+          //     top: 115,
+          //     left: 200,
+          // child:
+
+          RawMaterialButton(
+            onPressed: () =>
+                {buttonPressed(username, email, imageUrl, context)},
+            elevation: 0,
+            fillColor: Colors.white,
+            child: Icon(
+              Icons.edit,
+              size: 25.0,
+              color: Colors.purple[800],
+            ),
+            padding: EdgeInsets.all(0.0),
+            shape: CircleBorder(),
+          ),
+          // )
         ],
       ),
     ),
@@ -483,6 +498,19 @@ Widget profileUi(String username, String email, String imageUrl) {
           color: Colors.purple[600],
         ))
   ]);
+}
+
+buttonPressed(
+    String username, String email, String imageUrl, BuildContext context) {
+  print('pressing edit button');
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    print('navigating to edit page $username $email $imageUrl');
+    return new EditProfilePage(
+      name: username,
+      email: email,
+      imageUrl: imageUrl,
+    );
+  }));
 }
 
 Widget errorUI() {
