@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
@@ -59,7 +57,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         yield BlogsLoading();
 
         List<Blogs> blogslist = await _blogsService.getblogs();
-
+        print('in bloc blogsList ${blogslist}');
         yield BlogsLoaded(blogs: blogslist, hasReachedMax: false, uid: uid.uid);
       } else if (state is BlogsLoaded && !_hasReachedMax(state)) {
         List<Blogs> moreblogslist =
@@ -98,19 +96,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     yield BlogsLoaded(blogs: blog, hasReachedMax: false);
   }
 
-// mapping Upload Image event with blogs state
-  // Stream<BlogsState> _mapUploadImageToState(UploadImage event) async* {
-  //   try {
-  //     print('inside service upload image');
-  //     await _blogsService.uploadImage(
-  //       sampleImage: event.image,
-  //     );
-  //     yield UploadImageSuccess();
-  //   } catch (e) {
-  //     print('${e.toString()}');
-  //   }
-  // }
-
   Stream<BlogsState> _mapSerachBlogToState(SearchBlog event) async* {
     try {
       print('in search bloc ${event.searchkey}');
@@ -121,17 +106,18 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     }
   }
 
+//mapping update blog event with blogs state
   Stream<BlogsState> _mapUpdateBlogToState(UpdateBlog event) async* {
     try {
       print('mapping update event to state ${event.image}');
       await _profileService.updateImage(
-        //  url: event.url,
-        sampleImage: event.image,
-        mytitlevalue: event.title,
-        myvalue: event.description,
-        category: event.category,
-        blogtimeStamp: event.timeStamp,
-      );
+          //  url: event.url,
+          sampleImage: event.image,
+          mytitlevalue: event.title,
+          myvalue: event.description,
+          category: event.category,
+          blogtimeStamp: event.timeStamp,
+          blogPrivacy: event.blogPrivacy);
       final List<Blogs> blog = await _blogsService.getblogs();
       print('calling blogs loading');
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
@@ -165,8 +151,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapUploadBlogToState(UploadBlog event) async* {
     try {
       print('upload blog bloc ${event.category}');
-      await _blogsService.saveToDatabase(
-          event.url, event.title, event.description, event.category);
+      await _blogsService.saveToDatabase(event.url, event.title,
+          event.description, event.category, event.blogPrivacy);
       final List<Blogs> blog = await _blogsService.getblogs();
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {

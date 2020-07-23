@@ -6,6 +6,7 @@ class Blogs {
   List<String> image;
   List<Comment> comments;
   int timeStamp;
+  bool blogPrivacy;
 
   Blogs(
       {this.image,
@@ -18,7 +19,8 @@ class Blogs {
       this.comments,
       this.category,
       this.time,
-      this.timeStamp})
+      this.timeStamp,
+      this.blogPrivacy})
       : super();
 
   factory Blogs.fromJson(Map<String, dynamic> parsedJson) {
@@ -34,6 +36,7 @@ class Blogs {
         date: parsedJson['date'] ?? '',
         category: parsedJson['category'] ?? '',
         time: parsedJson['time'] ?? '',
-        timeStamp: parsedJson['timeStamp'] ?? '');
+        timeStamp: parsedJson['timeStamp'] ?? '',
+        blogPrivacy: parsedJson['blogPrivacy'] ?? '');
   }
 }

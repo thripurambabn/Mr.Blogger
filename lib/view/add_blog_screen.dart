@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:custom_switch_button/custom_switch_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,8 @@ import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/home_screen.dart';
 import 'package:mr_blogger/view/loading_page.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+// import 'package:quill_delta/quill_delta.dart';
+// import 'package:zefyr/zefyr.dart';
 
 class AddBlogScreen extends StatefulWidget {
   final bool isEdit;
@@ -41,11 +44,13 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   bool imageLoading = false;
+  bool toggleValue = false;
   //instance of blog Service and User Service
   var userService = UserService();
   static BlogsService _blogsServcie = BlogsService();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
-
+  // ZefyrController _descriptionController;
+  FocusNode _focusNode;
   bool get isEdit => widget.isEdit;
   static String _myvalue;
 
@@ -89,8 +94,16 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     _titleController.text = widget.isEdit == true ? widget.blog.title : '';
     _descriptionController.text =
         widget.isEdit == true ? widget.blog.description : '';
-    return super.initState();
+    super.initState();
+    // final document = _loadDocument();
+    // _descriptionController = ZefyrController(document);
+    // _focusNode = FocusNode();
   }
+
+  // _loadDocument() {
+  //   final Delta delta = Delta()..insert("Write Something...\n");
+  //   return NotusDocument.fromDelta(delta);
+  // }
 
 //Navigate back confirmation dialog box
   Future<bool> _onWillPop() async {
@@ -155,7 +168,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       error = e.toString();
     }
     if (!mounted) return;
-    print('result list$resultList');
     setState(() {
       images = resultList;
       _error = error;
@@ -167,7 +179,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       var url = await _blogsServcie.uploadImage(sampleImage: image);
       urlList.add(url);
     }
-    print('image url before setState $imageUrl $imageUrlList');
+
     setState(() {
       imageUrl = urlList;
       imageLoading = false;
@@ -176,7 +188,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
   Widget buildGridView() {
     List<NetworkImage> networkImages = List<NetworkImage>();
-    print('image url in befor for $imageUrl}');
+    //print('image url in befor for $imageUrl}');
     if (imageUrl != null) {
       for (var image in imageUrl) {
         networkImages.add(
@@ -204,17 +216,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       }
     }
   }
-  // bool validateandSave() {
-  //   final form = formKey.currentState;
-  //   if (form.validate()) {
-  //     form.save();
-  //     return true;
-  //   }
-  // }
 
 //calls Upload Image event to add blog
   void addBlog() {
-    //   validateandSave();
     _blog.add(
       UploadBlog(
         url: imageUrl,
@@ -222,6 +226,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         title: _titleController.text,
         description: _descriptionController.text,
         category: dropdownValue,
+        blogPrivacy: toggleValue,
       ),
     );
   }
@@ -233,7 +238,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           title: _titleController.text,
           description: _descriptionController.text,
           category: dropdownValue,
-          timeStamp: widget.blog.timeStamp),
+          timeStamp: widget.blog.timeStamp,
+          blogPrivacy: widget.blog.blogPrivacy),
     );
   }
 
@@ -249,14 +255,16 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   void navigateToHomePage() {
     //int count = 0;
     print('navigation back to home');
-    //  Navigator.of(context).pop();
-    //Navigator.popUntil(context, ModalRoute.withName("homePage"));
-    // print('iam home poped ');
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) {
-        return Homepage();
-      },
-    ));
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+  }
+
+  toggleButton() {
+    print('toggle value $toggleValue');
+    setState(() {
+      toggleValue = !toggleValue;
+    });
+    print('after setsate toggle value $toggleValue');
   }
 
 //view after entering the blog details
@@ -270,6 +278,17 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             SizedBox(
               height: 10,
             ),
+            InkWell(
+                child: Center(
+                  child: CustomSwitchButton(
+                    backgroundColor: Colors.purple[300],
+                    unCheckedColor: Colors.white,
+                    animationDuration: Duration(milliseconds: 400),
+                    checkedColor: Colors.purple[800],
+                    checked: toggleValue,
+                  ),
+                ),
+                onTap: toggleButton),
             dropbox(),
             title(),
             SizedBox(
@@ -298,17 +317,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               onPressed: isbuttondisabled
                   ? null
                   : () {
-                      setState(() => {
-                            print('setting inside enable upload'),
-                            isbuttondisabled = !isbuttondisabled
-                          });
+                      setState(() => {isbuttondisabled = !isbuttondisabled});
                       widget.isEdit == true ? updateBlog() : addBlog();
-                      // Center(
-                      //     child: Image(
-                      //   fit: BoxFit.cover,
-                      //   image: NetworkImage(
-                      //       'https://i.pinimg.com/originals/07/bf/6f/07bf6f0f7d5dd64829822e95e97f908d.gif'),
-                      // ));
                       navigateToLoadingPage();
                     },
             )
@@ -333,6 +343,36 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     return new Container(
       child: Column(
         children: <Widget>[
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                child: Text(
+                  'Privacy:',
+                  style: TextStyle(
+                      fontFamily: 'Paficico', color: Colors.purple[500]),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Container(
+                child: InkWell(
+                    child: Center(
+                      child: CustomSwitchButton(
+                          backgroundColor: Colors.purple[300],
+                          unCheckedColor: Colors.white,
+                          animationDuration: Duration(milliseconds: 400),
+                          checkedColor: Colors.purple[800],
+                          checked: widget.isEdit == true
+                              ? widget.blog.blogPrivacy
+                              : toggleValue),
+                    ),
+                    onTap: toggleButton),
+              ),
+            ],
+          ),
           SizedBox(
             height: 10,
           ),
@@ -411,16 +451,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
             ),
             color: Colors.purple[800],
             onPressed: null,
-            // onPressed: isbuttondisabled
-            //     ? null
-            //     : () {
-            //         setState(() => {
-            //               print('setting inside disable upload'),
-            //               isbuttondisabled = !isbuttondisabled
-            //             });
-            //         widget.isEdit == true ? updateBlog() : addBlog();
-            //         //  navigateToLoadingPage();
-            //       },
           )
         ],
       ),
@@ -513,6 +543,12 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                 _myvalue = value;
               },
             ),
+            //     ZefyrScaffold(
+            //   child: ZefyrEditor(
+            //     controller: _descriptionController,
+            //     focusNode: _focusNode,
+            //   ),
+            // )
           )),
         ),
       ],

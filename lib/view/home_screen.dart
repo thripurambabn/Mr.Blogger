@@ -16,7 +16,6 @@ import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/comment_screen.dart';
 import 'package:mr_blogger/view/initial_screen.dart';
-import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
 import 'package:mr_blogger/view/search_blog.dart';
 
@@ -36,6 +35,7 @@ class _HomepageState extends State<Homepage> {
   final _scrollController = ScrollController();
   var _blog = BlogsBloc(blogsService: _blogsServcie);
   final _scrollThreshold = 200.0;
+  bool test = false;
 
   @override
   void initState() {
@@ -58,23 +58,13 @@ class _HomepageState extends State<Homepage> {
   }
 
 //calls Fetch Blogs event
-  void getBlogs() async {
-    await _blog.add(FetchBlogs());
+  void getBlogs() {
+    _blog.add(FetchBlogs());
   }
-
-// //navigate to sign Up page
-//   void navigateToSignUpPage(BuildContext context) {
-//     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-//       return LoginForm(
-//         userService: userService,
-//       );
-//     }));
-//   }
 
 //navigate to sign Up page
   void navigateTocommentPage(
       int timeStamp, List<Comment> comments, String uid, String title) {
-    print('sending ${timeStamp},${comments}');
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return CommentsScreen(timeStamp, comments, uid, title);
     }));
@@ -82,12 +72,16 @@ class _HomepageState extends State<Homepage> {
 
 //navigate to detail page page
   void navigateToDetailPage(Blogs blog, String uid) {
+    //var _blogsBloc = BlocProvider.of<BlogsBloc>(context);
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new DetailPage(
         blogs: blog,
         uid: uid,
       );
-    }));
+    })).then((value) {
+      print('blogsList ${blogsList}');
+      setState(() => getBlogs);
+    });
   }
 
 //navigate to profile page
@@ -113,7 +107,6 @@ class _HomepageState extends State<Homepage> {
   }
 
   void setlike(int timeStamp, List<String> likes, String uid) {
-    print('like in UI setLike${timeStamp},${likes}');
     _blog.add(BlogLikes(timeStamp, likes));
   }
 
@@ -139,6 +132,7 @@ class _HomepageState extends State<Homepage> {
   final TextEditingController searchBlog = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    print('building home widget');
     void popUpmenuChoice(String choice) {
       if (choice == '1') {
         navigateToProfilePage();
@@ -192,11 +186,129 @@ class _HomepageState extends State<Homepage> {
         ),
 
         //handles blog list view on state change
-        body: Container(
+        // body: BlocConsumer(
+        //     bloc: _blog,
+        //     builder: (context, state) {
+        //       (context, state) {
+        //         //Loading state
+        //         print(' widget has been built $state');
+        //         if (state is BlogsLoading) {
+        //           return Image.network(
+        //             'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
+        //             alignment: Alignment.center,
+        //           );
+        //         } //Loaded state
+        //         else if (state is BlogsLoaded) {
+        //           return ListView.builder(
+        //             shrinkWrap: false,
+        //             scrollDirection: Axis.vertical,
+        //             physics: ScrollPhysics(),
+        //             itemCount: state.hasReachedMax
+        //                 ? state.blogs.length
+        //                 : state.blogs.length + 1,
+        //             itemBuilder: (BuildContext context, int index) {
+        //               // print('state of blogs ${state.uid}');
+        //               return index >= state.blogs.length
+        //                   ? bottomLoader()
+        //                   : ListTile(
+        //                       onTap: () => navigateToDetailPage(
+        //                           state.blogs[index], state.uid),
+        //                       title: blogsUi(
+        //                         state.blogs[index].image,
+        //                         state.blogs[index].uid,
+        //                         state.blogs[index].authorname,
+        //                         state.blogs[index].title,
+        //                         state.blogs[index].description,
+        //                         state.blogs[index].likes,
+        //                         state.blogs[index].comments,
+        //                         state.blogs[index].date,
+        //                         state.blogs[index].time,
+        //                         state.blogs[index].timeStamp,
+        //                       ));
+        //             },
+        //             controller: _scrollController,
+        //           ); //error state
+        //         } else if (state is BlogsNotLoaded) {
+        //           return errorUI();
+        //         }
+        //       };
+        //     },
+        //     listener: (context, state) {
+        //       print('state has change');
+        //       if (state is BlogsLoaded) {
+        //         return ListView.builder(
+        //           shrinkWrap: false,
+        //           scrollDirection: Axis.vertical,
+        //           physics: ScrollPhysics(),
+        //           itemCount: state.hasReachedMax
+        //               ? state.blogs.length
+        //               : state.blogs.length + 1,
+        //           itemBuilder: (BuildContext context, int index) {
+        //             // print('state of blogs ${state.uid}');
+        //             return index >= state.blogs.length
+        //                 ? bottomLoader()
+        //                 : ListTile(
+        //                     onTap: () => navigateToDetailPage(
+        //                         state.blogs[index], state.uid),
+        //                     title: blogsUi(
+        //                       state.blogs[index].image,
+        //                       state.blogs[index].uid,
+        //                       state.blogs[index].authorname,
+        //                       state.blogs[index].title,
+        //                       state.blogs[index].description,
+        //                       state.blogs[index].likes,
+        //                       state.blogs[index].comments,
+        //                       state.blogs[index].date,
+        //                       state.blogs[index].time,
+        //                       state.blogs[index].timeStamp,
+        //                     ));
+        //           },
+        //           controller: _scrollController,
+        //         );
+        //       }
+        //     }),
+        body: BlocListener(
+          bloc: _blog,
+          listener: (context, state) {
+            print('state has change ');
+            if (state is BlogsLoaded) {
+              return ListView.builder(
+                shrinkWrap: false,
+                scrollDirection: Axis.vertical,
+                physics: ScrollPhysics(),
+                itemCount: state.hasReachedMax
+                    ? state.blogs.length
+                    : state.blogs.length + 1,
+                itemBuilder: (BuildContext context, int index) {
+                  // print('state of blogs ${state.uid}');
+                  return index >= state.blogs.length
+                      ? bottomLoader()
+                      : ListTile(
+                          onTap: () => navigateToDetailPage(
+                              state.blogs[index], state.uid),
+                          title: blogsUi(
+                            state.blogs[index].image,
+                            state.blogs[index].uid,
+                            state.blogs[index].authorname,
+                            state.blogs[index].title,
+                            state.blogs[index].description,
+                            state.blogs[index].likes,
+                            state.blogs[index].comments,
+                            state.blogs[index].date,
+                            state.blogs[index].time,
+                            state.blogs[index].timeStamp,
+                          ));
+                },
+                controller: _scrollController,
+              );
+            }
+          },
+          //  Container(
           child: BlocBuilder<BlogsBloc, BlogsState>(
             bloc: _blog,
             builder: (context, state) {
               //Loading state
+              print(' widget has been built $state');
               if (state is BlogsLoading) {
                 return Image.network(
                   'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
@@ -242,17 +354,14 @@ class _HomepageState extends State<Homepage> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.purple[800],
           onPressed: () {
-            //navigate to add blog screen
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    settings: RouteSettings(name: "homePage"),
-                    builder: (context) {
-                      return new AddBlogScreen(
-                        blog: null,
-                        isEdit: false,
-                      );
-                    }));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AddBlogScreen(blog: null, isEdit: false)))
+                .then((value) {
+              setState(() => getBlogs());
+            });
           },
           child: Icon(FontAwesomeIcons.solidEdit),
         ));

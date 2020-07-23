@@ -73,7 +73,8 @@ class ProfileService {
               date: data[key]['date'],
               category: data[key]['category'],
               time: data[key]['time'],
-              timeStamp: data[key]['timeStamp']);
+              timeStamp: data[key]['timeStamp'],
+              blogPrivacy: data[key]['blogPrivacy']);
 
           blogsList.clear();
           blogsList.add(blog);
@@ -135,7 +136,9 @@ class ProfileService {
     });
   }
 
-  Future updateBlog(url, mytitlevalue, myvalue, category, blogtimeStamp) {
+//To update a blog from firebase
+  Future updateBlog(
+      url, mytitlevalue, myvalue, category, blogtimeStamp, blogPrivacy) {
     try {
       var dbkey = new DateTime.now();
       var formatdate = new DateFormat('MMM d,yyyy');
@@ -175,26 +178,28 @@ class ProfileService {
     sampleImage,
   }) async {
     String url;
-    print('inside service upload image');
     final StorageReference iamgeref =
         FirebaseStorage.instance.ref().child("Blog images");
     var timekey = new DateTime.now();
-    print('image -------${sampleImage}');
+
     final StorageUploadTask uploadImage =
         iamgeref.child(timekey.toString() + '.jpg').putFile(sampleImage);
     var imageurl = await uploadImage.onComplete;
     var imageurl1 = await imageurl.ref.getDownloadURL();
     url = imageurl1.toString();
-    print('url -------${url}');
     return url;
   }
 
   Future<void> updateImage(
-      {sampleImage, mytitlevalue, myvalue, category, blogtimeStamp}) async {
-    print('inside update service${sampleImage}');
+      {sampleImage,
+      mytitlevalue,
+      myvalue,
+      category,
+      blogtimeStamp,
+      blogPrivacy}) async {
     try {
-      await updateBlog(
-          sampleImage, mytitlevalue, myvalue, category, blogtimeStamp);
+      await updateBlog(sampleImage, mytitlevalue, myvalue, category,
+          blogtimeStamp, blogPrivacy);
     } catch (e) {
       print(e.toString());
     }
@@ -210,7 +215,6 @@ class ProfileService {
       addusername.photoUrl = imageUrl;
       await user.updateProfile(addusername);
       await user.reload();
-      print('inside edit profile service $name $imageUrl');
       var data = {'username': name, 'photoUrl': imageUrl};
       var authordata = {
         'authorname': name,

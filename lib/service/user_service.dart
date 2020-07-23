@@ -55,13 +55,12 @@ class UserService {
         'email': email,
         'password': password,
       };
-      print('stuck2');
       await FirebaseDatabase.instance
           .reference()
           .child('users')
           .push()
           .set(data);
-      print('data $data');
+
       return user.uid;
     } catch (e) {
       print('failure in saving it ro the db $e');

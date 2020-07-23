@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
@@ -71,7 +72,8 @@ class BlogsService {
           date: data[key]['date'],
           category: data[key]['category'],
           time: data[key]['time'],
-          timeStamp: data[key]['timeStamp']);
+          timeStamp: data[key]['timeStamp'],
+          blogPrivacy: data[key]['blogPrivacy']);
       blogsList.add(blog);
     }
     //sort blogs on timestamp
@@ -96,7 +98,6 @@ class BlogsService {
         var data = snapshot.value;
 
         for (var key in refkey) {
-          print('category ${data[key]['category']}');
           var tempLikes = [];
           var likesList = new List<String>();
           if (data[key]['likes'] != null) {
@@ -142,8 +143,8 @@ class BlogsService {
               date: data[key]['date'],
               time: data[key]['time'],
               category: data[key]['category'],
-              timeStamp: data[key]['timeStamp']);
-          print('images inside blog ${blog.image}');
+              timeStamp: data[key]['timeStamp'],
+              blogPrivacy: data[key]['blogPrivacy']);
           blogsList.clear();
           blogsList.add(blog);
         }
@@ -158,12 +159,8 @@ class BlogsService {
   }
 
 //To add new blog to the firebase database
-  Future<void> saveToDatabase(
-    List<String> url,
-    String _mytitlevalue,
-    String _myvalue,
-    String category,
-  ) async {
+  Future<void> saveToDatabase(List<String> url, String _mytitlevalue,
+      String _myvalue, String category, bool blogPrivacy) async {
     try {
       //  var url = uploadImage();
       List<String> likes = [];
@@ -190,6 +187,7 @@ class BlogsService {
         'date': date,
         'time': time,
         'timeStamp': timeStamp,
+        'blogPrivacy': blogPrivacy
       };
       databaseReference.child('blogs').push().set(data);
     } catch (e) {
@@ -282,10 +280,10 @@ class BlogsService {
               date: data[key]['date'],
               time: data[key]['time'],
               category: data[key]['category'],
-              timeStamp: data[key]['timeStamp']);
+              timeStamp: data[key]['timeStamp'],
+              blogPrivacy: data[key]['blogPrivacy']);
 
           blogsList.clear();
-          print('blogs in service ${blog.title}');
           blogsList.add(blog);
         }
       }
@@ -299,11 +297,6 @@ class BlogsService {
   }
 
   Future setLikes(int blogtimeStamp, var uid, List<String> likes) async {
-    // List<String> likesData = new List<String>();
-    // print('likesdata ${likesData}');
-    // likesData = likes;
-
-    print('likesdata after adding to thr list in service ${blogtimeStamp}');
     FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -311,13 +304,11 @@ class BlogsService {
         .equalTo(blogtimeStamp)
         .onChildAdded
         .listen((Event event) {
-      print('event ${event.snapshot.value}');
       FirebaseDatabase.instance
           .reference()
           .child('blogs')
           .child(event.snapshot.key)
           .update({'likes': likes});
-      print('likesData ${likes}');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
@@ -367,7 +358,6 @@ class BlogsService {
     int blogsTimeStamp,
     int commentTimeStamp,
   ) async {
-    print('values in delete Service timeStamp$commentTimeStamp,');
     FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -393,9 +383,7 @@ class BlogsService {
             .child(commentEvent.snapshot.key)
             .remove();
         //   .update({'comment': 'testsomething'});
-        print('deleted ${commentEvent.snapshot.key}');
       });
-      print('snapshot key ${event.snapshot.key}');
     }, onError: (Object o) {
       print('inside onerrod ${o}');
       final DatabaseError error = o;
@@ -405,7 +393,6 @@ class BlogsService {
 
   Future editComments(
       int blogsTimeStamp, int commentTimeStamp, String comment) async {
-    print('values in edit comment Service $commentTimeStamp  $comment,');
     FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -430,9 +417,7 @@ class BlogsService {
             .child('comments')
             .child(commentEvent.snapshot.key)
             .update({'comment': comment});
-        print('edited ${comment}');
       });
-      print('snapshot key ${event.snapshot.key}');
     }, onError: (Object o) {
       print('inside onerrod ${o}');
       final DatabaseError error = o;

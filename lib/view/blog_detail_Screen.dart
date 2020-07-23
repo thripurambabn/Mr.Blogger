@@ -46,7 +46,7 @@ class _DetailPageState extends State<DetailPage> {
     //   ));
     // });
     print('navigating back');
-    WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
+    Navigator.of(context).pop();
   }
 
   void navigateToAddPage(blog) {
@@ -70,8 +70,15 @@ class _DetailPageState extends State<DetailPage> {
           fit: BoxFit.cover,
           height: 240,
           width: MediaQuery.of(context).size.width / 1.2,
-          placeholder: (context, url) => CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+          placeholder: (context, url) => Center(
+            child: SizedBox(
+              height: 40,
+              width: 40,
+              child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
+              ),
+            ),
           ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),

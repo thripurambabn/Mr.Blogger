@@ -42,14 +42,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // initialRoute: '/',
-      // routes: {
-      //   '/homePage': (context) => Homepage(),
-      //   '/addBlogPage': (context) => AddBlogScreen(
-      //         isEdit: false,
-      //         blog: null,
-      //       ),
-      // },
       debugShowCheckedModeBanner: false,
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
