@@ -8,13 +8,15 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/view/Home_Screen/blogs_ui.dart';
 import 'package:mr_blogger/service/user_service.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/bottom_loader.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/error_ui.dart';
+import 'package:mr_blogger/view/add_blog_screen.dart';
 import 'package:mr_blogger/view/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/initial_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
 import 'package:mr_blogger/view/search_blog.dart';
-import 'package:mr_blogger/view/add_blog_screen.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -57,20 +59,6 @@ class _HomepageState extends State<Homepage> {
   }
 
 //loading indicator while fetching more blogs
-  Widget bottomLoader() {
-    return Container(
-      alignment: Alignment.center,
-      child: Center(
-        child: SizedBox(
-          width: 33,
-          height: 33,
-          child: CircularProgressIndicator(
-            strokeWidth: 0.5,
-          ),
-        ),
-      ),
-    );
-  }
 
   var userService = UserService();
   void navigateToProfilePage() {
@@ -180,11 +168,12 @@ class _HomepageState extends State<Homepage> {
                     : state.blogs.length + 1,
                 itemBuilder: (BuildContext context, int index) {
                   return index >= state.blogs.length
-                      ? bottomLoader()
+                      ? BottomLoader()
                       : ListTile(
                           onTap: () => navigateToDetailPage(
                               state.blogs[index], state.uid),
                           title: BlogsUI(
+                            blogBloc: _blog,
                             images: state.blogs[index].image,
                             uid: state.blogs[index].uid,
                             authorname: state.blogs[index].authorname,
@@ -223,11 +212,12 @@ class _HomepageState extends State<Homepage> {
                       : state.blogs.length + 1,
                   itemBuilder: (BuildContext context, int index) {
                     return index >= state.blogs.length
-                        ? bottomLoader()
+                        ? BottomLoader()
                         : ListTile(
                             onTap: () => navigateToDetailPage(
                                 state.blogs[index], state.uid),
                             title: BlogsUI(
+                              blogBloc: _blog,
                               images: state.blogs[index].image,
                               uid: state.blogs[index].uid,
                               authorname: state.blogs[index].authorname,
@@ -243,7 +233,7 @@ class _HomepageState extends State<Homepage> {
                   controller: _scrollController,
                 ); //error state
               } else if (state is BlogsNotLoaded) {
-                return errorUI();
+                return ErrorUI();
               }
             },
           ),
@@ -262,26 +252,5 @@ class _HomepageState extends State<Homepage> {
           },
           child: Icon(FontAwesomeIcons.solidEdit),
         ));
-  }
-
-//blog tile widget
-  Widget errorUI() {
-    return new Center(
-        child: Text(
-      'There are no blogs yet!☹️...\nAdd Yours Now🥳',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-          shadows: [
-            Shadow(
-              blurRadius: 10.0,
-              color: Colors.purple[200],
-              offset: Offset(8.0, 8.0),
-            ),
-          ],
-          fontSize: 25.0,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Paficico',
-          color: Colors.purple),
-    ));
   }
 }

@@ -9,7 +9,6 @@ import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/view/add_blog_screen.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 class DetailPage extends StatefulWidget {
   final Blogs blogs;
@@ -38,14 +37,6 @@ class _DetailPageState extends State<DetailPage> {
 
 //Navigate to homepage
   void navigateToHomePage() {
-    // Timer(Duration(seconds: 8), () {
-    //   Navigator.push(context, MaterialPageRoute(
-    //     builder: (context) {
-    //       return new Homepage();
-    //     },
-    //   ));
-    // });
-    print('navigating back');
     Navigator.of(context).pop();
   }
 

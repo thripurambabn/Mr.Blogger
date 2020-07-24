@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/comment.dart';
-import 'package:mr_blogger/view/Home_Screen/clap_count.dart';
-import 'package:mr_blogger/view/Home_Screen/comment_button.dart';
-import 'package:mr_blogger/view/Home_Screen/comment_count.dart';
-import 'package:mr_blogger/view/Home_Screen/like_button.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/like_count.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/comment_count.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/like_button.dart';
 import 'package:mr_blogger/view/comment_screen.dart';
 
 class BlogsUI extends StatefulWidget {
@@ -18,6 +18,7 @@ class BlogsUI extends StatefulWidget {
   final List<Comment> comments;
   final String date;
   final String time;
+  final blogBloc;
 
   final int timeStamp;
   BlogsUI(
@@ -31,7 +32,8 @@ class BlogsUI extends StatefulWidget {
       this.comments,
       this.date,
       this.time,
-      this.timeStamp})
+      this.timeStamp,
+      this.blogBloc})
       : super(key: key);
 
   @override
@@ -142,10 +144,12 @@ class _BlogsUIState extends State<BlogsUI> {
             Row(
               children: <Widget>[
                 LikeButton(
-                    timeStamp: widget.timeStamp,
-                    likes: widget.likes,
-                    uid: widget.uid),
-                ClapCount(likes: widget.likes),
+                  timeStamp: widget.timeStamp,
+                  likes: widget.likes,
+                  uid: widget.uid,
+                  blogBloc: widget.blogBloc,
+                ),
+                //   LikeCount(likes: widget.likes),
                 CommentButton(
                   timeStamp: widget.timeStamp,
                   comments: widget.comments,
@@ -156,9 +160,6 @@ class _BlogsUIState extends State<BlogsUI> {
                         widget.uid, widget.title);
                   },
                 ),
-                CommentCount(
-                  comments: widget.comments,
-                )
               ],
             ),
             Container(
