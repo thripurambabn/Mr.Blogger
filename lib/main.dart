@@ -5,8 +5,7 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/add_blog_screen.dart';
-import 'package:mr_blogger/view/home_screen.dart';
+import 'package:mr_blogger/view/Home_Screen/home_screen.dart';
 import 'package:mr_blogger/view/initial_screen.dart';
 import 'package:mr_blogger/view/splash_scren.dart';
 

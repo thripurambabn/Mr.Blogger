@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/view/home_screen.dart';
 
 class LoadingPage extends StatelessWidget {
   static BlogsService _blogsServcie = BlogsService();

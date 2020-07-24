@@ -6,8 +6,7 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/view/home_screen.dart';
-import 'package:mr_blogger/view/loading_page.dart';
+import 'package:mr_blogger/view/Home_Screen/home_screen.dart';
 
 class CommentsScreen extends StatefulWidget {
   final int timeStamp;
