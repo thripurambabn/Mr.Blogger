@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/comment.dart';
-import 'package:mr_blogger/view/Home_Screen/widgets/like_count.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
-import 'package:mr_blogger/view/Home_Screen/widgets/comment_count.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/like_button.dart';
 import 'package:mr_blogger/view/comment_screen.dart';
 

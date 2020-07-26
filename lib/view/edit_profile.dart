@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
-import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
-import 'package:mr_blogger/blocs/login_bloc/login_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -15,9 +11,6 @@ import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/blog_detail_Screen.dart';
-import 'package:mr_blogger/view/login_screen.dart';
 import 'package:mr_blogger/view/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

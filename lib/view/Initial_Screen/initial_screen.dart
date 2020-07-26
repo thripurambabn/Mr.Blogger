@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/login_screen.dart';
-import 'package:mr_blogger/view/reg_screen.dart';
+import 'package:mr_blogger/view/Login_Screen/login_Screen.dart';
+import 'package:mr_blogger/view/Register_Screen/register_screen.dart';
 
 class InitialScreen extends StatelessWidget {
   final UserService _userService;

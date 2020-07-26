@@ -43,8 +43,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   deleteComments(int blogsTimeStamp, int commentTimeStamp) {
-    print(
-        'Comments inside deletecomments ${blogsTimeStamp},${commentTimeStamp}');
     _blog.add(DeleteComments(
       blogsTimeStamp,
       commentTimeStamp,
@@ -52,16 +50,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   editComments(int blogsTimeStamp, int commentTimeStamp, String comment) {
-    print(
-        'Comments inside edit comments ${blogsTimeStamp},${commentTimeStamp} ${comment}');
     _blog.add(EditComments(blogsTimeStamp, commentTimeStamp, comment));
   }
 
   @override
   Widget build(BuildContext context) {
-    // List<Comment> tempcomments = new List<Comment>();
-    // print(
-    //     'Comments inside build ${widget.timeStamp},${widget.comments} ${_commentController.text}');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple[800],
