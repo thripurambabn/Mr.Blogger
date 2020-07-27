@@ -10,10 +10,8 @@ import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
-import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile_ui.dart';
 import 'package:mr_blogger/view/Profile_Screen/profile_screen.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -30,47 +28,33 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  //instance of userService
-
-  static BlogsService _blogsService = BlogsService();
   static ProfileService _profileService = ProfileService();
   SharedPreferences sharedPreferences;
   TextEditingController _nameController = TextEditingController();
   String email;
   File sampleImage;
   String imageUrl;
-  var _profile =
-      ProfileBloc(profileService: _profileService, blogsService: _blogsService);
   List<Blogs> blogsList = [];
   @override
   void initState() {
     //calls loaded profile details event
 
-    _profile.add(
+    BlocProvider.of<ProfileBloc>(context).add(
       LoadedProfileDeatils(),
     );
-    print('details received by edit page ${widget.imageUrl} ${widget.name} ');
     _nameController.text = widget.name != null ? widget.name : '';
     super.initState();
   }
 
   void saveprofile() {
-    print(
-        'in edit profile ui----------------${_nameController.text} ${imageUrl},');
     var newUrl = imageUrl ?? widget.imageUrl;
-    _profile.add(
+    BlocProvider.of<ProfileBloc>(context).add(
       EditProfile(_nameController.text, newUrl),
     );
   }
 
   void navigateToProfilePage() {
-    Timer(Duration(seconds: 8), () {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) {
-          return new ProfilePage();
-        },
-      ));
-    });
+    Navigator.pop(context);
   }
 
   Widget build(BuildContext ctx) {
@@ -97,7 +81,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: Column(children: <Widget>[
             Container(
               child: BlocBuilder<ProfileBloc, ProfileState>(
-                bloc: _profile,
+                bloc: BlocProvider.of<ProfileBloc>(context),
                 builder: (context, state) {
                   if (state is ProfileLoading) {
                     return Image.network(

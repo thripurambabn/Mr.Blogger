@@ -6,7 +6,8 @@ class DropBox extends StatefulWidget {
   String dropdownValue;
   final bool isEdit;
   final Blogs blog;
-  DropBox({Key key, this.dropdownValue, this.isEdit, this.blog})
+  final Function changeIt;
+  DropBox({Key key, this.dropdownValue, this.isEdit, this.blog, this.changeIt})
       : super(key: key);
 
   @override
@@ -14,6 +15,7 @@ class DropBox extends StatefulWidget {
 }
 
 class _DropBoxState extends State<DropBox> {
+  onchanged() {}
   @override
   Widget build(BuildContext context) {
     print(
@@ -33,7 +35,9 @@ class _DropBoxState extends State<DropBox> {
                   style: TextStyle(color: Colors.purple[200]),
                 ),
           isDense: true,
-          value: widget.dropdownValue,
+          value: widget.dropdownValue == ''
+              ? "select category"
+              : widget.dropdownValue,
           icon: Icon(FontAwesomeIcons.sortDown),
           iconSize: 30,
           elevation: 16,
@@ -42,8 +46,14 @@ class _DropBoxState extends State<DropBox> {
             height: 2,
             color: Colors.deepPurpleAccent,
           ),
-          items: <String>['Pets', 'Travel', 'Books', 'Lifestyle', 'Movies']
-              .map<DropdownMenuItem<String>>((String value) {
+          items: <String>[
+            'select category',
+            'Pets',
+            'Travel',
+            'Books',
+            'Lifestyle',
+            'Movies'
+          ].map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),
@@ -54,6 +64,7 @@ class _DropBoxState extends State<DropBox> {
               widget.dropdownValue = newValue;
             });
           },
+          //  widget.changeIt(widget.dropdownValue)
         ),
       ),
     );

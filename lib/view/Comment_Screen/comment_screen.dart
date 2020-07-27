@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
@@ -22,9 +23,6 @@ class CommentsScreen extends StatefulWidget {
 
 class _CommentsScreenState extends State<CommentsScreen> {
   TextEditingController _commentController = TextEditingController();
-
-  static BlogsService _blogsServcie = BlogsService();
-  var _blog = BlogsBloc(blogsService: _blogsServcie);
   bool isEdit = false;
   int commentIndex;
   @override
@@ -34,7 +32,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   void setComments(
       int timeStamp, String comment, List<Comment> comments, String uid) {
-    _blog.add(BlogComments(
+    BlocProvider.of<BlogsBloc>(context).add(BlogComments(
       timeStamp,
       _commentController.text,
       comments,
@@ -43,14 +41,15 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   deleteComments(int blogsTimeStamp, int commentTimeStamp) {
-    _blog.add(DeleteComments(
+    BlocProvider.of<BlogsBloc>(context).add(DeleteComments(
       blogsTimeStamp,
       commentTimeStamp,
     ));
   }
 
   editComments(int blogsTimeStamp, int commentTimeStamp, String comment) {
-    _blog.add(EditComments(blogsTimeStamp, commentTimeStamp, comment));
+    BlocProvider.of<BlogsBloc>(context)
+        .add(EditComments(blogsTimeStamp, commentTimeStamp, comment));
   }
 
   @override

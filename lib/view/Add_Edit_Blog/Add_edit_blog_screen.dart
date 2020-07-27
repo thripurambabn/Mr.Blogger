@@ -43,7 +43,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   //instance of blog Service and User Service
   var userService = UserService();
   static BlogsService _blogsServcie = BlogsService();
-  var _blog = BlogsBloc(blogsService: _blogsServcie);
+  // var _blog = BlogsBloc(blogsService: _blogsServcie);
   // ZefyrController _descriptionController;
   FocusNode _focusNode;
   bool get isEdit => widget.isEdit;
@@ -51,9 +51,8 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('dropdown ${widget.blog.title}');
     return BlocListener<BlogsBloc, BlogsState>(
-        bloc: _blog,
+        bloc: BlocProvider.of<BlogsBloc>(context),
         listener: (context, state) {
           if (state is BlogsLoaded) {
             return navigateToHomePage();
@@ -245,15 +244,24 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     }
   }
 
+  String newdropdownValue;
+  changeIt() {
+    print('before setstate inbefore upload${widget.blog.category}');
+    setState(() {
+      widget.blog.category = newdropdownValue;
+    });
+    print('after setstate in before uplaod${widget.blog.category}');
+  }
+
 //calls Upload Image event to add blog
   void addBlog() {
-    _blog.add(
+    BlocProvider.of<BlogsBloc>(context).add(
       UploadBlog(
         url: imageUrl,
         image: sampleImage,
         title: _titleController.text,
         description: _descriptionController.text,
-        category: widget.isEdit == true ? widget.blog.category : '',
+        category: widget.isEdit == true ? widget.blog.category : changeIt(),
         blogPrivacy: toggleValue,
       ),
     );
@@ -261,7 +269,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
   void updateBlog() {
     print('update');
-    _blog.add(
+    BlocProvider.of<BlogsBloc>(context).add(
       UpdateBlog(
           image: imageUrl,
           title: _titleController.text,
@@ -273,8 +281,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   void navigateToHomePage() {
-    //int count = 0;
-    print('navigation back to home');
     Navigator.of(context).pop();
     Navigator.of(context).pop();
   }

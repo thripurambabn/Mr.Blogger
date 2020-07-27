@@ -5,6 +5,8 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
+import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
+import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/Home_Screen/home_screen.dart';
@@ -15,6 +17,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final UserService userService = UserService();
   final BlogsService blogsService = BlogsService();
+  final ProfileService profileService = ProfileService();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -23,7 +26,11 @@ void main() {
                   userService: userService,
                 )..add(AuthenticationStarted())),
         BlocProvider<BlogsBloc>(
-            create: (context) => BlogsBloc(blogsService: blogsService))
+            create: (context) => BlogsBloc(blogsService: blogsService)),
+        BlocProvider<ProfileBloc>(
+          create: (context) => ProfileBloc(
+              profileService: profileService, blogsService: blogsService),
+        )
       ],
       child: App(
         userService: userService,

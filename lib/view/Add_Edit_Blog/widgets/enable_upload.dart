@@ -19,6 +19,7 @@ class EnableUpload extends StatefulWidget {
   final bool isEdit;
   final Blogs blog;
   final String mytitleValue;
+  final Function changeIt;
   bool isbuttondisabled = false;
   final formKey;
   EnableUpload(
@@ -35,7 +36,8 @@ class EnableUpload extends StatefulWidget {
       this.addBlog,
       this.mytitleValue,
       this.formKey,
-      this.getImage})
+      this.getImage,
+      this.changeIt})
       : super(key: key);
 
   @override
@@ -76,7 +78,7 @@ class _EnableUploadState extends State<EnableUpload> {
                 ),
                 onTap: widget.toggleButton),
             DropBox(
-              dropdownValue: widget.dropdownValue,
+              dropdownValue: widget.dropdownValue ?? widget.changeIt(),
               blog: widget.blog,
               isEdit: widget.isEdit,
             ),

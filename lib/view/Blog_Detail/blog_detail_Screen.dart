@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/service/Profile_Service.dart';
-import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/Add_edit_blog_screen.dart';
 
 class DetailPage extends StatefulWidget {
@@ -21,12 +19,6 @@ class DetailPage extends StatefulWidget {
 
 //Blog details view
 class _DetailPageState extends State<DetailPage> {
-  static BlogsService _blogsServcie = BlogsService();
-  static ProfileService _profileService = ProfileService();
-  var _blog = BlogsBloc(blogsService: _blogsServcie);
-  var _profile =
-      ProfileBloc(blogsService: _blogsServcie, profileService: _profileService);
-
   @override
   void initState() {
     if (widget.blogs == null) {
@@ -78,7 +70,8 @@ class _DetailPageState extends State<DetailPage> {
       if (choice == '1') {
         navigateToAddPage(widget.blogs);
       } else if (choice == '2') {
-        _profile.add(DeleteBlog(widget.blogs.title));
+        BlocProvider.of<ProfileBloc>(context)
+            .add(DeleteBlog(widget.blogs.title));
         navigateToHomePage();
       }
     }

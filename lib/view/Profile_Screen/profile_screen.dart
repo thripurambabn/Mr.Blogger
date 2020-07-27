@@ -5,9 +5,6 @@ import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/user.dart';
-import 'package:mr_blogger/service/Profile_Service.dart';
-import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
@@ -26,20 +23,14 @@ class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
   //initialiser for tab controller
   TabController tabController;
-  //instance of userService
-  var userService = UserService();
-  static BlogsService _blogsService = BlogsService();
-  static ProfileService _profileService = ProfileService();
   String email;
   String name;
   String imageUrl;
-  var _profile =
-      ProfileBloc(profileService: _profileService, blogsService: _blogsService);
   List<Blogs> blogsList = [];
   @override
   void initState() {
     //calls loaded profile details event
-    _profile.add(
+    BlocProvider.of<ProfileBloc>(context).add(
       LoadedProfileDeatils(),
     );
 
@@ -71,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage>
           child: Column(children: <Widget>[
             Container(
               child: BlocBuilder<ProfileBloc, ProfileState>(
-                bloc: _profile,
+                bloc: BlocProvider.of<ProfileBloc>(context),
                 builder: (context, state) {
                   if (state is ProfileLoading) {
                     return Image.network(
@@ -136,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: TabBarView(controller: tabController, children: [
                 Container(
                   child: BlocBuilder<ProfileBloc, ProfileState>(
-                    bloc: _profile,
+                    bloc: BlocProvider.of<ProfileBloc>(context),
                     builder: (context, state) {
                       if (state is ProfileLoading) {
                         return Image.network(
@@ -173,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 Container(
                   child: BlocBuilder<ProfileBloc, ProfileState>(
-                    bloc: _profile,
+                    bloc: BlocProvider.of<ProfileBloc>(context),
                     builder: (context, state) {
                       if (state is ProfileLoading) {
                         return Image.network(
@@ -195,7 +186,8 @@ class _ProfilePageState extends State<ProfilePage>
                             } else {
                               return GridTile(
                                   child: GridUI(
-                                      blogBloc: _profile,
+                                      blogBloc:
+                                          BlocProvider.of<ProfileBloc>(context),
                                       images: state.blogs[index].image,
                                       uid: state.blogs[index].uid,
                                       authorname: state.blogs[index].authorname,

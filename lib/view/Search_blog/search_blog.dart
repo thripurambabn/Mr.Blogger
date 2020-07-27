@@ -1,13 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 
@@ -19,13 +15,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  //instance of user Service
-  var userService = UserService();
-  static BlogsService _blogsServcie = BlogsService();
   List<Blogs> blogsList = [];
   Blogs blogs;
   final _scrollController = ScrollController();
-  var _blog = BlogsBloc(blogsService: _blogsServcie);
   final _scrollThreshold = 200.0;
   bool searching = false;
   @override
@@ -41,7 +33,7 @@ class _SearchPageState extends State<SearchPage> {
     final currentScroll = _scrollController.position.pixels;
     //get more blogs on scroll
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _blog.add(FetchBlogs());
+      BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
     }
   }
 
@@ -98,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
               setState(() {
                 searching = true;
               });
-              _blog.add(SearchBlog(searchBlog));
+              BlocProvider.of<BlogsBloc>(context).add(SearchBlog(searchBlog));
             },
           ),
         ),
@@ -108,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(children: <Widget>[
             Container(
               child: BlocBuilder<BlogsBloc, BlogsState>(
-                bloc: _blog,
+                bloc: BlocProvider.of<BlogsBloc>(context),
                 builder: (context, state) {
                   //Loading state
                   if (state is BlogsLoading) {

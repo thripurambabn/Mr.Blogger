@@ -18,7 +18,8 @@ class BeforeUpload extends StatefulWidget {
   final TextEditingController titleController;
   final String mytitlevalue;
   final String myValue;
-  final String dropdownValue;
+  String dropdownValue;
+  final Function changeIt;
   final TextEditingController descriptionController;
   BeforeUpload(
       {Key key,
@@ -33,7 +34,8 @@ class BeforeUpload extends StatefulWidget {
       this.myValue,
       this.dropdownValue,
       this.descriptionController,
-      this.getImage})
+      this.getImage,
+      this.changeIt})
       : super(key: key);
 
   @override
@@ -44,7 +46,7 @@ class _BeforeUploadState extends State<BeforeUpload> {
   @override
   Widget build(BuildContext context) {
 //view before entering the blog details
-    print('before upload ${widget.toggleValue}');
+    print('before upload ${widget.dropdownValue} ${widget.blog} ');
     List<NetworkImage> networkImages = List<NetworkImage>();
     if (widget.blog != null) {
       for (var image in widget.blog.image) {
