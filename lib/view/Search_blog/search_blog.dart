@@ -155,7 +155,6 @@ class _SearchPageState extends State<SearchPage> {
                                   onTap: () =>
                                       navigateToDetailPage(state.blogs[index]),
                                   title: BlogsUI(
-                                    blogBloc: _blog,
                                     images: state.blogs[index].image,
                                     uid: state.blogs[index].uid,
                                     authorname: state.blogs[index].authorname,

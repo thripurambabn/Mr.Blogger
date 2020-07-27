@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 
 class LikeButton extends StatefulWidget {
   final List<String> likes;
   final String uid;
   final int timeStamp;
-  final blogBloc;
-  const LikeButton(
-      {Key key, this.likes, this.uid, this.timeStamp, this.blogBloc})
-      : super(key: key);
+  const LikeButton({
+    Key key,
+    this.likes,
+    this.uid,
+    this.timeStamp,
+  }) : super(key: key);
   @override
   _LikeButtonState createState() => _LikeButtonState();
 }
@@ -17,7 +21,7 @@ class _LikeButtonState extends State<LikeButton> {
   @override
   Widget build(BuildContext context) {
     void setlike(int timeStamp, List<String> likes, String uid) {
-      widget.blogBloc.add(BlogLikes(timeStamp, likes));
+      BlocProvider.of<BlogsBloc>(context).add(BlogLikes(timeStamp, likes));
     }
 
     return new Row(children: <Widget>[

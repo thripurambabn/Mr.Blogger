@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/like_button.dart';
@@ -16,23 +18,21 @@ class BlogsUI extends StatefulWidget {
   final List<Comment> comments;
   final String date;
   final String time;
-  final blogBloc;
 
   final int timeStamp;
-  BlogsUI(
-      {Key key,
-      this.images,
-      this.uid,
-      this.authorname,
-      this.title,
-      this.description,
-      this.likes,
-      this.comments,
-      this.date,
-      this.time,
-      this.timeStamp,
-      this.blogBloc})
-      : super(key: key);
+  BlogsUI({
+    Key key,
+    this.images,
+    this.uid,
+    this.authorname,
+    this.title,
+    this.description,
+    this.likes,
+    this.comments,
+    this.date,
+    this.time,
+    this.timeStamp,
+  }) : super(key: key);
 
   @override
   _BlogsUIState createState() => _BlogsUIState();
@@ -145,7 +145,6 @@ class _BlogsUIState extends State<BlogsUI> {
                   timeStamp: widget.timeStamp,
                   likes: widget.likes,
                   uid: widget.uid,
-                  blogBloc: widget.blogBloc,
                 ),
                 //   LikeCount(likes: widget.likes),
                 CommentButton(

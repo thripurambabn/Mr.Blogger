@@ -29,7 +29,7 @@ class _HomepageState extends State<Homepage> {
   List<Blogs> blogsList = [];
   Blogs blogs;
   final _scrollController = ScrollController();
-  var _blog = BlogsBloc(blogsService: _blogsServcie);
+  // var _blog = BlocProvider.of<BlogsBloc>(context);
   final _scrollThreshold = 200.0;
   bool test = false;
 
@@ -49,13 +49,13 @@ class _HomepageState extends State<Homepage> {
     final currentScroll = _scrollController.position.pixels;
     //get more blogs on scroll
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _blog.add(FetchBlogs());
+      BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
     }
   }
 
 //calls Fetch Blogs event
   void getBlogs() {
-    _blog.add(FetchBlogs());
+    BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
   }
 
 //loading indicator while fetching more blogs
@@ -156,7 +156,7 @@ class _HomepageState extends State<Homepage> {
 
         //handles blog list view on state change
         body: BlocListener(
-          bloc: _blog,
+          bloc: BlocProvider.of<BlogsBloc>(context),
           listener: (context, state) {
             if (state is BlogsLoaded) {
               return ListView.builder(
@@ -173,7 +173,6 @@ class _HomepageState extends State<Homepage> {
                           onTap: () => navigateToDetailPage(
                               state.blogs[index], state.uid),
                           title: BlogsUI(
-                            blogBloc: _blog,
                             images: state.blogs[index].image,
                             uid: state.blogs[index].uid,
                             authorname: state.blogs[index].authorname,
@@ -192,7 +191,7 @@ class _HomepageState extends State<Homepage> {
           },
           //  Container(
           child: BlocBuilder<BlogsBloc, BlogsState>(
-            bloc: _blog,
+            bloc: BlocProvider.of<BlogsBloc>(context),
             builder: (context, state) {
               //Loading state
               print(' widget has been built $state');
@@ -217,7 +216,6 @@ class _HomepageState extends State<Homepage> {
                             onTap: () => navigateToDetailPage(
                                 state.blogs[index], state.uid),
                             title: BlogsUI(
-                              blogBloc: _blog,
                               images: state.blogs[index].image,
                               uid: state.blogs[index].uid,
                               authorname: state.blogs[index].authorname,

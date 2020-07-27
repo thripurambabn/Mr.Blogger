@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_bloc.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_event.dart';
 import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/Home_Screen/home_screen.dart';
@@ -14,10 +16,15 @@ void main() {
   final UserService userService = UserService();
   final BlogsService blogsService = BlogsService();
   runApp(
-    BlocProvider(
-      create: (context) => AuthenticationBloc(
-        userService: userService,
-      )..add(AuthenticationStarted()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+            create: (context) => AuthenticationBloc(
+                  userService: userService,
+                )..add(AuthenticationStarted())),
+        BlocProvider<BlogsBloc>(
+            create: (context) => BlogsBloc(blogsService: blogsService))
+      ],
       child: App(
         userService: userService,
         blogsService: blogsService,
