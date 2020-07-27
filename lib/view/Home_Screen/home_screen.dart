@@ -9,14 +9,14 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
+import 'package:mr_blogger/view/Add_Edit_Blog/Add_edit_blog_screen.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/bottom_loader.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/error_ui.dart';
-import 'package:mr_blogger/view/add_blog_screen.dart';
-import 'package:mr_blogger/view/blog_detail_Screen.dart';
-import 'package:mr_blogger/view/initial_screen.dart';
-import 'package:mr_blogger/view/profile_screen.dart';
-import 'package:mr_blogger/view/search_blog.dart';
+import 'package:mr_blogger/view/Profile_Screen/profile_screen.dart';
+import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
+import 'package:mr_blogger/view/Initial_Screen/initial_screen.dart';
+import 'package:mr_blogger/view/Search_blog/search_blog.dart';
 
 class Homepage extends StatefulWidget {
   @override

@@ -7,8 +7,6 @@ class SplashPage extends StatelessWidget {
         //child:
         child: Image(
       image: NetworkImage('https://i.imgur.com/0ASNwkQ.gif'),
-    )
-        // Text('splash screen')
-        );
+    ));
   }
 }

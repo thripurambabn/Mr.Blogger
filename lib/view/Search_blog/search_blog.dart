@@ -8,7 +8,8 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
-import 'package:mr_blogger/view/blog_detail_Screen.dart';
+import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key key}) : super(key: key);
@@ -153,16 +154,18 @@ class _SearchPageState extends State<SearchPage> {
                               : ListTile(
                                   onTap: () =>
                                       navigateToDetailPage(state.blogs[index]),
-                                  title: blogsUi(
-                                    state.blogs[index].image,
-                                    state.blogs[index].uid,
-                                    state.blogs[index].authorname,
-                                    state.blogs[index].title,
-                                    state.blogs[index].description,
-                                    state.blogs[index].likes,
-                                    state.blogs[index].date,
-                                    state.blogs[index].time,
-                                    state.blogs[index].timeStamp,
+                                  title: BlogsUI(
+                                    blogBloc: _blog,
+                                    images: state.blogs[index].image,
+                                    uid: state.blogs[index].uid,
+                                    authorname: state.blogs[index].authorname,
+                                    title: state.blogs[index].title,
+                                    description: state.blogs[index].description,
+                                    likes: state.blogs[index].likes,
+                                    comments: state.blogs[index].comments,
+                                    date: state.blogs[index].date,
+                                    time: state.blogs[index].time,
+                                    timeStamp: state.blogs[index].timeStamp,
                                   ));
                         },
                         controller: _scrollController,
@@ -179,138 +182,7 @@ class _SearchPageState extends State<SearchPage> {
         )));
   }
 
-//blog tile widget
-  Widget blogsUi(
-      List<String> images,
-      String uid,
-      String authorname,
-      String title,
-      String description,
-      List<String> likes,
-      String date,
-      String time,
-      int timeStamp) {
-    List<CachedNetworkImage> cachednetworkImages = List<CachedNetworkImage>();
-    for (var image in images) {
-      cachednetworkImages.add(
-        CachedNetworkImage(
-          imageUrl: image,
-          fit: BoxFit.cover,
-          height: 240,
-          width: MediaQuery.of(context).size.width / 1.2,
-          placeholder: (context, url) => SizedBox(
-              height: 20,
-              width: 30,
-              child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(Colors.purple[800]),
-              )),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ),
-      );
-    }
-    return new Card(
-      margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-      elevation: 15.0,
-      child: new Container(
-        padding: EdgeInsets.fromLTRB(15, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text(
-                  title ?? '',
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Paficico',
-                      color: Colors.purple),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
-            SizedBox(height: 10.0),
-            SizedBox(
-                    height: 200.0,
-                    width: 350.0,
-                    child: Carousel(
-                      boxFit: BoxFit.contain,
-                      images: cachednetworkImages,
-                      dotSize: 8.0,
-                      dotSpacing: 15.0,
-                      dotColor: Colors.purple[800],
-                      indicatorBgPadding: 5.0,
-                      autoplay: false,
-                      dotBgColor: Colors.white.withOpacity(0),
-                      borderRadius: true,
-                    )) ??
-                Container(
-                  color: Colors.purple[50],
-                  height: 240,
-                  width: MediaQuery.of(context).size.width / 1.2,
-                ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(children: <Widget>[
-                    Text(
-                      'Author Name: ',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                    Text(
-                      authorname ?? '',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.grey[850],
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ]),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, 3, 0),
-                    child: new Text(
-                      time,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey[500],
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  )
-                ]),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              //padding: EdgeInsets.fromLTRB(0, 0, 1, 0),
-              margin: EdgeInsets.fromLTRB(0, 0, 0.5, 0),
-              child: new Text(description ?? '',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey[700],
-                  ),
-                  textAlign: TextAlign.left),
-            ),
-          ],
-        ),
-      ),
-    );
+  Widget errorUI() {
+    return new Center(child: Text('there are no blogs of this name'));
   }
-}
-
-Widget errorUI() {
-  return new Center(child: Text('there are no blogs of this name'));
 }

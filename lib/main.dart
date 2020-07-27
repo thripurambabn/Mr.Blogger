@@ -6,8 +6,8 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/service/blog_service.dart';
 import 'package:mr_blogger/service/user_service.dart';
 import 'package:mr_blogger/view/Home_Screen/home_screen.dart';
-import 'package:mr_blogger/view/initial_screen.dart';
-import 'package:mr_blogger/view/splash_scren.dart';
+import 'package:mr_blogger/view/Initial_Screen/initial_screen.dart';
+import 'package:mr_blogger/view/Spalsh_Screen/splash_scren.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

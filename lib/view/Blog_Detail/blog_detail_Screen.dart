@@ -7,7 +7,7 @@ import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/view/add_blog_screen.dart';
+import 'package:mr_blogger/view/Add_Edit_Blog/Add_edit_blog_screen.dart';
 
 class DetailPage extends StatefulWidget {
   final Blogs blogs;

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/like_button.dart';
-import 'package:mr_blogger/view/comment_screen.dart';
+import 'package:mr_blogger/view/Comment_Screen/comment_screen.dart';
 
 class BlogsUI extends StatefulWidget {
   final List<String> images;
