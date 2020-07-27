@@ -78,7 +78,10 @@ class _EnableUploadState extends State<EnableUpload> {
                 ),
                 onTap: widget.toggleButton),
             DropBox(
-              dropdownValue: widget.dropdownValue ?? widget.changeIt(),
+              changeIt: (newValue) {
+                widget.changeIt(newValue);
+              },
+              dropdownValue: widget.dropdownValue,
               blog: widget.blog,
               isEdit: widget.isEdit,
             ),

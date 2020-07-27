@@ -6,7 +6,7 @@ class DropBox extends StatefulWidget {
   String dropdownValue;
   final bool isEdit;
   final Blogs blog;
-  final Function changeIt;
+  final Function(String) changeIt;
   DropBox({Key key, this.dropdownValue, this.isEdit, this.blog, this.changeIt})
       : super(key: key);
 
@@ -62,9 +62,9 @@ class _DropBoxState extends State<DropBox> {
           onChanged: (String newValue) {
             setState(() {
               widget.dropdownValue = newValue;
+              widget.changeIt(newValue);
             });
           },
-          //  widget.changeIt(widget.dropdownValue)
         ),
       ),
     );

@@ -19,7 +19,7 @@ class BeforeUpload extends StatefulWidget {
   final String mytitlevalue;
   final String myValue;
   String dropdownValue;
-  final Function changeIt;
+  final Function(String) changeIt;
   final TextEditingController descriptionController;
   BeforeUpload(
       {Key key,
@@ -96,6 +96,9 @@ class _BeforeUploadState extends State<BeforeUpload> {
             dropdownValue: widget.dropdownValue,
             blog: widget.blog,
             isEdit: widget.isEdit,
+            changeIt: (newValue) {
+              widget.changeIt(newValue);
+            },
           ),
           TitleWidget(
             titleController: widget.titleController,

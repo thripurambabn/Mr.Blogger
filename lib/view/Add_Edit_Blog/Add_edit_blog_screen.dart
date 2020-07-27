@@ -79,6 +79,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
               child: new Center(
                 child: imageUrl == null
                     ? BeforeUpload(
+                        changeIt: (newdropdownValue) {
+                          changeIt(newdropdownValue);
+                        },
                         blog: widget.blog,
                         imageUrlList: imageUrlList,
                         isEdit: widget.isEdit,
@@ -90,18 +93,23 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                         titleController: _titleController,
                         mytitlevalue: _mytitlevalue,
                         myValue: _myvalue,
-                        dropdownValue:
-                            widget.isEdit == true ? widget.blog.category : '',
+                        dropdownValue: widget.isEdit == true
+                            ? widget.blog.category
+                            : dropdownValue,
                         descriptionController: _descriptionController,
                         getImage: () {
                           getImage();
                         })
                     : EnableUpload(
+                        changeIt: (newdropdownValue) {
+                          changeIt(newdropdownValue);
+                        },
                         gridview: buildGridView,
                         toggleButton: toggleButton(),
                         toggleValue: toggleValue,
-                        dropdownValue:
-                            widget.isEdit == true ? widget.blog.category : '',
+                        dropdownValue: widget.isEdit == true
+                            ? widget.blog.category
+                            : dropdownValue,
                         titleController: _titleController,
                         descriptionController: _descriptionController,
                         isEdit: widget.isEdit,
@@ -244,13 +252,16 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
     }
   }
 
-  String newdropdownValue;
-  changeIt() {
-    print('before setstate inbefore upload${widget.blog.category}');
+  String dropdownValue = '';
+  changeIt(String newdropdownValue) {
+    print('before setstate inbefore upload ${newdropdownValue}');
     setState(() {
-      widget.blog.category = newdropdownValue;
+      if (widget.blog != null) {
+        widget.blog.category = newdropdownValue;
+      } else {
+        dropdownValue = newdropdownValue;
+      }
     });
-    print('after setstate in before uplaod${widget.blog.category}');
   }
 
 //calls Upload Image event to add blog
@@ -261,14 +272,16 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
         image: sampleImage,
         title: _titleController.text,
         description: _descriptionController.text,
-        category: widget.isEdit == true ? widget.blog.category : changeIt(),
+        category: widget.isEdit == true && widget.blog.category != null
+            ? widget.blog.category
+            : dropdownValue,
         blogPrivacy: toggleValue,
       ),
     );
   }
 
   void updateBlog() {
-    print('update');
+    print('update ${widget.blog.category}');
     BlocProvider.of<BlogsBloc>(context).add(
       UpdateBlog(
           image: imageUrl,

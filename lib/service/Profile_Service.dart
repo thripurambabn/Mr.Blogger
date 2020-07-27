@@ -148,6 +148,7 @@ class ProfileService {
 
       var data = {
         'image': url,
+        'category': category,
         'title': mytitlevalue,
         'description': myvalue,
         'date': date,
