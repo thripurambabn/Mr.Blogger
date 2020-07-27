@@ -38,15 +38,12 @@ class BlogsService {
         }
       }
       if (data[key]['image'] != null) {
-        // print('data[images] ${data[key]['image']}');
         tempImages = data[key]['image'];
         for (var image in tempImages) {
-          //print('image $image');
           if (image != null) {
             imagesList.add(image);
           }
         }
-        // print('images after for ${imagesList}');
       }
       if (data[key]['comments'] != null) {
         tempComments = data[key]['comments'];
@@ -208,8 +205,6 @@ class BlogsService {
         .ref()
         .child("Blog images")
         .child(timekey.toString() + '.jpg');
-
-    //print('image -------$sampleImage');
     final StorageUploadTask uploadImage = iamgeref.putData(imageData);
     var imageurl = await uploadImage.onComplete;
     var imageurl1 = await imageurl.ref.getDownloadURL();
@@ -287,9 +282,6 @@ class BlogsService {
           blogsList.add(blog);
         }
       }
-      // else {
-      //   print('there are no blogs of this user');
-      // }
     } catch (e) {
       print(e);
     }
@@ -348,7 +340,6 @@ class BlogsService {
           .child(event.snapshot.key)
           .update({'comments': convertedComments});
     }, onError: (Object o) {
-      print('inside onerrod ${o}');
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
     });
@@ -374,7 +365,6 @@ class BlogsService {
           .equalTo(commentTimeStamp)
           .onChildAdded
           .listen((commentEvent) {
-        //  print('listening comment event ${commentEvent.snapshot.key}');
         FirebaseDatabase.instance
             .reference()
             .child('blogs')
@@ -382,10 +372,8 @@ class BlogsService {
             .child('comments')
             .child(commentEvent.snapshot.key)
             .remove();
-        //   .update({'comment': 'testsomething'});
       });
     }, onError: (Object o) {
-      print('inside onerrod ${o}');
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
     });
@@ -409,7 +397,6 @@ class BlogsService {
           .equalTo(commentTimeStamp)
           .onChildAdded
           .listen((commentEvent) {
-        //  print('listening comment event ${commentEvent.snapshot.key}');
         FirebaseDatabase.instance
             .reference()
             .child('blogs')
@@ -419,7 +406,6 @@ class BlogsService {
             .update({'comment': comment});
       });
     }, onError: (Object o) {
-      print('inside onerrod ${o}');
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
     });

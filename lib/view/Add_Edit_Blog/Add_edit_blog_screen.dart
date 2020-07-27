@@ -221,9 +221,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   Widget buildGridView() {
-    print('networkImages $imageUrl');
     List<NetworkImage> networkImages = List<NetworkImage>();
-    //print('image url in befor for $imageUrl}');
     if (imageUrl != null) {
       for (var image in imageUrl) {
         networkImages.add(
@@ -254,7 +252,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
 
   String dropdownValue = '';
   changeIt(String newdropdownValue) {
-    print('before setstate inbefore upload ${newdropdownValue}');
     setState(() {
       if (widget.blog != null) {
         widget.blog.category = newdropdownValue;
@@ -281,7 +278,6 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   void updateBlog() {
-    print('update ${widget.blog.category}');
     BlocProvider.of<BlogsBloc>(context).add(
       UpdateBlog(
           image: imageUrl,
@@ -294,8 +290,10 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   void navigateToHomePage() {
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+    Navigator.popUntil(
+      context,
+      ModalRoute.withName(Navigator.defaultRouteName),
+    );
   }
 
   toggleButton() {

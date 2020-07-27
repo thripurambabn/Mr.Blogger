@@ -13,7 +13,6 @@ class _ImageGridViewState extends State<ImageGridView> {
   @override
   Widget build(BuildContext context) {
     List<NetworkImage> networkImages = List<NetworkImage>();
-    //print('image url in befor for $imageUrl}');
     if (widget.imageUrl != null) {
       for (var image in widget.imageUrl) {
         networkImages.add(

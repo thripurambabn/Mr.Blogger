@@ -24,7 +24,6 @@ class Blogs {
       : super();
 
   factory Blogs.fromJson(Map<String, dynamic> parsedJson) {
-    print('category in model ${parsedJson['category']}');
     return Blogs(
         image: parsedJson['image'] ?? '',
         uid: parsedJson['uid'] ?? '',

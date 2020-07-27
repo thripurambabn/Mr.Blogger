@@ -52,16 +52,9 @@ class _DescriptionFieldState extends State<DescriptionField> {
                 return value.isEmpty ? 'blog decription is required' : null;
               },
               onChanged: (value) {
-                //  print('value saved ${value}');
                 widget.myValue = value;
               },
             ),
-            //     ZefyrScaffold(
-            //   child: ZefyrEditor(
-            //     controller: _descriptionController,
-            //     focusNode: _focusNode,
-            //   ),
-            // )
           )),
         ),
       ],

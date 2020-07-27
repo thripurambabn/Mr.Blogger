@@ -3,7 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
+import 'package:mr_blogger/blocs/serach_bloc/search_event.dart';
+import 'package:mr_blogger/blocs/serach_bloc/search_state.dart';
+import 'package:mr_blogger/blocs/serach_bloc/serach_bloc.dart';
 import 'package:mr_blogger/models/blogs.dart';
+
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 
@@ -17,24 +21,10 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   List<Blogs> blogsList = [];
   Blogs blogs;
-  final _scrollController = ScrollController();
-  final _scrollThreshold = 200.0;
   bool searching = false;
   @override
   void initState() {
     super.initState();
-    //listener for scroll event
-    _scrollController.addListener(_onScroll);
-  }
-
-//events on scroll for pagiantion
-  void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    //get more blogs on scroll
-    if (maxScroll - currentScroll <= _scrollThreshold) {
-      BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
-    }
   }
 
 //navigate to detail page page
@@ -90,7 +80,8 @@ class _SearchPageState extends State<SearchPage> {
               setState(() {
                 searching = true;
               });
-              BlocProvider.of<BlogsBloc>(context).add(SearchBlog(searchBlog));
+              BlocProvider.of<SearchBlogsBloc>(context)
+                  .add(SearchBlog(searchBlog));
             },
           ),
         ),
@@ -99,11 +90,12 @@ class _SearchPageState extends State<SearchPage> {
             child: Container(
           child: Column(children: <Widget>[
             Container(
-              child: BlocBuilder<BlogsBloc, BlogsState>(
-                bloc: BlocProvider.of<BlogsBloc>(context),
+              child: BlocBuilder<SearchBlogsBloc, SearchBlogsState>(
+                bloc: BlocProvider.of<SearchBlogsBloc>(context),
                 builder: (context, state) {
                   //Loading state
-                  if (state is BlogsLoading) {
+                  if (state is SearchBlogsLoading) {
+                    print('laoding');
                     return Column(children: <Widget>[
                       Image.network(
                         'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
@@ -117,7 +109,7 @@ class _SearchPageState extends State<SearchPage> {
                               color: Colors.purple))
                     ]);
                   } //Loaded state
-                  else if (state is BlogsLoaded) {
+                  else if (state is SearchBlogsLoaded) {
                     print('state of blogs in search ui ${state.blogs.length}');
                     return Column(children: <Widget>[
                       Container(
@@ -159,11 +151,10 @@ class _SearchPageState extends State<SearchPage> {
                                     timeStamp: state.blogs[index].timeStamp,
                                   ));
                         },
-                        controller: _scrollController,
                       )
                     ]);
                     //error state
-                  } else if (state is BlogsNotLoaded) {
+                  } else if (state is SearchBlogsNotLoaded) {
                     return errorUI();
                   }
                 },

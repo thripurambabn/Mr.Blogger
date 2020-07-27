@@ -42,7 +42,7 @@ class _EditProfileUIState extends State<EditProfileUI> {
             Positioned(
                 top: 30.0,
                 child: InkWell(
-                  onTap: () => {print('tapping'), widget.getImage()},
+                  onTap: () => {widget.getImage()},
                   child: Container(
                     height: 150.0,
                     width: 150.0,

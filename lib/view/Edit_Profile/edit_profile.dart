@@ -69,7 +69,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             IconButton(
               icon: Icon(FontAwesomeIcons.save),
               onPressed: () {
-                print('imageUrl near save profile${imageUrl}');
                 saveprofile();
                 navigateToProfilePage();
               },
@@ -87,8 +86,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
-                    print(
-                        'display name ${state.displayName} ${state.imageUrl}');
                     return EditProfileUI(
                       nameController: _nameController,
                       imageUrl: state.imageUrl,
@@ -107,22 +104,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future getImage() async {
-    print('selecting and image');
     final _picker = ImagePicker();
     final pickedFile =
         await _picker.getImage(source: ImageSource.gallery, imageQuality: 85);
     final File file = File(pickedFile.path);
-    print('selected a image');
+
     setState(() {
       sampleImage = file;
     });
     var url =
         await _profileService.uploadProfileImage(sampleImage: sampleImage);
-    print('image url');
+
     setState(() {
       imageUrl = url;
     });
-    print('imageUrl $imageUrl');
   }
 
   Widget errorUI() {

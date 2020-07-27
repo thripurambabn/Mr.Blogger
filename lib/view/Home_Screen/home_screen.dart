@@ -37,7 +37,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     //listener for scroll event
-    print('iam home');
+
     _scrollController.addListener(_onScroll);
     //inital call for get blogs
     getBlogs();
@@ -129,9 +129,7 @@ class _HomepageState extends State<Homepage> {
             //   width: 50,
             //   child:
             PopupMenuButton(
-              onCanceled: () {
-                print("You have canceled the menu.");
-              },
+              onCanceled: () {},
               onSelected: popUpmenuChoice,
               itemBuilder: (BuildContext context) {
                 return [
@@ -194,7 +192,6 @@ class _HomepageState extends State<Homepage> {
             bloc: BlocProvider.of<BlogsBloc>(context),
             builder: (context, state) {
               //Loading state
-              print(' widget has been built $state');
               if (state is BlogsLoading) {
                 return Image.network(
                   'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',

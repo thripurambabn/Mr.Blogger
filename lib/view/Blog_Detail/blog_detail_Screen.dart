@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/Add_edit_blog_screen.dart';
 
@@ -70,8 +70,7 @@ class _DetailPageState extends State<DetailPage> {
       if (choice == '1') {
         navigateToAddPage(widget.blogs);
       } else if (choice == '2') {
-        BlocProvider.of<ProfileBloc>(context)
-            .add(DeleteBlog(widget.blogs.title));
+        BlocProvider.of<BlogsBloc>(context).add(DeleteBlog(widget.blogs.title));
         navigateToHomePage();
       }
     }

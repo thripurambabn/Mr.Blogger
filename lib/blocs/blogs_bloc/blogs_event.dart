@@ -64,18 +64,6 @@ class UploadBlog extends BlogsEvent {
   String toString() => 'ImageBlog { blog: $image }';
 }
 
-class SearchBlog extends BlogsEvent {
-  final String searchkey;
-
-  SearchBlog(this.searchkey);
-
-  @override
-  List<Object> get props => [searchkey];
-
-  @override
-  String toString() => 'Serached blog { blog: $searchkey }';
-}
-
 class UpdateBlog extends BlogsEvent {
   final List<String> image;
   final bool blogPrivacy;
@@ -96,6 +84,17 @@ class UpdateBlog extends BlogsEvent {
 
   @override
   String toString() => 'Updateblog { blog: $image }';
+}
+
+class DeleteBlog extends BlogsEvent {
+  final String key;
+
+  const DeleteBlog(this.key);
+  @override
+  List<Object> get props => [key];
+
+  @override
+  String toString() => 'Deleted blog { blog: $key }';
 }
 
 class BlogLikes extends BlogsEvent {

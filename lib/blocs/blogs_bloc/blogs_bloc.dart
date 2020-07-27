@@ -27,12 +27,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapLoadedBlogsState(event, state);
     } else if (event is AddBlog) {
       yield* _mapAddBlogState(event);
-    }
-    // else if (event is UploadImage) {
-    //   yield* _mapUploadImageToState(event);
-    //}
-    else if (event is SearchBlog) {
-      yield* _mapSerachBlogToState(event);
     } else if (event is UpdateBlog) {
       yield* _mapUpdateBlogToState(event);
     } else if (event is BlogLikes) {
@@ -45,6 +39,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapEditCommentsToState(event);
     } else if (event is UploadBlog) {
       yield* _mapUploadBlogToState(event);
+    } else if (event is DeleteBlog) {
+      yield* _mapDeletedBlogToState(event);
     }
   }
 
@@ -57,7 +53,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
         yield BlogsLoading();
 
         List<Blogs> blogslist = await _blogsService.getblogs();
-        print('in bloc blogsList ${blogslist}');
         yield BlogsLoaded(blogs: blogslist, hasReachedMax: false, uid: uid.uid);
       } else if (state is BlogsLoaded && !_hasReachedMax(state)) {
         List<Blogs> moreblogslist =
@@ -86,9 +81,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       state is BlogsLoaded && state.hasReachedMax;
 
 //mapping load Blog event with blogs state
-  Stream<BlogsState> _mapLoadBlogsToState() async* {
-    print('load blogs in blogs_bloc.dart');
-  }
+  Stream<BlogsState> _mapLoadBlogsToState() async* {}
 
 //mapping add blog event with blogs state
   Stream<BlogsState> _mapAddBlogState(AddBlog event) async* {
@@ -96,20 +89,21 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     yield BlogsLoaded(blogs: blog, hasReachedMax: false);
   }
 
-  Stream<BlogsState> _mapSerachBlogToState(SearchBlog event) async* {
+  //mapping Deleted Blog To State event with states
+  Stream<BlogsState> _mapDeletedBlogToState(DeleteBlog event) async* {
     try {
-      print('in search bloc ${event.searchkey}');
-      final List<Blogs> blog = await _blogsService.searchBlogs(event.searchkey);
-      yield BlogsLoaded(blogs: blog, hasReachedMax: true);
+      _profileService.deleteBlog(event.key);
+      final List<Blogs> blog = await _blogsService.getblogs();
+      yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print(e);
+      yield BlogsNotLoaded();
     }
   }
 
 //mapping update blog event with blogs state
   Stream<BlogsState> _mapUpdateBlogToState(UpdateBlog event) async* {
     try {
-      print('mapping update event to state ${event.image}');
       await _profileService.updateImage(
           //  url: event.url,
           sampleImage: event.image,
@@ -119,7 +113,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
           blogtimeStamp: event.timeStamp,
           blogPrivacy: event.blogPrivacy);
       final List<Blogs> blog = await _blogsService.getblogs();
-      print('calling blogs loading');
       yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print(e);
@@ -129,10 +122,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapBlogLikesToState(BlogLikes event) async* {
     try {
       var user = await _userService.save();
-      print('in bloc ${event.likes}');
       await _blogsService.setLikes(event.timeStamp, user.uid, event.likes);
-      // final List<Blogs> blog = await _blogsService.getblogs();
-      // yield BlogsLoaded(blogs: blog, hasReachedMax: false);
     } catch (e) {
       print(e);
     }
@@ -150,7 +140,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapUploadBlogToState(UploadBlog event) async* {
     try {
-      print('upload blog bloc ${event.category}');
       await _blogsService.saveToDatabase(event.url, event.title,
           event.description, event.category, event.blogPrivacy);
       final List<Blogs> blog = await _blogsService.getblogs();
@@ -175,9 +164,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapEditCommentsToState(EditComments event) async* {
     try {
       //  var user = await _userService.save();
-      print(
-          'values in edit comment bloc timeStamp${event.blogsTimeStamp},comment${event.commentTimeStamp} ${event.comment}');
-
       await _blogsService.editComments(
           event.blogsTimeStamp, event.commentTimeStamp, event.comment);
     } catch (e) {

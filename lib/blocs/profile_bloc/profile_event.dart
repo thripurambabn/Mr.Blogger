@@ -21,17 +21,6 @@ class LoadedProfileDeatils extends ProfileEvent {
   String toString() => 'Loadedprofile';
 }
 
-class DeleteBlog extends ProfileEvent {
-  final String key;
-
-  const DeleteBlog(this.key);
-  @override
-  List<Object> get props => [key];
-
-  @override
-  String toString() => 'Deleted blog { blog: $key }';
-}
-
 class EditProfile extends ProfileEvent {
   final String name;
   final String imageUrl;

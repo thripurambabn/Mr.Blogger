@@ -71,7 +71,6 @@ class _RegisterFormState extends State<RegisterForm> {
         if (state.isSuccess) {
           // BlocProvider.of<AuthenticationBloc>(context)
           //     .add(AuthenticationStarted());
-          print('poped reg screen');
 
           Navigator.pushReplacement(
             context,
@@ -215,8 +214,6 @@ class _RegisterFormState extends State<RegisterForm> {
                       ),
                       keyboardType: TextInputType.text,
                       validator: (value) {
-                        print(
-                            'value befor return $value ${_confirmPasswordController.text} ${_passwordController.text}');
                         return !state.isConfirmPasswordValid ||
                                 _confirmPasswordController.text !=
                                     _passwordController.text

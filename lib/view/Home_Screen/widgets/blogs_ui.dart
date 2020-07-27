@@ -44,7 +44,6 @@ class _BlogsUIState extends State<BlogsUI> {
     navigateTocommentPage(
         int timeStamp, List<Comment> comments, String uid, String title) {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        print('navigating');
         return CommentsScreen(timeStamp, comments, uid, title);
       }));
     }

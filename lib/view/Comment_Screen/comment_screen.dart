@@ -148,7 +148,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
         physics: ScrollPhysics(),
         itemCount: widget.comments.length,
         itemBuilder: (BuildContext context, int index) {
-          print('${widget.comments[index]}');
           String readTimestamp(int commentTimeStamp) {
             var now = DateTime.now();
             var format = DateFormat('HH:mm a');
@@ -231,7 +230,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       onPressed: () {
                         deleteComments(
                             widget.timeStamp, widget.comments[index].date);
-                        print('delete icon pressed');
+
                         //tempcomments = widget.comments;
                         setState(() {
                           widget.comments.remove(widget.comments[index]);

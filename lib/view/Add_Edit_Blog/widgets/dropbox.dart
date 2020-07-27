@@ -18,8 +18,6 @@ class _DropBoxState extends State<DropBox> {
   onchanged() {}
   @override
   Widget build(BuildContext context) {
-    print(
-        'dropdown1 ${widget.blog} category ${widget.dropdownValue} isEdit ${widget.isEdit} ');
     return Container(
       width: 340,
       padding: EdgeInsets.fromLTRB(10, 10, 20, 10),

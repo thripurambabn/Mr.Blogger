@@ -42,12 +42,10 @@ class ProfileService {
           if (data[key]['image'] != null) {
             tempImages = data[key]['image'];
             for (var image in tempImages) {
-              //print('image $image');
               if (image != null) {
                 imagesList.add(image);
               }
             }
-            // print('images after for ${imagesList}');
           }
           if (data[key]['comments'] != null) {
             tempComments = data[key]['comments'];

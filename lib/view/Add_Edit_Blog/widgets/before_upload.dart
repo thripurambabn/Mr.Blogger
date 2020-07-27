@@ -46,7 +46,6 @@ class _BeforeUploadState extends State<BeforeUpload> {
   @override
   Widget build(BuildContext context) {
 //view before entering the blog details
-    print('before upload ${widget.dropdownValue} ${widget.blog} ');
     List<NetworkImage> networkImages = List<NetworkImage>();
     if (widget.blog != null) {
       for (var image in widget.blog.image) {

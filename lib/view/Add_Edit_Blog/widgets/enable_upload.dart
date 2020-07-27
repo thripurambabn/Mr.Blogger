@@ -57,7 +57,6 @@ class _EnableUploadState extends State<EnableUpload> {
     }
 
     //view after entering the blog details
-    print('enable upload ${widget.dropdownValue}');
     return new Container(
       child: new Form(
         key: widget.formKey,
@@ -66,17 +65,33 @@ class _EnableUploadState extends State<EnableUpload> {
             SizedBox(
               height: 10,
             ),
-            InkWell(
-                child: Center(
-                  child: CustomSwitchButton(
-                    backgroundColor: Colors.purple[300],
-                    unCheckedColor: Colors.white,
-                    animationDuration: Duration(milliseconds: 400),
-                    checkedColor: Colors.purple[800],
-                    checked: widget.toggleValue,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Privacy:',
+                    style: TextStyle(
+                        fontFamily: 'Paficico', color: Colors.purple[500]),
+                    textAlign: TextAlign.left,
                   ),
                 ),
-                onTap: widget.toggleButton),
+                Container(
+                  child: InkWell(
+                      child: Center(
+                        child: CustomSwitchButton(
+                            backgroundColor: Colors.purple[300],
+                            unCheckedColor: Colors.white,
+                            animationDuration: Duration(milliseconds: 400),
+                            checkedColor: Colors.purple[800],
+                            checked: widget.isEdit == true
+                                ? widget.blog.blogPrivacy
+                                : widget.toggleValue),
+                      ),
+                      onTap: widget.toggleButton),
+                ),
+              ],
+            ),
             DropBox(
               changeIt: (newValue) {
                 widget.changeIt(newValue);

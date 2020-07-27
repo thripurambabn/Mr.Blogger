@@ -30,8 +30,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapLoadedProfileState();
     } else if (event is LoadedProfileDeatils) {
       yield* _mapLoadedProfileState();
-    } else if (event is DeleteBlog) {
-      yield* _mapDeletedBlogToState(event);
     } else if (event is EditProfile) {
       yield* _mapEditProfileToState(event);
     }
@@ -49,21 +47,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           test.uid, test.imageUrl);
     } catch (e) {
       print(e);
-    }
-  }
-
-//mapping Deleted Blog To State event with states
-  Stream<ProfileState> _mapDeletedBlogToState(DeleteBlog event) async* {
-    try {
-      _profileService.deleteBlog(event.key);
-      UserService _userService = new UserService();
-      final test = await _userService.save();
-      List<Blogs> profileblogslist = await _profileService.getblogs();
-      yield ProfileLoaded(profileblogslist, test.displayName, test.email,
-          test.uid, test.imageUrl);
-    } catch (e) {
-      print(e);
-      yield ProfileNotLoaded();
     }
   }
 
