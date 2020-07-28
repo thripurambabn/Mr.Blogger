@@ -38,7 +38,6 @@ class BlogsService {
           likesList.add(like.toString());
         }
       }
-      print('follower in service ${data[key]['followers']}');
       if (data[key]['followers'] != null) {
         tempfollowers = data[key]['followers'];
         for (var follower in tempfollowers) {
@@ -115,7 +114,6 @@ class BlogsService {
               likesList.add(like.toString());
             }
           }
-          print('follower in service get more blogs${data[key]['followers']}');
           if (data[key]['followers'] != null) {
             tempfollowers = data[key]['followers'];
 
@@ -237,7 +235,6 @@ class BlogsService {
 
 //To Search a blog in firebase
   Future searchBlogs(String searchKey) async {
-    print('search service ${searchKey}');
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -329,7 +326,6 @@ class BlogsService {
   }
 
   Future setFollow(int blogtimeStamp, var uid, List<String> followers) async {
-    print('followers in setFollow service ${followers}');
     FirebaseDatabase.instance
         .reference()
         .child('users')
@@ -337,13 +333,11 @@ class BlogsService {
         .equalTo(uid)
         .onChildAdded
         .listen((Event event) {
-      print('event $event');
       FirebaseDatabase.instance
           .reference()
           .child('users')
           .child(event.snapshot.key)
           .update({'followers': followers});
-      print('snapshot in service ${event.snapshot.key} ${followers}');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');

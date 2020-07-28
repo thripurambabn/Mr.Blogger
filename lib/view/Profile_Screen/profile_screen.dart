@@ -10,6 +10,7 @@ import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 import 'package:mr_blogger/view/Profile_Screen/widgets/grid_ui.dart';
 import 'package:mr_blogger/view/Profile_Screen/widgets/profile_ui.dart';
+import 'package:mr_blogger/view/followers_following_screen/followers_following_screem.dart';
 
 class ProfilePage extends StatefulWidget {
   final Users user;
@@ -35,6 +36,13 @@ class _ProfilePageState extends State<ProfilePage>
     );
 
     super.initState();
+  }
+
+  navigateToFollowerPage(List<String> followers) {
+    print('profile_screen ${followers}');
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return new FollowPage(followers: followers);
+    }));
   }
 
 //navigates to detail page
@@ -68,13 +76,18 @@ class _ProfilePageState extends State<ProfilePage>
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
+                    print('state.follower ${state.followers}');
                     return ProfileUI(
+                        followers: state.followers,
                         displayname: state.displayName,
                         email: state.email,
                         imageUrl: state.imageUrl,
                         buttonPressed: () {
                           buttonPressed(state.displayName, state.email,
                               state.imageUrl, context);
+                        },
+                        navigateToFollowerPage: () {
+                          navigateToFollowerPage(state.followers);
                         });
                   } else if (state is ProfileNotLoaded) {
                     return Text(
@@ -143,6 +156,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 onTap: () => navigateToDetailPage(
                                     state.blogs[index], state.uid),
                                 title: BlogsUI(
+                                  followers: state.blogs[index].followers,
                                   images: state.blogs[index].image,
                                   uid: state.blogs[index].uid,
                                   authorname: state.blogs[index].authorname,

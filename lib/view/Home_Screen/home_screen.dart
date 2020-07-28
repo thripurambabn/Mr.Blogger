@@ -103,16 +103,12 @@ class _HomepageState extends State<Homepage> {
 
 //navigate to detail page page
     void navigateToDetailPage(Blogs blog, String uid) {
-      //var _blogsBloc = BlocProvider.of<BlogsBloc>(context);
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return new DetailPage(
           blogs: blog,
           uid: uid,
         );
       }));
-      // .then((value) {
-      //   setState(() => getBlogs);
-      // });
     }
 
     return Scaffold(
@@ -125,9 +121,7 @@ class _HomepageState extends State<Homepage> {
               icon: cusIcon,
               onPressed: navigateToSerachPage,
             ),
-            // Container(
-            //   width: 50,
-            //   child:
+
             PopupMenuButton(
               onCanceled: () {},
               onSelected: popUpmenuChoice,

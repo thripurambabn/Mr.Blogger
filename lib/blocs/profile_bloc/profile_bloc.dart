@@ -40,11 +40,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     yield ProfileLoading();
     try {
       var test = await _profileService.getProfileDetails();
-
+      print('profile_ui ${test.followers}');
       List<Blogs> profileblogslist = await _profileService.getblogs();
 
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
-          test.uid, test.imageUrl);
+          test.uid, test.imageUrl, test.followers);
     } catch (e) {
       print(e);
     }
@@ -56,10 +56,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await _profileService.editProfile(event.name, event.imageUrl);
       List<Blogs> profileblogslist = await _profileService.getblogs();
       UserService _userService = new UserService();
-      await _userService.read();
-      final test = await _userService.save();
-      yield ProfileLoaded(profileblogslist, test.displayName, test.email,
-          test.uid, test.imageUrl);
+      // await _userService.read();
+      // final test = await _userService.save();
+      // yield ProfileLoaded(profileblogslist, test.displayName, test.email,
+      //     test.uid, test.imageUrl, test.followers);
     } catch (e) {
       print(e);
       yield ProfileNotLoaded();

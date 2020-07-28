@@ -21,12 +21,10 @@ class _FollowButtonState extends State<FollowButton> {
   @override
   Widget build(BuildContext context) {
     void setfollow(int timeStamp, List<String> followers, String uid) {
-      print('follower sending from UI ${widget.followers}');
       BlocProvider.of<BlogsBloc>(context)
           .add(FollowBlogs(timeStamp, followers));
     }
 
-    print('followers in follow_button${widget.followers}');
     return new Row(children: <Widget>[
       GestureDetector(
           onTap: () => {

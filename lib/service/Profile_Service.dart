@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
@@ -28,15 +29,23 @@ class ProfileService {
         for (var key in refkey) {
           var tempLikes = [];
           var tempImages = [];
+          var tempfollowers = [];
           var tempComments;
           var commentsList = new List<Comment>();
           var likesList = new List<String>();
+          var followersList = new List<String>();
           var imagesList = new List<String>();
           if (data[key]['likes'] != null) {
             tempLikes = data[key]['likes'];
 
             for (var like in tempLikes) {
               likesList.add(like.toString());
+            }
+          }
+          if (data[key]['followers'] != null) {
+            tempfollowers = data[key]['followers'];
+            for (var follower in tempfollowers) {
+              followersList.add(follower.toString());
             }
           }
           if (data[key]['image'] != null) {
@@ -68,12 +77,12 @@ class ProfileService {
               description: data[key]['description'],
               likes: likesList,
               comments: commentsList,
+              followers: followersList,
               date: data[key]['date'],
               category: data[key]['category'],
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp'],
               blogPrivacy: data[key]['blogPrivacy']);
-
           blogsList.clear();
           blogsList.add(blog);
         }
@@ -98,12 +107,18 @@ class ProfileService {
         var data = snapshot.value;
 
         for (var key in refkey) {
-          Users user = new Users(
-              uid: data[key]['uid'],
-              displayName: data[key]['username'],
-              email: data[key]['email'],
-              imageUrl: data[key]['photoUrl']);
+          var tempfollowers = [];
+          var followersList = List<String>();
+          if (data[key]['followers'] != null) {
+            tempfollowers = data[key]['followers'];
+            for (var follower in tempfollowers) {
+              followersList.add(follower.toString());
+            }
+          }
+          var mapData = new Map<String, dynamic>.from(data);
+          var user = new Users.fromJson(mapData);
           userData = user;
+          print('user ${userData}');
         }
       } else {
         print('there are no blogs of this user');

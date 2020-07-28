@@ -69,7 +69,6 @@ class _BlogsUIState extends State<BlogsUI> {
         ),
       );
     }
-    print('followers in blogs ui ${widget.followers}');
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,

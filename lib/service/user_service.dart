@@ -120,18 +120,17 @@ class UserService {
 //to write data to local storage
   Future<Users> save() async {
     final prefs = await SharedPreferences.getInstance();
-    final displayName = prefs.getString(
+    final userName = prefs.getString(
       "displayName",
     );
     final email = prefs.getString("email");
     final uid = prefs.getString('uid');
     // final imageUrl = prefs.getString('photoUrl');
-    Users user = new Users(
-      displayName: displayName,
-      email: email,
-      uid: uid,
-    ); // imageUrl: imageUrl);
 
+    var user = new Users(); // imageUrl: imageUrl);
+    user.displayName = userName;
+    user.email = email;
+    user.uid = uid;
     return user;
   }
 }

@@ -18,7 +18,6 @@ class SearchBlogsBloc extends Bloc<SearchBlogsEvent, SearchBlogsState> {
   Stream<SearchBlogsState> _mapSerachBlogToState(SearchBlog event) async* {
     try {
       var _blogsService = BlogsService();
-      print('in search bloc ${event.searchkey}');
       final List<Blogs> blog = await _blogsService.searchBlogs(event.searchkey);
       yield SearchBlogsLoaded(blogs: blog, hasReachedMax: true);
     } catch (e) {
