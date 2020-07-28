@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
+import 'package:mr_blogger/view/Home_Screen/widgets/follow_button.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/like_button.dart';
 import 'package:mr_blogger/view/Comment_Screen/comment_screen.dart';
 
@@ -18,6 +17,7 @@ class BlogsUI extends StatefulWidget {
   final List<Comment> comments;
   final String date;
   final String time;
+  final List<String> followers;
 
   final int timeStamp;
   BlogsUI({
@@ -32,6 +32,7 @@ class BlogsUI extends StatefulWidget {
     this.date,
     this.time,
     this.timeStamp,
+    this.followers,
   }) : super(key: key);
 
   @override
@@ -68,6 +69,7 @@ class _BlogsUIState extends State<BlogsUI> {
         ),
       );
     }
+    print('followers in blogs ui ${widget.followers}');
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -76,15 +78,24 @@ class _BlogsUIState extends State<BlogsUI> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              widget.title ?? '',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Paficico',
-                  color: Colors.purple),
-              textAlign: TextAlign.left,
-            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    widget.title ?? '',
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Paficico',
+                        color: Colors.purple),
+                    textAlign: TextAlign.left,
+                  ),
+                  FollowButton(
+                    timeStamp: widget.timeStamp,
+                    followers: widget.followers,
+                    uid: widget.uid,
+                  ),
+                ]),
             SizedBox(height: 10.0),
             Container(
                 height: 200.0,

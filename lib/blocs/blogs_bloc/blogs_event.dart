@@ -109,6 +109,18 @@ class BlogLikes extends BlogsEvent {
   String toString() => 'Updateblog { blog: $timeStamp }';
 }
 
+class FollowBlogs extends BlogsEvent {
+  final int timeStamp;
+  final List<String> followers;
+
+  FollowBlogs(this.timeStamp, this.followers);
+  @override
+  List<Object> get props => [timeStamp, followers];
+
+  @override
+  String toString() => 'Updateblog { blog: $timeStamp }';
+}
+
 class BlogComments extends BlogsEvent {
   final int timeStamp;
   final String comment;

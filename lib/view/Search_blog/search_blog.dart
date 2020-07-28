@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/blocs/serach_bloc/search_event.dart';
 import 'package:mr_blogger/blocs/serach_bloc/search_state.dart';
 import 'package:mr_blogger/blocs/serach_bloc/serach_bloc.dart';
@@ -95,7 +92,6 @@ class _SearchPageState extends State<SearchPage> {
                 builder: (context, state) {
                   //Loading state
                   if (state is SearchBlogsLoading) {
-                    print('laoding');
                     return Column(children: <Widget>[
                       Image.network(
                         'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
@@ -110,7 +106,6 @@ class _SearchPageState extends State<SearchPage> {
                     ]);
                   } //Loaded state
                   else if (state is SearchBlogsLoaded) {
-                    print('state of blogs in search ui ${state.blogs.length}');
                     return Column(children: <Widget>[
                       Container(
                         padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
@@ -139,6 +134,7 @@ class _SearchPageState extends State<SearchPage> {
                                   onTap: () =>
                                       navigateToDetailPage(state.blogs[index]),
                                   title: BlogsUI(
+                                    followers: state.blogs[index].image,
                                     images: state.blogs[index].image,
                                     uid: state.blogs[index].uid,
                                     authorname: state.blogs[index].authorname,

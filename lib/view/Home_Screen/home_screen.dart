@@ -171,6 +171,7 @@ class _HomepageState extends State<Homepage> {
                           onTap: () => navigateToDetailPage(
                               state.blogs[index], state.uid),
                           title: BlogsUI(
+                            followers: state.blogs[index].followers,
                             images: state.blogs[index].image,
                             uid: state.blogs[index].uid,
                             authorname: state.blogs[index].authorname,
@@ -213,6 +214,7 @@ class _HomepageState extends State<Homepage> {
                             onTap: () => navigateToDetailPage(
                                 state.blogs[index], state.uid),
                             title: BlogsUI(
+                              followers: state.blogs[index].followers,
                               images: state.blogs[index].image,
                               uid: state.blogs[index].uid,
                               authorname: state.blogs[index].authorname,

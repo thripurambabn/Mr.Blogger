@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
@@ -26,15 +25,24 @@ class BlogsService {
     for (var key in refkey) {
       var tempLikes = [];
       var tempImages = [];
+      var tempfollowers = [];
       var tempComments;
       var commentsList = new List<Comment>();
       var likesList = new List<String>();
+      var followersList = new List<String>();
       var imagesList = new List<String>();
       if (data[key]['likes'] != null) {
         tempLikes = data[key]['likes'];
 
         for (var like in tempLikes) {
           likesList.add(like.toString());
+        }
+      }
+      print('follower in service ${data[key]['followers']}');
+      if (data[key]['followers'] != null) {
+        tempfollowers = data[key]['followers'];
+        for (var follower in tempfollowers) {
+          followersList.add(follower.toString());
         }
       }
       if (data[key]['image'] != null) {
@@ -66,6 +74,7 @@ class BlogsService {
           description: data[key]['description'],
           likes: likesList,
           comments: commentsList,
+          followers: followersList,
           date: data[key]['date'],
           category: data[key]['category'],
           time: data[key]['time'],
@@ -81,6 +90,7 @@ class BlogsService {
 //To fetch more blogs from the firebase database on scroll(pagination)
   Future<List<Blogs>> getMoreBlogs(List<Blogs> blogs) async {
     List<Blogs> blogsList = [];
+
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
     Query blogsref = FirebaseDatabase.instance
         .reference()
@@ -96,11 +106,21 @@ class BlogsService {
 
         for (var key in refkey) {
           var tempLikes = [];
+          var tempfollowers = [];
           var likesList = new List<String>();
+          var followersList = new List<String>();
           if (data[key]['likes'] != null) {
             tempLikes = data[key]['likes'];
             for (var like in tempLikes) {
               likesList.add(like.toString());
+            }
+          }
+          print('follower in service get more blogs${data[key]['followers']}');
+          if (data[key]['followers'] != null) {
+            tempfollowers = data[key]['followers'];
+
+            for (var follower in tempfollowers) {
+              followersList.add(follower.toString());
             }
           }
           var tempComments;
@@ -137,6 +157,7 @@ class BlogsService {
               description: data[key]['description'],
               likes: likesList,
               comments: commentsList,
+              followers: followersList,
               date: data[key]['date'],
               time: data[key]['time'],
               category: data[key]['category'],
@@ -301,6 +322,28 @@ class BlogsService {
           .child('blogs')
           .child(event.snapshot.key)
           .update({'likes': likes});
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+  }
+
+  Future setFollow(int blogtimeStamp, var uid, List<String> followers) async {
+    print('followers in setFollow service ${followers}');
+    FirebaseDatabase.instance
+        .reference()
+        .child('users')
+        .orderByChild('uid')
+        .equalTo(uid)
+        .onChildAdded
+        .listen((Event event) {
+      print('event $event');
+      FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(event.snapshot.key)
+          .update({'followers': followers});
+      print('snapshot in service ${event.snapshot.key} ${followers}');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');

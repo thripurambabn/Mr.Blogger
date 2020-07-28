@@ -41,6 +41,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapUploadBlogToState(event);
     } else if (event is DeleteBlog) {
       yield* _mapDeletedBlogToState(event);
+    } else if (event is FollowBlogs) {
+      yield* _mapFollowBlogToState(event);
     }
   }
 
@@ -123,6 +125,16 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     try {
       var user = await _userService.save();
       await _blogsService.setLikes(event.timeStamp, user.uid, event.likes);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapFollowBlogToState(FollowBlogs event) async* {
+    try {
+      print('follower in bloc ${event.followers}');
+      var user = await _userService.save();
+      await _blogsService.setFollow(event.timeStamp, user.uid, event.followers);
     } catch (e) {
       print(e);
     }
