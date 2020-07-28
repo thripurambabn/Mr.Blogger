@@ -106,20 +106,10 @@ class ProfileService {
         var refkey = snapshot.value.keys;
         var data = snapshot.value;
 
-        for (var key in refkey) {
-          var tempfollowers = [];
-          var followersList = List<String>();
-          if (data[key]['followers'] != null) {
-            tempfollowers = data[key]['followers'];
-            for (var follower in tempfollowers) {
-              followersList.add(follower.toString());
-            }
-          }
-          var mapData = new Map<String, dynamic>.from(data);
-          var user = new Users.fromJson(mapData);
-          userData = user;
-          print('user ${userData}');
-        }
+        var mapData = new Map<String, dynamic>.from(data);
+        var user = new Users.fromJson(mapData);
+        userData = user;
+        print('user ${userData}');
       } else {
         print('there are no blogs of this user');
       }

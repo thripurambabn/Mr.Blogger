@@ -19,20 +19,29 @@ class Users {
   List<String> followers;
   factory Users() => _user;
   factory Users.fromJson(parsedJson) {
-    List _listData;
+    List _listData = [];
 
     var _list = parsedJson.values.toList();
 
     for (var listValue in _list) {
       _listData.add(listValue);
     }
+    var tempfollowers = [];
+    var followersList = List<String>();
+    if (_listData[0]['followers'] != null) {
+      tempfollowers = _listData[0]['followers'];
+      for (var follower in tempfollowers) {
+        followersList.add(follower.toString());
+      }
+    }
+
     print(
-        'listData  ${_listData[0]}${_listData[0].length}\n ${_listData[0].runtimeType}\n ');
-    _user.displayName = parsedJson['username'] ?? '';
-    _user.email = parsedJson['email'] ?? '';
-    _user.uid = parsedJson['uid'] ?? '';
-    _user.imageUrl = parsedJson['photoUrl'] ?? '';
-    _user.followers = parsedJson['followers'] ?? null;
+        'listData  ${_listData[0]['username']}${_listData[0].length}\n ${_listData[0].runtimeType}\n ');
+    _user.displayName = _listData[0]['username'] ?? '';
+    _user.email = _listData[0]['email'] ?? '';
+    _user.uid = _listData[0]['uid'] ?? '';
+    _user.imageUrl = _listData[0]['photoUrl'] ?? '';
+    _user.followers = followersList ?? null;
     return _user;
   }
 
