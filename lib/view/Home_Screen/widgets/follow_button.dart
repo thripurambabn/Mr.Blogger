@@ -5,13 +5,16 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 
 class FollowButton extends StatefulWidget {
   final List<String> followers;
+  final List<String> following;
   final String uid;
   final int timeStamp;
+
   const FollowButton({
     Key key,
     this.followers,
     this.uid,
     this.timeStamp,
+    this.following,
   }) : super(key: key);
   @override
   _FollowButtonState createState() => _FollowButtonState();
@@ -20,9 +23,10 @@ class FollowButton extends StatefulWidget {
 class _FollowButtonState extends State<FollowButton> {
   @override
   Widget build(BuildContext context) {
-    void setfollow(int timeStamp, List<String> followers, String uid) {
+    void setfollow(int timeStamp, List<String> followers, String uid,
+        List<String> following) {
       BlocProvider.of<BlogsBloc>(context)
-          .add(FollowBlogs(timeStamp, followers));
+          .add(FollowBlogs(timeStamp, followers, following));
     }
 
     return new Row(children: <Widget>[
@@ -35,7 +39,8 @@ class _FollowButtonState extends State<FollowButton> {
                     widget.followers.add(widget.uid);
                   }
                 }),
-                setfollow(widget.timeStamp, widget.followers, widget.uid),
+                setfollow(widget.timeStamp, widget.followers, widget.uid,
+                    widget.following),
               },
           child: new Container(
               height: 23.0,

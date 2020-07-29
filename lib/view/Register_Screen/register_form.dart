@@ -71,7 +71,6 @@ class _RegisterFormState extends State<RegisterForm> {
         if (state.isSuccess) {
           // BlocProvider.of<AuthenticationBloc>(context)
           //     .add(AuthenticationStarted());
-
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) {

@@ -26,10 +26,12 @@ class BlogsService {
       var tempLikes = [];
       var tempImages = [];
       var tempfollowers = [];
+      var tempfollowing = [];
       var tempComments;
       var commentsList = new List<Comment>();
       var likesList = new List<String>();
       var followersList = new List<String>();
+      var followingList = new List<String>();
       var imagesList = new List<String>();
       if (data[key]['likes'] != null) {
         tempLikes = data[key]['likes'];
@@ -44,6 +46,14 @@ class BlogsService {
           followersList.add(follower.toString());
         }
       }
+      print('${data[key]['followers']} ${followersList}');
+      if (data[key]['following'] != null) {
+        tempfollowing = data[key]['following'];
+        for (var follower in tempfollowing) {
+          followingList.add(follower.toString());
+        }
+      }
+      print('${data[key]['following']} ${followingList}');
       if (data[key]['image'] != null) {
         tempImages = data[key]['image'];
         for (var image in tempImages) {
@@ -74,6 +84,7 @@ class BlogsService {
           likes: likesList,
           comments: commentsList,
           followers: followersList,
+          following: followingList,
           date: data[key]['date'],
           category: data[key]['category'],
           time: data[key]['time'],
@@ -325,7 +336,11 @@ class BlogsService {
     });
   }
 
-  Future setFollow(int blogtimeStamp, var uid, List<String> following) async {
+  Future setFollow(int blogtimeStamp, var uid, List<String> following,
+      List<String> followers) async {
+    var newfollowers = following ?? List<String>();
+    var userid = await userService.getUserID();
+    newfollowers.add(userid);
     FirebaseDatabase.instance
         .reference()
         .child('users')
@@ -337,10 +352,34 @@ class BlogsService {
           .reference()
           .child('users')
           .child(event.snapshot.key)
-          .update({'following': following});
+          .update({'following': followers});
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
+    });
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('timeStamp')
+        .equalTo(blogtimeStamp)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .orderByChild('uid')
+          .equalTo(event.snapshot.value['uid'])
+          .onChildAdded
+          .listen((Event event) {
+        FirebaseDatabase.instance
+            .reference()
+            .child('users')
+            .child(event.snapshot.key)
+            .update({'followers': newfollowers});
+      }, onError: (Object o) {
+        final DatabaseError error = o;
+        print('Error: ${error.code} ${error.message}');
+      });
     });
   }
 

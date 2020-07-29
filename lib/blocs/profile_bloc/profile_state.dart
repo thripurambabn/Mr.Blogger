@@ -22,11 +22,13 @@ class ProfileLoaded extends ProfileState {
   final String uid;
   final String imageUrl;
   final List<String> following;
+  final List<String> followers;
   final List<Blogs> blogs;
   const ProfileLoaded(this.blogs, this.displayName, this.email, this.uid,
-      this.imageUrl, this.following);
+      this.imageUrl, this.following, this.followers);
   @override
-  List<Object> get props => [blogs, displayName, email, uid, following];
+  List<Object> get props =>
+      [blogs, displayName, email, uid, following, followers];
   @override
   String toString() => 'Profile';
 }

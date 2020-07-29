@@ -4,6 +4,7 @@ class Blogs {
   String uid, authorname, title, description, date, time, category;
   List<String> likes;
   List<String> followers;
+  List<String> following;
   List<String> image;
   List<Comment> comments;
   int timeStamp;
@@ -18,6 +19,7 @@ class Blogs {
       this.date,
       this.likes,
       this.followers,
+      this.following,
       this.comments,
       this.category,
       this.time,
@@ -34,6 +36,7 @@ class Blogs {
         description: parsedJson['description'] ?? '',
         likes: parsedJson['likes'] ?? null,
         followers: parsedJson['followers'] ?? null,
+        following: parsedJson['following'] ?? null,
         comments: parsedJson['comments'] ?? null,
         date: parsedJson['date'] ?? '',
         category: parsedJson['category'] ?? '',

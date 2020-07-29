@@ -41,10 +41,10 @@ class _FollowingTileWidgetState extends State<FollowingTileWidget> {
               title: Text(state.displayName),
               trailing: Container(
                 height: 30,
-                width: 83,
+                width: 90,
                 child: new FlatButton(
                   onPressed: null,
-                  child: Text('Remove',
+                  child: Text('Unfollow',
                       style: TextStyle(color: Colors.purple[500])),
                   textColor: Colors.white,
                   shape: RoundedRectangleBorder(

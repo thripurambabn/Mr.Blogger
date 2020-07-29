@@ -112,10 +112,11 @@ class BlogLikes extends BlogsEvent {
 class FollowBlogs extends BlogsEvent {
   final int timeStamp;
   final List<String> followers;
+  final List<String> following;
 
-  FollowBlogs(this.timeStamp, this.followers);
+  FollowBlogs(this.timeStamp, this.followers, this.following);
   @override
-  List<Object> get props => [timeStamp, followers];
+  List<Object> get props => [timeStamp, followers, following];
 
   @override
   String toString() => 'Updateblog { blog: $timeStamp }';

@@ -18,6 +18,7 @@ class BlogsUI extends StatefulWidget {
   final String date;
   final String time;
   final List<String> followers;
+  final List<String> following;
 
   final int timeStamp;
   BlogsUI({
@@ -33,6 +34,7 @@ class BlogsUI extends StatefulWidget {
     this.time,
     this.timeStamp,
     this.followers,
+    this.following,
   }) : super(key: key);
 
   @override
@@ -92,6 +94,7 @@ class _BlogsUIState extends State<BlogsUI> {
                   FollowButton(
                     timeStamp: widget.timeStamp,
                     followers: widget.followers,
+                    following: widget.following,
                     uid: widget.uid,
                   ),
                 ]),

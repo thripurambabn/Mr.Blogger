@@ -108,7 +108,6 @@ class ProfileService {
         var mapData = new Map<String, dynamic>.from(data);
         var user = new Users.fromJson(mapData);
         userData = user;
-        print('userdata in service${user.displayName}');
       } else {
         print('there are no blogs of this user');
       }

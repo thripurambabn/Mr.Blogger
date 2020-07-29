@@ -6,6 +6,7 @@ class ProfileUI extends StatefulWidget {
   final String imageUrl;
   final String email;
   final List<String> following;
+  final List<String> followers;
   final Function buttonPressed;
   final Function navigateToFollowerPage;
   ProfileUI(
@@ -16,7 +17,8 @@ class ProfileUI extends StatefulWidget {
       this.buttonPressed,
       this.navigateToFollowerPage,
       this.following,
-      this.uid})
+      this.uid,
+      this.followers})
       : super(key: key);
 
   @override
@@ -26,7 +28,6 @@ class ProfileUI extends StatefulWidget {
 class _ProfileUIState extends State<ProfileUI> {
   @override
   Widget build(BuildContext context) {
-    print('profile_ui ${widget.following}');
     return new Column(children: <Widget>[
       Container(
         child: Stack(
@@ -112,14 +113,14 @@ class _ProfileUIState extends State<ProfileUI> {
                       decoration: TextDecoration.underline,
                       color: Colors.purple[600],
                     )),
-                // Text(widget.followers.length.toString(),
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.w500,
-                //       fontSize: 20.0,
-                //       fontFamily: 'Paficico',
-                //       decoration: TextDecoration.underline,
-                //       color: Colors.purple[600],
-                //     )),
+                Text(widget.followers.length.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20.0,
+                      fontFamily: 'Paficico',
+                      decoration: TextDecoration.underline,
+                      color: Colors.purple[600],
+                    )),
               ],
             ),
             onTap: widget.navigateToFollowerPage,

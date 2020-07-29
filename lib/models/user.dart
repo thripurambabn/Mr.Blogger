@@ -17,6 +17,7 @@ class Users {
   static final Users _user = Users._internal();
   String displayName, email, uid, imageUrl;
   List<String> following;
+  List<String> followers;
   factory Users() => _user;
   factory Users.fromJson(parsedJson) {
     List _listData = [];
@@ -34,11 +35,20 @@ class Users {
         followingList.add(follower.toString());
       }
     }
+    var tempfollowers = [];
+    var followersList = List<String>();
+    if (_listData[0]['followers'] != null) {
+      tempfollowers = _listData[0]['followers'];
+      for (var follower in tempfollowers) {
+        followersList.add(follower.toString());
+      }
+    }
     _user.displayName = _listData[0]['username'] ?? '';
     _user.email = _listData[0]['email'] ?? '';
     _user.uid = _listData[0]['uid'] ?? '';
     _user.imageUrl = _listData[0]['photoUrl'] ?? '';
     _user.following = followingList ?? null;
+    _user.followers = followersList ?? null;
     return _user;
   }
 
