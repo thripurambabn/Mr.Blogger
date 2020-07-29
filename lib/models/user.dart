@@ -34,9 +34,6 @@ class Users {
         followersList.add(follower.toString());
       }
     }
-
-    print(
-        'listData  ${_listData[0]['username']}${_listData[0].length}\n ${_listData[0].runtimeType}\n ');
     _user.displayName = _listData[0]['username'] ?? '';
     _user.email = _listData[0]['email'] ?? '';
     _user.uid = _listData[0]['uid'] ?? '';

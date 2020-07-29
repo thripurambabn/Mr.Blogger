@@ -11,17 +11,17 @@ import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile_ui.dart';
-import 'package:mr_blogger/view/Profile_Screen/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
   final Users user;
+  final String uid;
   final String name;
   final String email;
   final String imageUrl;
 
   const EditProfilePage(
-      {Key key, this.user, this.name, this.email, this.imageUrl})
+      {Key key, this.user, this.name, this.email, this.imageUrl, this.uid})
       : super(key: key);
 
   _EditProfilePageState createState() => _EditProfilePageState();
@@ -40,7 +40,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     //calls loaded profile details event
 
     BlocProvider.of<ProfileBloc>(context).add(
-      LoadedProfileDeatils(),
+      LoadedProfileDeatils(widget.uid),
     );
     _nameController.text = widget.name != null ? widget.name : '';
     super.initState();

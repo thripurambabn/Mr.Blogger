@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProfileUI extends StatefulWidget {
+  final String uid;
   final String displayname;
   final String imageUrl;
   final String email;
@@ -14,7 +15,8 @@ class ProfileUI extends StatefulWidget {
       this.email,
       this.buttonPressed,
       this.navigateToFollowerPage,
-      this.followers})
+      this.followers,
+      this.uid})
       : super(key: key);
 
   @override

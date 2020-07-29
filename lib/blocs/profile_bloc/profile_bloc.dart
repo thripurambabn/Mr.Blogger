@@ -26,21 +26,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 //mapping profile events to profile state
   @override
   Stream<ProfileState> mapEventToState(ProfileEvent event) async* {
-    if (event is LoadingProfileDetails) {
-      yield* _mapLoadedProfileState();
-    } else if (event is LoadedProfileDeatils) {
-      yield* _mapLoadedProfileState();
+    if (event is LoadedProfileDeatils) {
+      yield* _mapLoadedProfileState(event);
     } else if (event is EditProfile) {
       yield* _mapEditProfileToState(event);
     }
   }
 
 //mapping Loading Profile Details event with states
-  Stream<ProfileState> _mapLoadedProfileState() async* {
+  Stream<ProfileState> _mapLoadedProfileState(
+      LoadedProfileDeatils event) async* {
     yield ProfileLoading();
     try {
-      var test = await _profileService.getProfileDetails();
-      print('profile_ui ${test.followers}');
+      var test = await _profileService.getProfileDetails(event.uid);
+      print('profile_ui ${test.uid}');
       List<Blogs> profileblogslist = await _profileService.getblogs();
 
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
@@ -56,10 +55,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await _profileService.editProfile(event.name, event.imageUrl);
       List<Blogs> profileblogslist = await _profileService.getblogs();
       UserService _userService = new UserService();
-      // await _userService.read();
-      // final test = await _userService.save();
-      // yield ProfileLoaded(profileblogslist, test.displayName, test.email,
-      //     test.uid, test.imageUrl, test.followers);
+      await _userService.read();
+      final test = await _userService.save();
+      yield ProfileLoaded(profileblogslist, test.displayName, test.email,
+          test.uid, test.imageUrl, test.followers);
     } catch (e) {
       print(e);
       yield ProfileNotLoaded();

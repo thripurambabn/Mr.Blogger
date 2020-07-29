@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mr_blogger/view/followers_following_screen/followers_tile_widget.dart';
 
 class FollowersWidget extends StatefulWidget {
   final List<String> followers;
-  const FollowersWidget({Key key, this.followers}) : super(key: key);
+  final String userName;
+  const FollowersWidget({Key key, this.followers, this.userName})
+      : super(key: key);
 
   @override
   _FollowersWidgetState createState() => _FollowersWidgetState();
@@ -11,13 +14,13 @@ class FollowersWidget extends StatefulWidget {
 class _FollowersWidgetState extends State<FollowersWidget> {
   @override
   Widget build(BuildContext context) {
-    print('follow_widget ${widget.followers}');
     return ListView.builder(
       itemCount: widget.followers.length,
       itemBuilder: (context, i) {
+        print('object1 ${widget.followers[i]} $i ${widget.followers.length}');
         return widget.followers != null
-            ? ListTile(
-                title: Text(widget.followers[i]),
+            ? FollowersTileWidget(
+                follower: widget.followers[i],
               )
             : Container(child: Text('you have no followers yet'));
       },

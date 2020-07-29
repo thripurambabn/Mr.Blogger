@@ -95,21 +95,20 @@ class ProfileService {
     return blogsList;
   }
 
-  Future getProfileDetails() async {
-    var userid = await userService.getUserID();
+  Future getProfileDetails(String uid) async {
+    var currentuserid = await userService.getUserID();
+    var userid = uid == null ? currentuserid : uid;
     DatabaseReference blogsref =
         FirebaseDatabase.instance.reference().child('users');
     final DataSnapshot snapshot =
         await blogsref.orderByChild('uid').equalTo(userid).once();
     try {
       if (snapshot.value != null) {
-        var refkey = snapshot.value.keys;
         var data = snapshot.value;
-
         var mapData = new Map<String, dynamic>.from(data);
         var user = new Users.fromJson(mapData);
         userData = user;
-        print('user ${userData}');
+        print('userdata in service${user.displayName}');
       } else {
         print('there are no blogs of this user');
       }

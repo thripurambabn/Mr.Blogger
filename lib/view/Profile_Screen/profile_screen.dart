@@ -26,22 +26,23 @@ class _ProfilePageState extends State<ProfilePage>
   TabController tabController;
   String email;
   String name;
+  String uid;
   String imageUrl;
   List<Blogs> blogsList = [];
   @override
   void initState() {
     //calls loaded profile details event
     BlocProvider.of<ProfileBloc>(context).add(
-      LoadedProfileDeatils(),
+      LoadedProfileDeatils(uid),
     );
 
     super.initState();
   }
 
-  navigateToFollowerPage(List<String> followers) {
-    print('profile_screen ${followers}');
+  navigateToFollowerPage(List<String> followers, String name) {
+    print('profile_screen ${name}');
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new FollowPage(followers: followers);
+      return new FollowPage(followers: followers, userName: name);
     }));
   }
 
@@ -76,8 +77,8 @@ class _ProfilePageState extends State<ProfilePage>
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
-                    print('state.follower ${state.followers}');
                     return ProfileUI(
+                        uid: state.uid,
                         followers: state.followers,
                         displayname: state.displayName,
                         email: state.email,
@@ -87,7 +88,8 @@ class _ProfilePageState extends State<ProfilePage>
                               state.imageUrl, context);
                         },
                         navigateToFollowerPage: () {
-                          navigateToFollowerPage(state.followers);
+                          navigateToFollowerPage(
+                              state.followers, state.displayName);
                         });
                   } else if (state is ProfileNotLoaded) {
                     return Text(

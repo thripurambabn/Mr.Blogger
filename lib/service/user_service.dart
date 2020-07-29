@@ -114,7 +114,6 @@ class UserService {
     prefs.setString("displayName", displayName);
     prefs.setString("email", email);
     prefs.setString('uid', uid);
-    //  prefs.setString('photoUrl', photoUrl);
   }
 
 //to write data to local storage
@@ -125,9 +124,7 @@ class UserService {
     );
     final email = prefs.getString("email");
     final uid = prefs.getString('uid');
-    // final imageUrl = prefs.getString('photoUrl');
-
-    var user = new Users(); // imageUrl: imageUrl);
+    var user = new Users();
     user.displayName = userName;
     user.email = email;
     user.uid = uid;

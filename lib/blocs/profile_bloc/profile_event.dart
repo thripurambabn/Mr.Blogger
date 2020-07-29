@@ -14,9 +14,10 @@ class LoadingProfileDetails extends ProfileEvent {
 
 //Loaded Profile Deatils event
 class LoadedProfileDeatils extends ProfileEvent {
-  const LoadedProfileDeatils();
+  final String uid;
+  const LoadedProfileDeatils(this.uid);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [uid];
   @override
   String toString() => 'Loadedprofile';
 }

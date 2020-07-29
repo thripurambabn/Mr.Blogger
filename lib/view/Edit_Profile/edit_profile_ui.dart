@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class EditProfileUI extends StatefulWidget {
+  final String uid;
   final String imageUrl;
   final Function getImage;
   final TextEditingController nameController;
-  EditProfileUI({Key key, this.imageUrl, this.getImage, this.nameController})
+  EditProfileUI(
+      {Key key, this.imageUrl, this.getImage, this.nameController, this.uid})
       : super(key: key);
 
   @override
