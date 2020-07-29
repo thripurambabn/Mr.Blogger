@@ -5,7 +5,7 @@ class ProfileUI extends StatefulWidget {
   final String displayname;
   final String imageUrl;
   final String email;
-  final List<String> followers;
+  final List<String> following;
   final Function buttonPressed;
   final Function navigateToFollowerPage;
   ProfileUI(
@@ -15,7 +15,7 @@ class ProfileUI extends StatefulWidget {
       this.email,
       this.buttonPressed,
       this.navigateToFollowerPage,
-      this.followers,
+      this.following,
       this.uid})
       : super(key: key);
 
@@ -26,7 +26,7 @@ class ProfileUI extends StatefulWidget {
 class _ProfileUIState extends State<ProfileUI> {
   @override
   Widget build(BuildContext context) {
-    print('profile_ui ${widget.followers}');
+    print('profile_ui ${widget.following}');
     return new Column(children: <Widget>[
       Container(
         child: Stack(
@@ -112,7 +112,30 @@ class _ProfileUIState extends State<ProfileUI> {
                       decoration: TextDecoration.underline,
                       color: Colors.purple[600],
                     )),
-                Text(widget.followers.length.toString(),
+                // Text(widget.followers.length.toString(),
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.w500,
+                //       fontSize: 20.0,
+                //       fontFamily: 'Paficico',
+                //       decoration: TextDecoration.underline,
+                //       color: Colors.purple[600],
+                //     )),
+              ],
+            ),
+            onTap: widget.navigateToFollowerPage,
+          ),
+          InkWell(
+            child: Row(
+              children: <Widget>[
+                Text('Following',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20.0,
+                      fontFamily: 'Paficico',
+                      decoration: TextDecoration.underline,
+                      color: Colors.purple[600],
+                    )),
+                Text(widget.following.length.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20.0,
@@ -122,17 +145,6 @@ class _ProfileUIState extends State<ProfileUI> {
                     )),
               ],
             ),
-            onTap: widget.navigateToFollowerPage,
-          ),
-          InkWell(
-            child: Text('Following',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20.0,
-                  fontFamily: 'Paficico',
-                  decoration: TextDecoration.underline,
-                  color: Colors.purple[600],
-                )),
             onTap: widget.navigateToFollowerPage,
           ),
         ],

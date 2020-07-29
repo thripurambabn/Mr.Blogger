@@ -14,16 +14,17 @@ class FollowersWidget extends StatefulWidget {
 class _FollowersWidgetState extends State<FollowersWidget> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.followers.length,
-      itemBuilder: (context, i) {
-        print('object1 ${widget.followers[i]} $i ${widget.followers.length}');
-        return widget.followers != null
-            ? FollowersTileWidget(
-                follower: widget.followers[i],
-              )
-            : Container(child: Text('you have no followers yet'));
-      },
-    );
+    return Container(child: Text('follwers'));
+    // ListView.builder(
+    //   itemCount: widget.followers.length,
+    //   itemBuilder: (context, i) {
+    //     print('object1 ${widget.followers[i]} $i ${widget.followers.length}');
+    //     return widget.followers != null
+    //         ? FollowersTileWidget(
+    //             follower: widget.followers[i],
+    //           )
+    //         : Container(child: Text('you have no followers yet'));
+    //   },
+    // );
   }
 }

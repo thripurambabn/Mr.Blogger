@@ -325,7 +325,7 @@ class BlogsService {
     });
   }
 
-  Future setFollow(int blogtimeStamp, var uid, List<String> followers) async {
+  Future setFollow(int blogtimeStamp, var uid, List<String> following) async {
     FirebaseDatabase.instance
         .reference()
         .child('users')
@@ -337,7 +337,7 @@ class BlogsService {
           .reference()
           .child('users')
           .child(event.snapshot.key)
-          .update({'followers': followers});
+          .update({'following': following});
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');

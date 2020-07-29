@@ -3,9 +3,9 @@ import 'package:mr_blogger/view/followers_following_screen/follower_widget.dart'
 import 'package:mr_blogger/view/followers_following_screen/following_widget.dart';
 
 class FollowPage extends StatefulWidget {
-  final List<String> followers;
+  final List<String> following;
   final String userName;
-  FollowPage({Key key, this.followers, this.userName}) : super(key: key);
+  FollowPage({Key key, this.following, this.userName}) : super(key: key);
 
   @override
   _FollowPageState createState() => _FollowPageState();
@@ -14,7 +14,7 @@ class FollowPage extends StatefulWidget {
 class _FollowPageState extends State<FollowPage> {
   @override
   Widget build(BuildContext context) {
-    print('followers_following_screen ${widget.userName}');
+    print('followers_following_screen ${widget.following}');
     return Container(
       child: DefaultTabController(
         length: 2,
@@ -40,8 +40,9 @@ class _FollowPageState extends State<FollowPage> {
           body: TabBarView(
             children: [
               FollowersWidget(
-                  followers: widget.followers, userName: widget.userName),
-              FollowingWidget(followers: widget.followers),
+                  followers: widget.following, userName: widget.userName),
+              FollowingWidget(
+                  following: widget.following, userName: widget.userName),
             ],
           ),
         ),

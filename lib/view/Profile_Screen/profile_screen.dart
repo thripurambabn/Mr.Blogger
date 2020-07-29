@@ -39,10 +39,10 @@ class _ProfilePageState extends State<ProfilePage>
     super.initState();
   }
 
-  navigateToFollowerPage(List<String> followers, String name) {
-    print('profile_screen ${name}');
+  navigateToFollowerPage(List<String> following, String name) {
+    print('profile_screen ${following}');
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new FollowPage(followers: followers, userName: name);
+      return new FollowPage(following: following, userName: name);
     }));
   }
 
@@ -77,9 +77,10 @@ class _ProfilePageState extends State<ProfilePage>
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                   } else if (state is ProfileLoaded) {
+                    print('following ${state.following}');
                     return ProfileUI(
                         uid: state.uid,
-                        followers: state.followers,
+                        following: state.following,
                         displayname: state.displayName,
                         email: state.email,
                         imageUrl: state.imageUrl,
@@ -89,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage>
                         },
                         navigateToFollowerPage: () {
                           navigateToFollowerPage(
-                              state.followers, state.displayName);
+                              state.following, state.displayName);
                         });
                   } else if (state is ProfileNotLoaded) {
                     return Text(
