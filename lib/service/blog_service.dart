@@ -365,7 +365,11 @@ class BlogsService {
           followingList.add(follower.toString());
         }
       }
-      followingList.add(uid);
+      if (isFollowing) {
+        followingList.add(uid);
+      } else {
+        followingList.remove(uid);
+      }
       FirebaseDatabase.instance
           .reference()
           .child('users')
@@ -391,7 +395,12 @@ class BlogsService {
           followersList.add(follower.toString());
         }
       }
-      followersList.add(userid);
+      //followersList.add(userid);
+      if (isFollowing) {
+        followersList.add(uid);
+      } else {
+        followersList.remove(uid);
+      }
       FirebaseDatabase.instance
           .reference()
           .child('users')
