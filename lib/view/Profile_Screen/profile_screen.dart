@@ -4,7 +4,6 @@ import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';

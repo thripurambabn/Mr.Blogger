@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -26,6 +28,13 @@ class _FollowerTileWidgetState extends State<FollowerTileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    void setfollow(
+      bool isFollowing,
+      String uid,
+    ) {
+      BlocProvider.of<BlogsBloc>(context).add(FollowBlogs(isFollowing, uid));
+    }
+
     return BlocBuilder<ProfileBloc, ProfileState>(
       bloc: BlocProvider.of<ProfileBloc>(context),
       builder: (context, state) {
@@ -47,7 +56,7 @@ class _FollowerTileWidgetState extends State<FollowerTileWidget> {
                 width: 83,
                 child: new FlatButton(
                   onPressed: () {
-                    //    BlocProvider.of<ProfileBloc>(context).add(RemoveFollow(widget.follower,));
+                    setfollow(false, state.uid);
                   },
                   child: Text('Remove',
                       style: TextStyle(color: Colors.purple[500])),

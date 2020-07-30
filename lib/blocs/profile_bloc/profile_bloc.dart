@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
@@ -30,8 +29,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapLoadedProfileState(event);
     } else if (event is EditProfile) {
       yield* _mapEditProfileToState(event);
-    } else if (event is RemoveFollow) {
-      yield* _mapRemoveFollowToState(event);
     }
   }
 
@@ -41,24 +38,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     yield ProfileLoading();
     try {
       var test = await _profileService.getProfileDetails(event.uid);
-      print('profile_ui ${test.following} ,${test.followers}');
-      List<Blogs> profileblogslist = await _profileService.getblogs();
 
+      List<Blogs> profileblogslist = await _profileService.getblogs();
+      print('profile bloc ${test.displayName}');
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
           test.uid, test.imageUrl, test.following, test.followers);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Stream<ProfileState> _mapRemoveFollowToState(RemoveFollow event) async* {
-    try {
-      // print('following bloc ${event.following}');
-      print('followers bloc ${event.followers}');
-      UserService _userService = UserService();
-      var user = await _userService.save();
-      //  await _profileService.removeFollow(
-      //  event.timeStamp, user.uid, event.followers);
     } catch (e) {
       print(e);
     }

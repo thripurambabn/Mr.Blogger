@@ -395,11 +395,10 @@ class BlogsService {
           followersList.add(follower.toString());
         }
       }
-      //followersList.add(userid);
       if (isFollowing) {
-        followersList.add(uid);
+        followersList.add(userid);
       } else {
-        followersList.remove(uid);
+        followersList.remove(userid);
       }
       FirebaseDatabase.instance
           .reference()

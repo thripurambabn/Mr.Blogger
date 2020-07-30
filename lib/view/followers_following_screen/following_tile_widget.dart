@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 
 class FollowingTileWidget extends StatefulWidget {
   final String following;
-  const FollowingTileWidget({Key key, this.following}) : super(key: key);
+  final Function navigateToProfilePage;
+  const FollowingTileWidget(
+      {Key key, this.following, this.navigateToProfilePage})
+      : super(key: key);
 
   @override
   _FollowingTileWidgetState createState() => _FollowingTileWidgetState();
@@ -18,12 +23,18 @@ class _FollowingTileWidgetState extends State<FollowingTileWidget> {
     BlocProvider.of<ProfileBloc>(context).add(
       LoadedProfileDeatils(widget.following),
     );
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    void setfollow(
+      bool isFollowing,
+      String uid,
+    ) {
+      BlocProvider.of<BlogsBloc>(context).add(FollowBlogs(isFollowing, uid));
+    }
+
     return BlocBuilder<ProfileBloc, ProfileState>(
       bloc: BlocProvider.of<ProfileBloc>(context),
       builder: (context, state) {
@@ -31,10 +42,12 @@ class _FollowingTileWidgetState extends State<FollowingTileWidget> {
           return Image.network(
               'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
         } else if (state is ProfileLoaded) {
+          print('profile details ${state.displayName}');
           var imageUrl = state.imageUrl.isEmpty
               ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'
               : state.imageUrl;
           return new ListTile(
+              onTap: widget.navigateToProfilePage,
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(imageUrl),
               ),
@@ -43,7 +56,9 @@ class _FollowingTileWidgetState extends State<FollowingTileWidget> {
                 height: 30,
                 width: 90,
                 child: new FlatButton(
-                  onPressed: null,
+                  onPressed: () {
+                    setfollow(false, state.uid);
+                  },
                   child: Text('Unfollow',
                       style: TextStyle(color: Colors.purple[500])),
                   textColor: Colors.white,
