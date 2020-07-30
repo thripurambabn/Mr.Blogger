@@ -4,11 +4,11 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 
 class FollowButton extends StatefulWidget {
-  final bool isFollowing;
+  bool isFollowing;
   final String uid;
   final int timeStamp;
 
-  const FollowButton({
+  FollowButton({
     Key key,
     this.uid,
     this.timeStamp,
@@ -21,24 +21,27 @@ class FollowButton extends StatefulWidget {
 class _FollowButtonState extends State<FollowButton> {
   @override
   Widget build(BuildContext context) {
-    void setfollow(int timeStamp, List<String> followers, String uid,
-        List<String> following) {
-      BlocProvider.of<BlogsBloc>(context)
-          .add(FollowBlogs(timeStamp, followers, following));
+    void setfollow(
+      bool isFollowing,
+      String uid,
+    ) {
+      BlocProvider.of<BlogsBloc>(context).add(FollowBlogs(isFollowing, uid));
     }
 
     return new Row(children: <Widget>[
       GestureDetector(
           onTap: () => {
-                // setState(() {
-                //   if (widget.following) {
-                //     widget.following = true;
-                //   } else {
-                //     widget.following = false;
-                //   }
-                // }),
-                // setfollow(widget.timeStamp, widget.followers, widget.uid,
-                //     widget.following),
+                setState(() {
+                  if (widget.isFollowing) {
+                    widget.isFollowing = false;
+                  } else {
+                    widget.isFollowing = true;
+                  }
+                }),
+                setfollow(
+                  widget.isFollowing,
+                  widget.uid,
+                ),
               },
           child: new Container(
               height: 23.0,

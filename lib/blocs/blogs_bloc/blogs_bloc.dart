@@ -132,11 +132,11 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapFollowBlogToState(FollowBlogs event) async* {
     try {
-      print('following bloc ${event.following}');
-      print('followers bloc ${event.followers}');
-      var user = await _userService.save();
+      //   var user = await _userService.save();
       await _blogsService.setFollow(
-          event.timeStamp, user.uid, event.following, event.followers);
+        event.isFollowing,
+        event.uid,
+      );
     } catch (e) {
       print(e);
     }

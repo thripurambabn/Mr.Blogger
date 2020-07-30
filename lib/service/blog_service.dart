@@ -36,9 +36,7 @@ class BlogsService {
           var data1 = snapshot.value;
           var mapData = new Map<String, dynamic>.from(data1);
           var user = new Users.fromJson(mapData);
-          print('event1 in service ${data[key]['uid']} ${user.following} ');
           isFollowing = user.following.contains(data[key]['uid']);
-          print('isFollowing $isFollowing');
         } else {
           print('there are no blogs of this user');
         }
@@ -98,7 +96,6 @@ class BlogsService {
     }
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
-    print('blogsList ${blogsList}');
     return blogsList;
   }
 
@@ -107,6 +104,7 @@ class BlogsService {
     List<Blogs> blogsList = [];
     bool isFollowing;
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
+
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -120,55 +118,31 @@ class BlogsService {
         var data = snapshot.value;
 
         for (var key in refkey) {
-          FirebaseDatabase.instance
-              .reference()
-              .child('blogs')
-              .orderByChild('timeStamp')
-              .equalTo(data[key]['timeStamp'])
-              .onChildAdded
-              .listen((Event event) {
-            FirebaseDatabase.instance
-                .reference()
-                .child('users')
-                .orderByChild('uid')
-                .equalTo(event.snapshot.value['uid'])
-                .onChildAdded
-                .listen((Event event) {
-              print('event in service ${event.snapshot.value['followers']}');
-              FirebaseDatabase.instance
-                  .reference()
-                  .child('users')
-                  .child(event.snapshot.key)
-                  .once();
-              var tempfollowing = [];
-              var followingList = List<String>();
-              if (event.snapshot.value['followers'] != null) {
-                tempfollowing = event.snapshot.value['followers'];
-                for (var follower in tempfollowing) {
-                  followingList.add(follower.toString());
-                }
-              }
-              print('event1 in service ${followingList}');
-              var newisFollowing = followingList.contains(data[key]['uid']);
-              isFollowing = newisFollowing;
-            });
-          });
+          var currentuserid = await userService.getUserID();
+          DatabaseReference userRef =
+              FirebaseDatabase.instance.reference().child('users');
+          final DataSnapshot snapshot =
+              await userRef.orderByChild('uid').equalTo(currentuserid).once();
+          try {
+            if (snapshot.value != null) {
+              var data1 = snapshot.value;
+              var mapData = new Map<String, dynamic>.from(data1);
+              var user = new Users.fromJson(mapData);
+
+              isFollowing = user.following.contains(data[key]['uid']);
+            } else {
+              print('there are no blogs of this user');
+            }
+          } catch (e) {
+            print(e);
+          }
 
           var tempLikes = [];
-          var tempfollowers = [];
           var likesList = new List<String>();
-          var followersList = new List<String>();
           if (data[key]['likes'] != null) {
             tempLikes = data[key]['likes'];
             for (var like in tempLikes) {
               likesList.add(like.toString());
-            }
-          }
-          if (data[key]['followers'] != null) {
-            tempfollowers = data[key]['followers'];
-
-            for (var follower in tempfollowers) {
-              followersList.add(follower.toString());
             }
           }
           var tempComments;
@@ -197,6 +171,7 @@ class BlogsService {
               }
             }
           }
+
           Blogs blog = new Blogs(
               image: imagesList,
               uid: data[key]['uid'],
@@ -211,7 +186,6 @@ class BlogsService {
               category: data[key]['category'],
               timeStamp: data[key]['timeStamp'],
               blogPrivacy: data[key]['blogPrivacy']);
-          blogsList.clear();
           blogsList.add(blog);
         }
       }
@@ -220,7 +194,6 @@ class BlogsService {
     }
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
-
     return blogsList;
   }
 
@@ -375,11 +348,34 @@ class BlogsService {
     });
   }
 
-  Future setFollow(int blogtimeStamp, var uid, List<String> following,
-      List<String> followers) async {
-    var newfollowers = following ?? List<String>();
+  Future setFollow(bool isFollowing, var uid) async {
     var userid = await userService.getUserID();
-    newfollowers.add(userid);
+    FirebaseDatabase.instance
+        .reference()
+        .child('users')
+        .orderByChild('uid')
+        .equalTo(userid)
+        .onChildAdded
+        .listen((Event event) {
+      var tempfollowing = [];
+      var followingList = List<String>();
+      if (event.snapshot.value['following'] != null) {
+        tempfollowing = event.snapshot.value['following'];
+        for (var follower in tempfollowing) {
+          followingList.add(follower.toString());
+        }
+      }
+      followingList.add(uid);
+      FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(event.snapshot.key)
+          .update({'following': followingList});
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+
     FirebaseDatabase.instance
         .reference()
         .child('users')
@@ -387,38 +383,23 @@ class BlogsService {
         .equalTo(uid)
         .onChildAdded
         .listen((Event event) {
+      var tempfollowers = [];
+      var followersList = List<String>();
+      if (event.snapshot.value['followers'] != null) {
+        tempfollowers = event.snapshot.value['followers'];
+        for (var follower in tempfollowers) {
+          followersList.add(follower.toString());
+        }
+      }
+      followersList.add(userid);
       FirebaseDatabase.instance
           .reference()
           .child('users')
           .child(event.snapshot.key)
-          .update({'following': followers});
+          .update({'followers': followersList});
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
-    });
-    FirebaseDatabase.instance
-        .reference()
-        .child('blogs')
-        .orderByChild('timeStamp')
-        .equalTo(blogtimeStamp)
-        .onChildAdded
-        .listen((Event event) {
-      FirebaseDatabase.instance
-          .reference()
-          .child('users')
-          .orderByChild('uid')
-          .equalTo(event.snapshot.value['uid'])
-          .onChildAdded
-          .listen((Event event) {
-        FirebaseDatabase.instance
-            .reference()
-            .child('users')
-            .child(event.snapshot.key)
-            .update({'followers': newfollowers});
-      }, onError: (Object o) {
-        final DatabaseError error = o;
-        print('Error: ${error.code} ${error.message}');
-      });
     });
   }
 

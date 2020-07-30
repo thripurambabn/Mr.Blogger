@@ -110,16 +110,15 @@ class BlogLikes extends BlogsEvent {
 }
 
 class FollowBlogs extends BlogsEvent {
-  final int timeStamp;
-  final List<String> followers;
-  final List<String> following;
+  final bool isFollowing;
+  final String uid;
 
-  FollowBlogs(this.timeStamp, this.followers, this.following);
+  FollowBlogs(this.isFollowing, this.uid);
   @override
-  List<Object> get props => [timeStamp, followers, following];
+  List<Object> get props => [isFollowing, uid];
 
   @override
-  String toString() => 'Updateblog { blog: $timeStamp }';
+  String toString() => 'Updateblog { blog: $uid }';
 }
 
 class BlogComments extends BlogsEvent {
