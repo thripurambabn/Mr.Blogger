@@ -22,6 +22,21 @@ class LoadedProfileDeatils extends ProfileEvent {
   String toString() => 'Loadedprofile';
 }
 
+class RemoveFollow extends ProfileEvent {
+  final List<String> followers;
+
+  RemoveFollow(
+    this.followers,
+  );
+  @override
+  List<Object> get props => [
+        followers,
+      ];
+
+  @override
+  String toString() => 'Updateblog { blog: }';
+}
+
 class EditProfile extends ProfileEvent {
   final String name;
   final String imageUrl;

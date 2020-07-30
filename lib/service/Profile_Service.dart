@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -77,7 +75,6 @@ class ProfileService {
               description: data[key]['description'],
               likes: likesList,
               comments: commentsList,
-              followers: followersList,
               date: data[key]['date'],
               category: data[key]['category'],
               time: data[key]['time'],
@@ -115,6 +112,49 @@ class ProfileService {
       print(e);
     }
     return userData;
+  }
+
+  Future removeFollow(int blogtimeStamp, var uid, List<String> followers) {
+    FirebaseDatabase.instance
+        .reference()
+        .child('users')
+        .orderByChild('uid')
+        .equalTo(uid)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(event.snapshot.key)
+          .update({'following': followers});
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+    FirebaseDatabase.instance
+        .reference()
+        .child('blogs')
+        .orderByChild('timeStamp')
+        .equalTo(blogtimeStamp)
+        .onChildAdded
+        .listen((Event event) {
+      FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .orderByChild('uid')
+          .equalTo(event.snapshot.value['uid'])
+          .onChildAdded
+          .listen((Event event) {
+        print('event in service ${event.snapshot.value['followers']}');
+        FirebaseDatabase.instance
+            .reference()
+            .child('users')
+            .child(event.snapshot.value['followers']);
+      }, onError: (Object o) {
+        final DatabaseError error = o;
+        print('Error: ${error.code} ${error.message}');
+      });
+    });
   }
 
 //To delete a blog from firebase

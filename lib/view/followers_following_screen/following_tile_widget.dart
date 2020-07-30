@@ -74,14 +74,4 @@ class _FollowingTileWidgetState extends State<FollowingTileWidget> {
       },
     );
   }
-  // ListView.builder(
-  //   itemCount: widget.followings.length,
-  //   itemBuilder: (context, i) {
-  //     return widget.followers != null
-  //         ? ListTile(
-  //             title: Text(widget.followers[i]),
-  //           )
-  //         : Container(child: Text('you have no followers yet'));
-  //   },
-  // );
 }

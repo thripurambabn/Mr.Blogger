@@ -4,17 +4,15 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 
 class FollowButton extends StatefulWidget {
-  final List<String> followers;
-  final List<String> following;
+  final bool isFollowing;
   final String uid;
   final int timeStamp;
 
   const FollowButton({
     Key key,
-    this.followers,
     this.uid,
     this.timeStamp,
-    this.following,
+    this.isFollowing,
   }) : super(key: key);
   @override
   _FollowButtonState createState() => _FollowButtonState();
@@ -32,15 +30,15 @@ class _FollowButtonState extends State<FollowButton> {
     return new Row(children: <Widget>[
       GestureDetector(
           onTap: () => {
-                setState(() {
-                  if (widget.followers.contains(widget.uid)) {
-                    widget.followers.remove(widget.uid);
-                  } else {
-                    widget.followers.add(widget.uid);
-                  }
-                }),
-                setfollow(widget.timeStamp, widget.followers, widget.uid,
-                    widget.following),
+                // setState(() {
+                //   if (widget.following) {
+                //     widget.following = true;
+                //   } else {
+                //     widget.following = false;
+                //   }
+                // }),
+                // setfollow(widget.timeStamp, widget.followers, widget.uid,
+                //     widget.following),
               },
           child: new Container(
               height: 23.0,
@@ -50,7 +48,7 @@ class _FollowButtonState extends State<FollowButton> {
                 borderRadius: new BorderRadius.circular(50.0),
                 color: Colors.white,
               ),
-              child: widget.followers.contains(widget.uid) == true
+              child: widget.isFollowing == true
                   ? Text(
                       'Following',
                       style: TextStyle(

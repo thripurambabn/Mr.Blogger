@@ -30,6 +30,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapLoadedProfileState(event);
     } else if (event is EditProfile) {
       yield* _mapEditProfileToState(event);
+    } else if (event is RemoveFollow) {
+      yield* _mapRemoveFollowToState(event);
     }
   }
 
@@ -44,6 +46,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
           test.uid, test.imageUrl, test.following, test.followers);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<ProfileState> _mapRemoveFollowToState(RemoveFollow event) async* {
+    try {
+      // print('following bloc ${event.following}');
+      print('followers bloc ${event.followers}');
+      UserService _userService = UserService();
+      var user = await _userService.save();
+      //  await _profileService.removeFollow(
+      //  event.timeStamp, user.uid, event.followers);
     } catch (e) {
       print(e);
     }

@@ -3,13 +3,11 @@ import 'package:mr_blogger/models/comment.dart';
 class Blogs {
   String uid, authorname, title, description, date, time, category;
   List<String> likes;
-  List<String> followers;
-  List<String> following;
   List<String> image;
   List<Comment> comments;
   int timeStamp;
   bool blogPrivacy;
-
+  bool isFollowing;
   Blogs(
       {this.image,
       this.uid,
@@ -18,13 +16,12 @@ class Blogs {
       this.description,
       this.date,
       this.likes,
-      this.followers,
-      this.following,
       this.comments,
       this.category,
       this.time,
       this.timeStamp,
-      this.blogPrivacy})
+      this.blogPrivacy,
+      this.isFollowing})
       : super();
 
   factory Blogs.fromJson(Map<String, dynamic> parsedJson) {
@@ -35,8 +32,7 @@ class Blogs {
         title: parsedJson['title'] ?? '',
         description: parsedJson['description'] ?? '',
         likes: parsedJson['likes'] ?? null,
-        followers: parsedJson['followers'] ?? null,
-        following: parsedJson['following'] ?? null,
+        isFollowing: parsedJson['isFollowing'] ?? '',
         comments: parsedJson['comments'] ?? null,
         date: parsedJson['date'] ?? '',
         category: parsedJson['category'] ?? '',

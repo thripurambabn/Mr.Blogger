@@ -13,9 +13,9 @@ import 'package:mr_blogger/view/Profile_Screen/widgets/profile_ui.dart';
 import 'package:mr_blogger/view/followers_following_screen/followers_following_screem.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Users user;
+  final String uid;
 
-  const ProfilePage({Key key, this.user}) : super(key: key);
+  const ProfilePage({Key key, this.uid}) : super(key: key);
 
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -35,7 +35,6 @@ class _ProfilePageState extends State<ProfilePage>
     BlocProvider.of<ProfileBloc>(context).add(
       LoadedProfileDeatils(uid),
     );
-
     super.initState();
   }
 
@@ -124,7 +123,6 @@ class _ProfilePageState extends State<ProfilePage>
               color: Colors.purple[300],
             ),
             Container(
-              // color: Colors.white,
               //tab bar controller
               child: TabBar(
                 controller: tabController,
@@ -163,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 onTap: () => navigateToDetailPage(
                                     state.blogs[index], state.uid),
                                 title: BlogsUI(
-                                  followers: state.blogs[index].followers,
+                                  isFollowing: state.blogs[index].isFollowing,
                                   images: state.blogs[index].image,
                                   uid: state.blogs[index].uid,
                                   authorname: state.blogs[index].authorname,

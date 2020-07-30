@@ -6,7 +6,9 @@ import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 
 class FollowerTileWidget extends StatefulWidget {
   final String follower;
-  const FollowerTileWidget({Key key, this.follower}) : super(key: key);
+  final Function navigateToProfilePage;
+  const FollowerTileWidget({Key key, this.follower, this.navigateToProfilePage})
+      : super(key: key);
 
   @override
   _FollowerTileWidgetState createState() => _FollowerTileWidgetState();
@@ -35,6 +37,7 @@ class _FollowerTileWidgetState extends State<FollowerTileWidget> {
               ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'
               : state.imageUrl;
           return new ListTile(
+              onTap: widget.navigateToProfilePage,
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(imageUrl),
               ),
@@ -43,7 +46,9 @@ class _FollowerTileWidgetState extends State<FollowerTileWidget> {
                 height: 30,
                 width: 83,
                 child: new FlatButton(
-                  onPressed: null,
+                  onPressed: () {
+                    //    BlocProvider.of<ProfileBloc>(context).add(RemoveFollow(widget.follower,));
+                  },
                   child: Text('Remove',
                       style: TextStyle(color: Colors.purple[500])),
                   textColor: Colors.white,

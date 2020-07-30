@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
+import 'package:mr_blogger/models/user.dart';
 import 'package:mr_blogger/service/user_service.dart';
 
 class BlogsService {
@@ -14,6 +15,8 @@ class BlogsService {
 //To fetch first set of blogs from the firebase database
   Future<List<Blogs>> getblogs() async {
     List<Blogs> blogsList = [];
+    bool isFollowing;
+
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -23,15 +26,31 @@ class BlogsService {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
     for (var key in refkey) {
+      var currentuserid = await userService.getUserID();
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users');
+      final DataSnapshot snapshot =
+          await userRef.orderByChild('uid').equalTo(currentuserid).once();
+      try {
+        if (snapshot.value != null) {
+          var data1 = snapshot.value;
+          var mapData = new Map<String, dynamic>.from(data1);
+          var user = new Users.fromJson(mapData);
+          print('event1 in service ${data[key]['uid']} ${user.following} ');
+          isFollowing = user.following.contains(data[key]['uid']);
+          print('isFollowing $isFollowing');
+        } else {
+          print('there are no blogs of this user');
+        }
+      } catch (e) {
+        print(e);
+      }
+
       var tempLikes = [];
       var tempImages = [];
-      var tempfollowers = [];
-      var tempfollowing = [];
       var tempComments;
       var commentsList = new List<Comment>();
       var likesList = new List<String>();
-      var followersList = new List<String>();
-      var followingList = new List<String>();
       var imagesList = new List<String>();
       if (data[key]['likes'] != null) {
         tempLikes = data[key]['likes'];
@@ -40,20 +59,6 @@ class BlogsService {
           likesList.add(like.toString());
         }
       }
-      if (data[key]['followers'] != null) {
-        tempfollowers = data[key]['followers'];
-        for (var follower in tempfollowers) {
-          followersList.add(follower.toString());
-        }
-      }
-      print('${data[key]['followers']} ${followersList}');
-      if (data[key]['following'] != null) {
-        tempfollowing = data[key]['following'];
-        for (var follower in tempfollowing) {
-          followingList.add(follower.toString());
-        }
-      }
-      print('${data[key]['following']} ${followingList}');
       if (data[key]['image'] != null) {
         tempImages = data[key]['image'];
         for (var image in tempImages) {
@@ -83,8 +88,7 @@ class BlogsService {
           description: data[key]['description'],
           likes: likesList,
           comments: commentsList,
-          followers: followersList,
-          following: followingList,
+          isFollowing: isFollowing,
           date: data[key]['date'],
           category: data[key]['category'],
           time: data[key]['time'],
@@ -94,13 +98,14 @@ class BlogsService {
     }
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
+    print('blogsList ${blogsList}');
     return blogsList;
   }
 
 //To fetch more blogs from the firebase database on scroll(pagination)
   Future<List<Blogs>> getMoreBlogs(List<Blogs> blogs) async {
     List<Blogs> blogsList = [];
-
+    bool isFollowing;
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
     Query blogsref = FirebaseDatabase.instance
         .reference()
@@ -115,6 +120,40 @@ class BlogsService {
         var data = snapshot.value;
 
         for (var key in refkey) {
+          FirebaseDatabase.instance
+              .reference()
+              .child('blogs')
+              .orderByChild('timeStamp')
+              .equalTo(data[key]['timeStamp'])
+              .onChildAdded
+              .listen((Event event) {
+            FirebaseDatabase.instance
+                .reference()
+                .child('users')
+                .orderByChild('uid')
+                .equalTo(event.snapshot.value['uid'])
+                .onChildAdded
+                .listen((Event event) {
+              print('event in service ${event.snapshot.value['followers']}');
+              FirebaseDatabase.instance
+                  .reference()
+                  .child('users')
+                  .child(event.snapshot.key)
+                  .once();
+              var tempfollowing = [];
+              var followingList = List<String>();
+              if (event.snapshot.value['followers'] != null) {
+                tempfollowing = event.snapshot.value['followers'];
+                for (var follower in tempfollowing) {
+                  followingList.add(follower.toString());
+                }
+              }
+              print('event1 in service ${followingList}');
+              var newisFollowing = followingList.contains(data[key]['uid']);
+              isFollowing = newisFollowing;
+            });
+          });
+
           var tempLikes = [];
           var tempfollowers = [];
           var likesList = new List<String>();
@@ -166,7 +205,7 @@ class BlogsService {
               description: data[key]['description'],
               likes: likesList,
               comments: commentsList,
-              followers: followersList,
+              isFollowing: isFollowing,
               date: data[key]['date'],
               time: data[key]['time'],
               category: data[key]['category'],

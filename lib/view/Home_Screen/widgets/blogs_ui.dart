@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
@@ -17,9 +18,7 @@ class BlogsUI extends StatefulWidget {
   final List<Comment> comments;
   final String date;
   final String time;
-  final List<String> followers;
-  final List<String> following;
-
+  final bool isFollowing;
   final int timeStamp;
   BlogsUI({
     Key key,
@@ -33,8 +32,7 @@ class BlogsUI extends StatefulWidget {
     this.date,
     this.time,
     this.timeStamp,
-    this.followers,
-    this.following,
+    this.isFollowing,
   }) : super(key: key);
 
   @override
@@ -93,8 +91,7 @@ class _BlogsUIState extends State<BlogsUI> {
                   ),
                   FollowButton(
                     timeStamp: widget.timeStamp,
-                    followers: widget.followers,
-                    following: widget.following,
+                    isFollowing: widget.isFollowing,
                     uid: widget.uid,
                   ),
                 ]),

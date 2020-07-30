@@ -3,8 +3,10 @@ import 'package:mr_blogger/view/followers_following_screen/followers_tile_widget
 
 class FollowersWidget extends StatefulWidget {
   final List<String> followers;
+  final Function navigateToProfilePage;
   final String userName;
-  const FollowersWidget({Key key, this.followers, this.userName})
+  const FollowersWidget(
+      {Key key, this.followers, this.userName, this.navigateToProfilePage})
       : super(key: key);
 
   @override
@@ -22,6 +24,7 @@ class _FollowersWidgetState extends State<FollowersWidget> {
         return widget.followers != null
             ? FollowerTileWidget(
                 follower: widget.followers[i],
+                navigateToProfilePage: widget.navigateToProfilePage,
               )
             : Container(child: Text('you have no followers yet'));
       },
