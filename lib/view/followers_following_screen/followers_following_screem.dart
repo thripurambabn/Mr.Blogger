@@ -18,13 +18,13 @@ class FollowPage extends StatefulWidget {
 class _FollowPageState extends State<FollowPage> {
   void navigateToProfilePage(String uid) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new ProfilePage(uid: widget.uid);
+      return new ProfilePage(uid: uid);
     }));
   }
 
   @override
   Widget build(BuildContext context) {
-    print('follwoer_following screen ${widget.followers}');
+    // print('follwoer_following screen ${widget.followers}');
     return Container(
       child: DefaultTabController(
         length: 2,
@@ -59,8 +59,8 @@ class _FollowPageState extends State<FollowPage> {
               FollowingWidget(
                 following: widget.following,
                 userName: widget.userName,
-                navigateToProfilePage: () {
-                  //  navigateToProfilePage;
+                navigateToProfilePage: (String value) {
+                  navigateToProfilePage(value);
                 },
               ),
             ],

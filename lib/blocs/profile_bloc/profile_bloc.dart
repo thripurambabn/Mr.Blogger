@@ -26,14 +26,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   @override
   Stream<ProfileState> mapEventToState(ProfileEvent event) async* {
     if (event is LoadedProfileDeatils) {
-      yield* _mapLoadedProfileState(event);
+      yield* _mapLoadedProfileToState(event);
     } else if (event is EditProfile) {
       yield* _mapEditProfileToState(event);
     }
   }
 
 //mapping Loading Profile Details event with states
-  Stream<ProfileState> _mapLoadedProfileState(
+  Stream<ProfileState> _mapLoadedProfileToState(
       LoadedProfileDeatils event) async* {
     yield ProfileLoading();
     try {

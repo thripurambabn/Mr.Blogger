@@ -19,8 +19,8 @@ class _FollowersWidgetState extends State<FollowersWidget> {
     return ListView.builder(
       itemCount: widget.followers.length,
       itemBuilder: (context, i) {
-        print(
-            'object in following widget ${widget.followers[i]} $i ${widget.followers.length}');
+        // print(
+        //   'object in following widget ${widget.followers[i]} $i ${widget.followers.length}');
         return widget.followers != null
             ? FollowerTileWidget(
                 follower: widget.followers[i],

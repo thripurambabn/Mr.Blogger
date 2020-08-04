@@ -30,34 +30,20 @@ class _ProfileUIState extends State<ProfileUI> {
   Widget build(BuildContext context) {
     return new Column(children: <Widget>[
       Container(
+        //   decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       border: Border.all(color: Colors.purple[800], width: 0.0)),
         child: Stack(
-          alignment: Alignment.bottomCenter,
+          alignment: Alignment.topCenter,
           overflow: Overflow.visible,
           children: <Widget>[
-            Positioned(
-              top: 0,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 110.0,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        colors: [
-                          Colors.purple[400],
-                          Colors.purple[300],
-                          Colors.purple[900]
-                        ],
-                        end: FractionalOffset.topCenter),
-                    color: Colors.purpleAccent),
-              ),
-            ),
             Container(
-                padding: EdgeInsets.fromLTRB(60, 30, 60, 0),
+                padding: EdgeInsets.fromLTRB(60, 20, 60, 0),
                 alignment: Alignment.center,
                 child: Stack(children: <Widget>[
                   Container(
-                    height: 150.0,
-                    width: 150.0,
+                    height: 130.0,
+                    width: 130.0,
                     decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
@@ -65,22 +51,21 @@ class _ProfileUIState extends State<ProfileUI> {
                               'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRG2_068DwPxMkNGtNretnitrJOBG4hJSeYGGyI9yfSaCvRA7Rj&usqp=CAU'),
                         ),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 6.0)),
+                        border:
+                            Border.all(color: Colors.purple[800], width: 0.0)),
                   ),
                   Positioned(
-                    top: 100,
-                    left: 80,
-                    //alignment: Alignment.bottomRight,
+                    top: 83,
+                    left: 65,
                     child: RawMaterialButton(
                       onPressed: widget.buttonPressed,
-                      elevation: 0,
+                      elevation: 4,
                       fillColor: Colors.white,
                       child: Icon(
                         Icons.edit,
                         size: 25.0,
                         color: Colors.purple[800],
                       ),
-                      padding: EdgeInsets.all(0.0),
                       shape: CircleBorder(),
                     ),
                   ),
@@ -88,68 +73,86 @@ class _ProfileUIState extends State<ProfileUI> {
           ],
         ),
       ),
-      SizedBox(
-        height: 10,
+      Container(
+        margin: EdgeInsets.fromLTRB(20, 0, 0, 10),
+        alignment: Alignment.centerLeft,
+        child: Text(
+          widget.displayname,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20.0,
+              fontFamily: 'Paficico',
+              color: Colors.purple[600]),
+        ),
       ),
-      Text(
-        widget.displayname,
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 20.0,
-            fontFamily: 'Paficico',
-            color: Colors.purple[600]),
+      Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey[350])),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.fromLTRB(10, 0, 75, 0),
+              child: InkWell(
+                child: Row(
+                  children: <Widget>[
+                    Text(widget.following.length.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15.0,
+                          // fontFamily: 'Paficico',
+                          color: Colors.purple[600],
+                        )),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Text('Following',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15.0,
+                          // fontFamily: 'Paficico',
+                          color: Colors.purple[600],
+                        )),
+                  ],
+                ),
+                onTap: widget.navigateToFollowerPage,
+              ),
+            ),
+            Container(
+                height: 20,
+                child: VerticalDivider(
+                  color: Colors.grey[350],
+                  thickness: 2,
+                )),
+            InkWell(
+              child: Row(
+                children: <Widget>[
+                  Text(widget.followers.length.toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15.0,
+                        // fontFamily: 'Paficico',
+                        color: Colors.purple[600],
+                      )),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Text('Followers',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15.0,
+                        // fontFamily: 'Paficico',
+                        color: Colors.purple[600],
+                      )),
+                ],
+              ),
+              onTap: widget.navigateToFollowerPage,
+            ),
+          ],
+        ),
       ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          InkWell(
-            child: Row(
-              children: <Widget>[
-                Text('Followers',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20.0,
-                      fontFamily: 'Paficico',
-                      decoration: TextDecoration.underline,
-                      color: Colors.purple[600],
-                    )),
-                Text(widget.followers.length.toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20.0,
-                      fontFamily: 'Paficico',
-                      decoration: TextDecoration.underline,
-                      color: Colors.purple[600],
-                    )),
-              ],
-            ),
-            onTap: widget.navigateToFollowerPage,
-          ),
-          InkWell(
-            child: Row(
-              children: <Widget>[
-                Text('Following',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20.0,
-                      fontFamily: 'Paficico',
-                      decoration: TextDecoration.underline,
-                      color: Colors.purple[600],
-                    )),
-                Text(widget.following.length.toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20.0,
-                      fontFamily: 'Paficico',
-                      decoration: TextDecoration.underline,
-                      color: Colors.purple[600],
-                    )),
-              ],
-            ),
-            onTap: widget.navigateToFollowerPage,
-          ),
-        ],
-      )
     ]);
   }
 }

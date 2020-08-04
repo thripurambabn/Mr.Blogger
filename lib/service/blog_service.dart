@@ -16,7 +16,8 @@ class BlogsService {
   Future<List<Blogs>> getblogs() async {
     List<Blogs> blogsList = [];
     bool isFollowing;
-
+    var tempfollowing = [];
+    var followingList = List<String>();
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -26,24 +27,28 @@ class BlogsService {
     var refkey = snapshot.value.keys;
     var data = snapshot.value;
     for (var key in refkey) {
-      var currentuserid = await userService.getUserID();
-      DatabaseReference userRef =
+      var userid = await userService.getUserID();
+      DatabaseReference usersRef =
           FirebaseDatabase.instance.reference().child('users');
       final DataSnapshot snapshot =
-          await userRef.orderByChild('uid').equalTo(currentuserid).once();
+          await usersRef.orderByChild('uid').equalTo(userid).once();
       try {
         if (snapshot.value != null) {
+          var refkey1 = snapshot.value.keys;
           var data1 = snapshot.value;
-          var mapData = new Map<String, dynamic>.from(data1);
-          var user = new Users.fromJson(mapData);
-          isFollowing = user.following.contains(data[key]['uid']);
-        } else {
-          print('there are no blogs of this user');
+          for (var key in refkey1) {
+            if (data1[key]['following'] != null) {
+              tempfollowing = data1[key]['following'];
+              for (var following in tempfollowing) {
+                followingList.add(following.toString());
+              }
+            }
+          }
         }
       } catch (e) {
         print(e);
       }
-
+      isFollowing = followingList.contains(data[key]['uid']);
       var tempLikes = [];
       var tempImages = [];
       var tempComments;
@@ -104,7 +109,8 @@ class BlogsService {
     List<Blogs> blogsList = [];
     bool isFollowing;
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
-
+    var tempfollowing = [];
+    var followingList = List<String>();
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -118,25 +124,28 @@ class BlogsService {
         var data = snapshot.value;
 
         for (var key in refkey) {
-          var currentuserid = await userService.getUserID();
-          DatabaseReference userRef =
+          var userid = await userService.getUserID();
+          DatabaseReference usersRef =
               FirebaseDatabase.instance.reference().child('users');
           final DataSnapshot snapshot =
-              await userRef.orderByChild('uid').equalTo(currentuserid).once();
+              await usersRef.orderByChild('uid').equalTo(userid).once();
           try {
             if (snapshot.value != null) {
+              var refkey1 = snapshot.value.keys;
               var data1 = snapshot.value;
-              var mapData = new Map<String, dynamic>.from(data1);
-              var user = new Users.fromJson(mapData);
-
-              isFollowing = user.following.contains(data[key]['uid']);
-            } else {
-              print('there are no blogs of this user');
+              for (var key in refkey1) {
+                if (data1[key]['following'] != null) {
+                  tempfollowing = data1[key]['following'];
+                  for (var following in tempfollowing) {
+                    followingList.add(following.toString());
+                  }
+                }
+              }
             }
           } catch (e) {
             print(e);
           }
-
+          isFollowing = followingList.contains(data[key]['uid']);
           var tempLikes = [];
           var likesList = new List<String>();
           if (data[key]['likes'] != null) {

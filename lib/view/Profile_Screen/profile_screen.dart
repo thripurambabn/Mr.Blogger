@@ -7,7 +7,6 @@ import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
-import 'package:mr_blogger/view/Profile_Screen/widgets/grid_ui.dart';
 import 'package:mr_blogger/view/Profile_Screen/widgets/profile_ui.dart';
 import 'package:mr_blogger/view/followers_following_screen/followers_following_screem.dart';
 
@@ -25,14 +24,14 @@ class _ProfilePageState extends State<ProfilePage>
   TabController tabController;
   String email;
   String name;
-  String uid;
+  //String uid;
   String imageUrl;
   List<Blogs> blogsList = [];
   @override
   void initState() {
     //calls loaded profile details event
     BlocProvider.of<ProfileBloc>(context).add(
-      LoadedProfileDeatils(uid),
+      LoadedProfileDeatils(widget.uid),
     );
     super.initState();
   }
@@ -61,13 +60,15 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext ctx) {
     tabController = new TabController(length: 2, vsync: this);
     return new Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.purple[800],
-          title: Text(
-            'Profile',
-            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
-          ),
-        ),
+        appBar: PreferredSize(
+            child: AppBar(
+              backgroundColor: Colors.purple[800],
+              title: Text(
+                'Profile',
+                style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+              ),
+            ),
+            preferredSize: Size.fromHeight(40.0)),
         body: SingleChildScrollView(
             child: Container(
           child: Column(children: <Widget>[
@@ -115,118 +116,45 @@ class _ProfilePageState extends State<ProfilePage>
                 },
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Divider(
-              color: Colors.purple[300],
-            ),
             Container(
-              //tab bar controller
-              child: TabBar(
-                controller: tabController,
-                tabs: [
-                  new Tab(
-                    icon: new Icon(Icons.list, color: Colors.purple[600]),
-                  ),
-                  new Tab(
-                    icon: new Icon(Icons.grid_on, color: Colors.purple[600]),
-                  ),
-                ],
-                indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 4.0, color: Colors.purple[600]),
+              child: Container(
+                child: BlocBuilder<ProfileBloc, ProfileState>(
+                  bloc: BlocProvider.of<ProfileBloc>(context),
+                  builder: (context, state) {
+                    if (state is ProfileLoading) {
+                      return Image.network(
+                          'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                    } else if (state is ProfileLoaded) {
+                      return ListView.builder(
+                        physics: ScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: state.blogs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                              onTap: () => navigateToDetailPage(
+                                  state.blogs[index], state.uid),
+                              title: BlogsUI(
+                                isFollowing: state.blogs[index].isFollowing,
+                                images: state.blogs[index].image,
+                                uid: state.blogs[index].uid,
+                                authorname: state.blogs[index].authorname,
+                                title: state.blogs[index].title,
+                                description: state.blogs[index].description,
+                                likes: state.blogs[index].likes,
+                                comments: state.blogs[index].comments,
+                                date: state.blogs[index].date,
+                                time: state.blogs[index].time,
+                                timeStamp: state.blogs[index].timeStamp,
+                              ));
+                        },
+                      );
+                    } else if (state is ProfileNotLoaded) {
+                      return errorUI();
+                    }
+                  },
                 ),
               ),
-            ),
-            Container(
-              height: 8000,
-              //tab bar view controller
-              child: TabBarView(controller: tabController, children: [
-                Container(
-                  child: BlocBuilder<ProfileBloc, ProfileState>(
-                    bloc: BlocProvider.of<ProfileBloc>(context),
-                    builder: (context, state) {
-                      if (state is ProfileLoading) {
-                        return Image.network(
-                            'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                      } else if (state is ProfileLoaded) {
-                        return ListView.builder(
-                          physics: ScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: state.blogs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                                onTap: () => navigateToDetailPage(
-                                    state.blogs[index], state.uid),
-                                title: BlogsUI(
-                                  isFollowing: state.blogs[index].isFollowing,
-                                  images: state.blogs[index].image,
-                                  uid: state.blogs[index].uid,
-                                  authorname: state.blogs[index].authorname,
-                                  title: state.blogs[index].title,
-                                  description: state.blogs[index].description,
-                                  likes: state.blogs[index].likes,
-                                  comments: state.blogs[index].comments,
-                                  date: state.blogs[index].date,
-                                  time: state.blogs[index].time,
-                                  timeStamp: state.blogs[index].timeStamp,
-                                ));
-                          },
-                        );
-                      } else if (state is ProfileNotLoaded) {
-                        return errorUI();
-                      }
-                    },
-                  ),
-                ),
-                Container(
-                  child: BlocBuilder<ProfileBloc, ProfileState>(
-                    bloc: BlocProvider.of<ProfileBloc>(context),
-                    builder: (context, state) {
-                      if (state is ProfileLoading) {
-                        return Image.network(
-                            'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                      } else if (state is ProfileLoaded) {
-                        return GridView.builder(
-                          gridDelegate:
-                              new SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 0.0,
-                                  childAspectRatio: 0.75),
-                          physics: ScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: state.blogs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (state.blogs.length == 0) {
-                              return Text('There are no blogs yet');
-                            } else {
-                              return GridTile(
-                                  child: GridUI(
-                                      blogBloc:
-                                          BlocProvider.of<ProfileBloc>(context),
-                                      images: state.blogs[index].image,
-                                      uid: state.blogs[index].uid,
-                                      authorname: state.blogs[index].authorname,
-                                      title: state.blogs[index].title,
-                                      description:
-                                          state.blogs[index].description,
-                                      likes: state.blogs[index].likes,
-                                      comments: state.blogs[index].comments,
-                                      date: state.blogs[index].date,
-                                      time: state.blogs[index].time,
-                                      timeStamp: state.blogs[index].timeStamp));
-                            }
-                          },
-                        );
-                      } else if (state is ProfileNotLoaded) {
-                        return errorUI();
-                      }
-                    },
-                  ),
-                ),
-              ]),
             )
           ]),
         )));

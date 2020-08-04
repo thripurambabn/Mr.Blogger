@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/models/user.dart';
@@ -12,6 +13,7 @@ class ProfileService {
   List<Blogs> blogsList = [];
   var userData;
 
+  bool isFollowing;
 //To fetch blogs of logged in user
   Future getblogs() async {
     var userid = await userService.getUserID();
@@ -27,11 +29,11 @@ class ProfileService {
         for (var key in refkey) {
           var tempLikes = [];
           var tempImages = [];
-          var tempfollowers = [];
+          var tempfollowing = [];
           var tempComments;
           var commentsList = new List<Comment>();
           var likesList = new List<String>();
-          var followersList = new List<String>();
+          var followingList = new List<String>();
           var imagesList = new List<String>();
           if (data[key]['likes'] != null) {
             tempLikes = data[key]['likes'];
@@ -40,12 +42,28 @@ class ProfileService {
               likesList.add(like.toString());
             }
           }
-          if (data[key]['followers'] != null) {
-            tempfollowers = data[key]['followers'];
-            for (var follower in tempfollowers) {
-              followersList.add(follower.toString());
+          var userid = await userService.getUserID();
+          DatabaseReference usersRef =
+              FirebaseDatabase.instance.reference().child('users');
+          final DataSnapshot snapshot =
+              await usersRef.orderByChild('uid').equalTo(userid).once();
+          try {
+            if (snapshot.value != null) {
+              var refkey1 = snapshot.value.keys;
+              var data1 = snapshot.value;
+              for (var key in refkey1) {
+                if (data1[key]['following'] != null) {
+                  tempfollowing = data1[key]['following'];
+                  for (var following in tempfollowing) {
+                    followingList.add(following.toString());
+                  }
+                }
+              }
             }
+          } catch (e) {
+            print(e);
           }
+          isFollowing = followingList.contains(data[key]['uid']);
           if (data[key]['image'] != null) {
             tempImages = data[key]['image'];
             for (var image in tempImages) {
@@ -80,7 +98,7 @@ class ProfileService {
               time: data[key]['time'],
               timeStamp: data[key]['timeStamp'],
               blogPrivacy: data[key]['blogPrivacy']);
-          blogsList.clear();
+
           blogsList.add(blog);
         }
       } else {
@@ -93,18 +111,42 @@ class ProfileService {
   }
 
   Future getProfileDetails(String uid) async {
-    var currentuserid = await userService.getUserID();
-    var userid = uid == null ? currentuserid : uid;
+    var userid = await userService.getUserID();
     DatabaseReference blogsref =
         FirebaseDatabase.instance.reference().child('users');
     final DataSnapshot snapshot =
         await blogsref.orderByChild('uid').equalTo(userid).once();
     try {
       if (snapshot.value != null) {
+        var refkey = snapshot.value.keys;
         var data = snapshot.value;
-        var mapData = new Map<String, dynamic>.from(data);
-        var user = new Users.fromJson(mapData);
-        userData = user;
+
+        for (var key in refkey) {
+          var tempfollowing = [];
+          var followingList = List<String>();
+          if (data[key]['following'] != null) {
+            tempfollowing = data[key]['following'];
+            for (var following in tempfollowing) {
+              followingList.add(following.toString());
+            }
+          }
+          var tempfollowers = [];
+          var followersList = List<String>();
+          if (data[key]['followers'] != null) {
+            tempfollowers = data[key]['followers'];
+            for (var followers in tempfollowers) {
+              followersList.add(followers.toString());
+            }
+          }
+          Users user = new Users(
+              uid: data[key]['uid'],
+              displayName: data[key]['username'],
+              email: data[key]['email'],
+              imageUrl: data[key]['photoUrl'],
+              followers: followersList,
+              following: followingList);
+          userData = user;
+        }
       } else {
         print('there are no blogs of this user');
       }
@@ -114,47 +156,53 @@ class ProfileService {
     return userData;
   }
 
-  Future removeFollow(int blogtimeStamp, var uid, List<String> followers) {
-    FirebaseDatabase.instance
-        .reference()
-        .child('users')
-        .orderByChild('uid')
-        .equalTo(uid)
-        .onChildAdded
-        .listen((Event event) {
-      FirebaseDatabase.instance
-          .reference()
-          .child('users')
-          .child(event.snapshot.key)
-          .update({'following': followers});
-    }, onError: (Object o) {
-      final DatabaseError error = o;
-      print('Error: ${error.code} ${error.message}');
-    });
-    FirebaseDatabase.instance
-        .reference()
-        .child('blogs')
-        .orderByChild('timeStamp')
-        .equalTo(blogtimeStamp)
-        .onChildAdded
-        .listen((Event event) {
-      FirebaseDatabase.instance
-          .reference()
-          .child('users')
-          .orderByChild('uid')
-          .equalTo(event.snapshot.value['uid'])
-          .onChildAdded
-          .listen((Event event) {
-        print('event in service ${event.snapshot.value['followers']}');
-        FirebaseDatabase.instance
-            .reference()
-            .child('users')
-            .child(event.snapshot.value['followers']);
-      }, onError: (Object o) {
-        final DatabaseError error = o;
-        print('Error: ${error.code} ${error.message}');
-      });
-    });
+  Future getFollowersProfileDetails(List<String> uids) async {
+    var followData = [];
+    for (var uid in uids) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users');
+      final DataSnapshot snapshot =
+          await userRef.orderByChild('uid').equalTo(uid).once();
+      try {
+        if (snapshot.value != null) {
+          var refkey = snapshot.value.keys;
+          var data = snapshot.value;
+
+          for (var key in refkey) {
+            var tempfollowing = [];
+            var followingList = List<String>();
+            if (data[key]['following'] != null) {
+              tempfollowing = data[key]['following'];
+              for (var following in tempfollowing) {
+                followingList.add(following.toString());
+              }
+            }
+            var tempfollowers = [];
+            var followersList = List<String>();
+            if (data[key]['followers'] != null) {
+              tempfollowers = data[key]['followers'];
+              for (var followers in tempfollowers) {
+                followersList.add(followers.toString());
+              }
+            }
+            Users user = new Users(
+                uid: data[key]['uid'],
+                displayName: data[key]['username'],
+                email: data[key]['email'],
+                imageUrl: data[key]['photoUrl'],
+                followers: followersList,
+                following: followingList);
+            followData.add(user);
+          }
+        } else {
+          print('there are no blogs of this user');
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    return followData;
   }
 
 //To delete a blog from firebase
