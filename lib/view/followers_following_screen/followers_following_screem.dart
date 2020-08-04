@@ -52,8 +52,8 @@ class _FollowPageState extends State<FollowPage> {
               FollowersWidget(
                 followers: widget.followers,
                 userName: widget.userName,
-                navigateToProfilePage: () {
-                  //navigateToProfilePage;
+                navigateToProfilePage: (String value) {
+                  navigateToProfilePage(value);
                 },
               ),
               FollowingWidget(

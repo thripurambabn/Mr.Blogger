@@ -24,7 +24,6 @@ class _FollowingTileWidgetState extends State<FollowingTileWidget> {
       BlocProvider.of<BlogsBloc>(context).add(FollowBlogs(isFollowing, uid));
     }
 
-    print('widget.user ${widget.followingUser.displayName}');
     return new ListTile(
         onTap: () {
           widget.navigateToProfilePage(widget.followingUser.uid);
