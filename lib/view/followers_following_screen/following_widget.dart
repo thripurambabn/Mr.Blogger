@@ -6,11 +6,16 @@ import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_stat
 import 'package:mr_blogger/view/followers_following_screen/following_tile_widget.dart';
 
 class FollowingWidget extends StatefulWidget {
+  final String uid;
   final List<String> following;
   final Function(String) navigateToProfilePage;
   final String userName;
   const FollowingWidget(
-      {Key key, this.following, this.userName, this.navigateToProfilePage})
+      {Key key,
+      this.following,
+      this.userName,
+      this.navigateToProfilePage,
+      this.uid})
       : super(key: key);
 
   @override
@@ -32,18 +37,17 @@ class _FollowingWidgetState extends State<FollowingWidget> {
       bloc: BlocProvider.of<OtherUserProfileBloc>(context),
       builder: (context, state) {
         if (state is OtherUserProfileLoading) {
-          print('loading');
           return Image.network(
               'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
         } else if (state is OtherUserProfileLoaded) {
-          print('loaded ${state.users}');
+          print('sate ${state.userData.uid}');
           return ListView.builder(
             itemCount: state.users.length,
             itemBuilder: (context, i) {
-              print(
-                  'object in following widget ${state.users[i]} $i ${state.users.length}');
               return widget.following != null
                   ? FollowingTileWidget(
+                      currentUid: state.userData.uid,
+                      uid: widget.uid,
                       followingUser: state.users[i],
                       navigateToProfilePage: (value) {
                         widget.navigateToProfilePage(value);

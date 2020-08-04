@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:mr_blogger/models/blogs.dart';
-import 'package:mr_blogger/models/user.dart';
 
 abstract class OtherUserProfileState extends Equatable {
   const OtherUserProfileState();
@@ -18,10 +16,11 @@ class OtherUserProfileLoading extends OtherUserProfileState {
 
 //Profile Loaded state
 class OtherUserProfileLoaded extends OtherUserProfileState {
+  final userData;
   final List users;
-  const OtherUserProfileLoaded(this.users);
+  const OtherUserProfileLoaded(this.users, this.userData);
   @override
-  List<Object> get props => [users];
+  List<Object> get props => [users, userData];
   @override
   String toString() => 'Profile';
 }

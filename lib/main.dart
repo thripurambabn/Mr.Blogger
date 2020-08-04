@@ -6,6 +6,7 @@ import 'package:mr_blogger/blocs/auth_bloc/auth_state.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_bloc.dart';
+import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/serach_bloc/serach_bloc.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
@@ -35,6 +36,10 @@ void main() {
         ),
         BlocProvider<OtherUserProfileBloc>(
           create: (context) => OtherUserProfileBloc(
+              profileService: profileService, blogsService: blogsService),
+        ),
+        BlocProvider<OtherUserProfileDetailsBloc>(
+          create: (context) => OtherUserProfileDetailsBloc(
               profileService: profileService, blogsService: blogsService),
         ),
         BlocProvider<SearchBlogsBloc>(create: (context) => SearchBlogsBloc()),

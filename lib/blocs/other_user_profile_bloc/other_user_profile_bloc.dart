@@ -5,6 +5,7 @@ import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_even
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_state.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
+import 'package:mr_blogger/service/user_service.dart';
 
 class OtherUserProfileBloc
     extends Bloc<OtherUserProfileDetailsEvent, OtherUserProfileState> {
@@ -35,11 +36,14 @@ class OtherUserProfileBloc
       OtherUserProfileEvent event) async* {
     try {
       var test = await _profileService.getFollowersProfileDetails(event.uid);
+      UserService _userService = UserService();
+      var userData = await _userService.save();
+
       for (var user in test) {
         print('profile bloc ${user.displayName}');
       }
 
-      yield OtherUserProfileLoaded(test);
+      yield OtherUserProfileLoaded(test, userData);
     } catch (e) {
       print(e);
     }

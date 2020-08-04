@@ -4,12 +4,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
-import 'package:mr_blogger/models/user.dart';
+
 import 'package:mr_blogger/service/user_service.dart';
 
 class BlogsService {
   var userService = UserService();
-  List<Blogs> blogsList = [];
+
   int value = 2;
 
 //To fetch first set of blogs from the firebase database
@@ -267,6 +267,7 @@ class BlogsService {
 
 //To Search a blog in firebase
   Future searchBlogs(String searchKey) async {
+    List<Blogs> blogsList = [];
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -384,6 +385,7 @@ class BlogsService {
           .child('users')
           .child(event.snapshot.key)
           .update({'following': followingList});
+      print('followingList $followingList');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
@@ -414,6 +416,7 @@ class BlogsService {
           .child('users')
           .child(event.snapshot.key)
           .update({'followers': followersList});
+      print('followersList $followersList');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');

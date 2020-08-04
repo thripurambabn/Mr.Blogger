@@ -6,12 +6,10 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 class FollowButton extends StatefulWidget {
   bool isFollowing;
   final String uid;
-  final int timeStamp;
 
   FollowButton({
     Key key,
     this.uid,
-    this.timeStamp,
     this.isFollowing,
   }) : super(key: key);
   @override

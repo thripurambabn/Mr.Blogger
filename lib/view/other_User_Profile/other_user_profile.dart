@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_bloc.dart';
+import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_event.dart';
+import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_state.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
-import 'package:mr_blogger/view/Profile_Screen/widgets/profile_ui.dart';
 import 'package:mr_blogger/view/followers_following_screen/followers_following_screem.dart';
+import 'package:mr_blogger/view/other_User_Profile/widgets/other_user_profile_ui.dart';
 
-class ProfilePage extends StatefulWidget {
+class OtherUserProfilePage extends StatefulWidget {
   final String uid;
 
-  const ProfilePage({Key key, this.uid}) : super(key: key);
+  const OtherUserProfilePage({Key key, this.uid}) : super(key: key);
 
-  _ProfilePageState createState() => _ProfilePageState();
+  _OtherUserProfilePageState createState() => _OtherUserProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class _OtherUserProfilePageState extends State<OtherUserProfilePage>
     with TickerProviderStateMixin {
   //initialiser for tab controller
   TabController tabController;
@@ -29,18 +31,18 @@ class _ProfilePageState extends State<ProfilePage>
   List<Blogs> blogsList = [];
   @override
   void initState() {
+    print('widget.uid in OtherUserProfilePage ${widget.uid}');
     //calls loaded profile details event
-    BlocProvider.of<ProfileBloc>(context).add(
-      LoadedProfileDeatils(widget.uid),
+    BlocProvider.of<OtherUserProfileDetailsBloc>(context).add(
+      LoadedOtherUserProfileDeatils(widget.uid),
     );
     super.initState();
   }
 
   navigateToFollowerPage(
-      List<String> following, String name, List<String> followers, String uid) {
+      List<String> following, String name, List<String> followers) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new FollowPage(
-        uid: uid,
         following: following,
         userName: name,
         followers: followers,
@@ -74,14 +76,15 @@ class _ProfilePageState extends State<ProfilePage>
             child: Container(
           child: Column(children: <Widget>[
             Container(
-              child: BlocBuilder<ProfileBloc, ProfileState>(
-                bloc: BlocProvider.of<ProfileBloc>(context),
+              child: BlocBuilder<OtherUserProfileDetailsBloc,
+                  OtherUserProfileDetailsState>(
+                bloc: BlocProvider.of<OtherUserProfileDetailsBloc>(context),
                 builder: (context, state) {
-                  if (state is ProfileLoading) {
+                  if (state is OtherUserProfileDetailsLoading) {
                     return Image.network(
                         'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                  } else if (state is ProfileLoaded) {
-                    return ProfileUI(
+                  } else if (state is OtherUserProfileDetailsLoaded) {
+                    return OtherUserProfileUI(
                         uid: state.uid,
                         following: state.following,
                         followers: state.followers,
@@ -94,9 +97,9 @@ class _ProfilePageState extends State<ProfilePage>
                         },
                         navigateToFollowerPage: () {
                           navigateToFollowerPage(state.following,
-                              state.displayName, state.followers, state.uid);
+                              state.displayName, state.followers);
                         });
-                  } else if (state is ProfileNotLoaded) {
+                  } else if (state is OtherUserProfileDetailsNotLoaded) {
                     return Text(
                       'Something went wrong please try again later',
                       textAlign: TextAlign.center,
@@ -119,13 +122,14 @@ class _ProfilePageState extends State<ProfilePage>
             ),
             Container(
               child: Container(
-                child: BlocBuilder<ProfileBloc, ProfileState>(
-                  bloc: BlocProvider.of<ProfileBloc>(context),
+                child: BlocBuilder<OtherUserProfileDetailsBloc,
+                    OtherUserProfileDetailsState>(
+                  bloc: BlocProvider.of<OtherUserProfileDetailsBloc>(context),
                   builder: (context, state) {
-                    if (state is ProfileLoading) {
+                    if (state is OtherUserProfileDetailsLoading) {
                       return Image.network(
                           'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                    } else if (state is ProfileLoaded) {
+                    } else if (state is OtherUserProfileDetailsLoaded) {
                       return ListView.builder(
                         physics: ScrollPhysics(),
                         scrollDirection: Axis.vertical,
@@ -150,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage>
                               ));
                         },
                       );
-                    } else if (state is ProfileNotLoaded) {
+                    } else if (state is OtherUserProfileDetailsNotLoaded) {
                       return errorUI();
                     }
                   },

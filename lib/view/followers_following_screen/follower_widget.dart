@@ -3,14 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_bloc.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_event.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_state.dart';
+import 'package:mr_blogger/view/followers_following_screen/followers_tile_widget.dart';
 import 'package:mr_blogger/view/followers_following_screen/following_tile_widget.dart';
 
 class FollowersWidget extends StatefulWidget {
+  final String uid;
   final List<String> followers;
   final Function(String) navigateToProfilePage;
   final String userName;
   const FollowersWidget(
-      {Key key, this.followers, this.userName, this.navigateToProfilePage})
+      {Key key,
+      this.followers,
+      this.userName,
+      this.navigateToProfilePage,
+      this.uid})
       : super(key: key);
 
   @override
@@ -32,19 +38,17 @@ class _FollowersWidgetState extends State<FollowersWidget> {
       bloc: BlocProvider.of<OtherUserProfileBloc>(context),
       builder: (context, state) {
         if (state is OtherUserProfileLoading) {
-          print('loading');
           return Image.network(
               'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
         } else if (state is OtherUserProfileLoaded) {
-          print('loaded ${state.users}');
           return ListView.builder(
             itemCount: state.users.length,
             itemBuilder: (context, i) {
-              print(
-                  'object in following widget ${state.users[i]} $i ${state.users.length}');
               return widget.followers != null
-                  ? FollowingTileWidget(
-                      followingUser: state.users[i],
+                  ? FollowersTileWidget(
+                      currentUid: state.userData.uid,
+                      uid: widget.uid,
+                      followerUser: state.users[i],
                       navigateToProfilePage: (value) {
                         widget.navigateToProfilePage(value);
                       },

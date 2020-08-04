@@ -4,10 +4,16 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 
 class FollowersTileWidget extends StatefulWidget {
+  final String currentUid;
+  final String uid;
   final followerUser;
   final Function(String) navigateToProfilePage;
   const FollowersTileWidget(
-      {Key key, this.followerUser, this.navigateToProfilePage})
+      {Key key,
+      this.followerUser,
+      this.navigateToProfilePage,
+      this.uid,
+      this.currentUid})
       : super(key: key);
 
   @override
@@ -24,7 +30,6 @@ class _FollowersTileWidgetState extends State<FollowersTileWidget> {
       BlocProvider.of<BlogsBloc>(context).add(FollowBlogs(isFollowing, uid));
     }
 
-    print('widget.user ${widget.followerUser.displayName}');
     return new ListTile(
         onTap: () {
           widget.navigateToProfilePage(widget.followerUser.uid);
@@ -33,21 +38,23 @@ class _FollowersTileWidgetState extends State<FollowersTileWidget> {
           backgroundImage: NetworkImage(widget.followerUser.imageUrl),
         ),
         title: Text(widget.followerUser.displayName),
-        trailing: Container(
-          height: 30,
-          width: 90,
-          child: new FlatButton(
-            onPressed: () {
-              setfollow(false, widget.followerUser..uid);
-            },
-            child:
-                Text('Unfollow', style: TextStyle(color: Colors.purple[500])),
-            textColor: Colors.white,
-            shape: RoundedRectangleBorder(
-                side: BorderSide(
-                    color: Colors.purple[400], style: BorderStyle.solid),
-                borderRadius: BorderRadius.circular(5)),
-          ),
-        ));
+        trailing: (widget.uid == widget.currentUid)
+            ? Container(
+                height: 30,
+                width: 90,
+                child: new FlatButton(
+                  onPressed: () {
+                    setfollow(false, widget.followerUser.uid);
+                  },
+                  child: Text('Remove',
+                      style: TextStyle(color: Colors.purple[500])),
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          color: Colors.purple[400], style: BorderStyle.solid),
+                      borderRadius: BorderRadius.circular(5)),
+                ),
+              )
+            : SizedBox());
   }
 }

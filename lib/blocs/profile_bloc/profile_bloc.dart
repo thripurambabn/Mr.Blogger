@@ -39,8 +39,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       var test = await _profileService.getProfileDetails(event.uid);
 
-      List<Blogs> profileblogslist = await _profileService.getblogs();
-      print('profile bloc ${test.displayName}');
+      List<Blogs> profileblogslist = await _profileService.getblogs(null);
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
           test.uid, test.imageUrl, test.following, test.followers);
     } catch (e) {
@@ -52,7 +51,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Stream<ProfileState> _mapEditProfileToState(EditProfile event) async* {
     try {
       await _profileService.editProfile(event.name, event.imageUrl);
-      List<Blogs> profileblogslist = await _profileService.getblogs();
+      List<Blogs> profileblogslist = await _profileService.getblogs(null);
       UserService _userService = new UserService();
       await _userService.read();
       final test = await _userService.save();

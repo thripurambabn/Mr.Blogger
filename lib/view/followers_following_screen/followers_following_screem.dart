@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mr_blogger/view/Profile_Screen/profile_screen.dart';
 import 'package:mr_blogger/view/followers_following_screen/follower_widget.dart';
 import 'package:mr_blogger/view/followers_following_screen/following_widget.dart';
+import 'package:mr_blogger/view/other_User_Profile/other_user_profile.dart';
 
 class FollowPage extends StatefulWidget {
   final List<String> following;
@@ -18,13 +18,14 @@ class FollowPage extends StatefulWidget {
 class _FollowPageState extends State<FollowPage> {
   void navigateToProfilePage(String uid) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new ProfilePage(uid: uid);
+      return new OtherUserProfilePage(uid: uid);
     }));
   }
 
   @override
   Widget build(BuildContext context) {
-    // print('follwoer_following screen ${widget.followers}');
+    print('follwoer_following screen ${widget.uid}');
+
     return Container(
       child: DefaultTabController(
         length: 2,
@@ -50,6 +51,7 @@ class _FollowPageState extends State<FollowPage> {
           body: TabBarView(
             children: [
               FollowersWidget(
+                uid: widget.uid,
                 followers: widget.followers,
                 userName: widget.userName,
                 navigateToProfilePage: (String value) {
@@ -57,6 +59,7 @@ class _FollowPageState extends State<FollowPage> {
                 },
               ),
               FollowingWidget(
+                uid: widget.uid,
                 following: widget.following,
                 userName: widget.userName,
                 navigateToProfilePage: (String value) {

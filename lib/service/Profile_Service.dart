@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/models/user.dart';
@@ -10,17 +9,18 @@ import 'package:mr_blogger/service/user_service.dart';
 
 class ProfileService {
   var userService = UserService();
-  List<Blogs> blogsList = [];
-  var userData;
 
+  var userData;
   bool isFollowing;
 //To fetch blogs of logged in user
-  Future getblogs() async {
+  Future getblogs(String uid) async {
+    List<Blogs> blogsList = [];
     var userid = await userService.getUserID();
+    var currentUserid = uid == null ? userid : uid;
     DatabaseReference blogsref =
         FirebaseDatabase.instance.reference().child('blogs');
     final DataSnapshot snapshot =
-        await blogsref.orderByChild('uid').equalTo(userid).once();
+        await blogsref.orderByChild('uid').equalTo(currentUserid).once();
     try {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
@@ -112,10 +112,11 @@ class ProfileService {
 
   Future getProfileDetails(String uid) async {
     var userid = await userService.getUserID();
+    var currentUserid = uid == null ? userid : uid;
     DatabaseReference blogsref =
         FirebaseDatabase.instance.reference().child('users');
     final DataSnapshot snapshot =
-        await blogsref.orderByChild('uid').equalTo(userid).once();
+        await blogsref.orderByChild('uid').equalTo(currentUserid).once();
     try {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
@@ -125,11 +126,13 @@ class ProfileService {
           var tempfollowing = [];
           var followingList = List<String>();
           if (data[key]['following'] != null) {
+            print('inside if ${data[key]['following']}');
             tempfollowing = data[key]['following'];
             for (var following in tempfollowing) {
-              followingList.add(following.toString());
+              if (following != null) followingList.add(following.toString());
             }
           }
+          print('in service ${followingList}');
           var tempfollowers = [];
           var followersList = List<String>();
           if (data[key]['followers'] != null) {

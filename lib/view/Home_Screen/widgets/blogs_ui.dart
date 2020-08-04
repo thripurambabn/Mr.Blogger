@@ -90,7 +90,6 @@ class _BlogsUIState extends State<BlogsUI> {
                     textAlign: TextAlign.left,
                   ),
                   FollowButton(
-                    timeStamp: widget.timeStamp,
                     isFollowing: widget.isFollowing,
                     uid: widget.uid,
                   ),
