@@ -4,7 +4,7 @@ class Users {
   String displayName, email, uid, imageUrl;
   List<String> following;
   List<String> followers;
-  List<Blogs> bookMarks;
+  List<String> bookMarks;
   Users(
       {this.displayName,
       this.email,
