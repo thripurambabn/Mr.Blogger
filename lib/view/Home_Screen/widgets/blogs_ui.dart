@@ -81,11 +81,12 @@ class _BlogsUIState extends State<BlogsUI> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    widget.title ?? '',
+                    widget.title.substring(0, 26) ?? '',
+                    maxLines: 1,
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Paficico',
+                        //  fontFamily: 'Paficico',
                         color: Colors.purple),
                     textAlign: TextAlign.left,
                   ),

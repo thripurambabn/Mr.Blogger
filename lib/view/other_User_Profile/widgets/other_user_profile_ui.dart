@@ -74,14 +74,14 @@ class _OtherUserProfileUIState extends State<OtherUserProfileUI> {
                     fontFamily: 'Paficico',
                     color: Colors.purple[600]),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 30, 0, 10),
-                alignment: Alignment.centerLeft,
-                child: FollowButton(
-                  isFollowing: widget.isFollowing,
-                  uid: widget.uid,
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.fromLTRB(10, 30, 0, 10),
+              //   alignment: Alignment.centerLeft,
+              //   child: FollowButton(
+              //     isFollowing: widget.isFollowing,
+              //     uid: widget.uid,
+              //   ),
+              // ),
             ],
           )),
       Container(

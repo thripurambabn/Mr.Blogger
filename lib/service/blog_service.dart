@@ -10,7 +10,7 @@ import 'package:mr_blogger/service/user_service.dart';
 class BlogsService {
   var userService = UserService();
 
-  int value = 2;
+  int value = 4;
 
 //To fetch first set of blogs from the firebase database
   Future<List<Blogs>> getblogs() async {
@@ -49,55 +49,61 @@ class BlogsService {
         print(e);
       }
       isFollowing = followingList.contains(data[key]['uid']);
-      var tempLikes = [];
-      var tempImages = [];
-      var tempComments;
-      var commentsList = new List<Comment>();
-      var likesList = new List<String>();
-      var imagesList = new List<String>();
-      if (data[key]['likes'] != null) {
-        tempLikes = data[key]['likes'];
+      print(
+          'before isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
+      if (isFollowing == true || data[key]['blogPrivacy'] == false) {
+        print(
+            'isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
+        var tempLikes = [];
+        var tempImages = [];
+        var tempComments;
+        var commentsList = new List<Comment>();
+        var likesList = new List<String>();
+        var imagesList = new List<String>();
+        if (data[key]['likes'] != null) {
+          tempLikes = data[key]['likes'];
 
-        for (var like in tempLikes) {
-          likesList.add(like.toString());
-        }
-      }
-      if (data[key]['image'] != null) {
-        tempImages = data[key]['image'];
-        for (var image in tempImages) {
-          if (image != null) {
-            imagesList.add(image);
+          for (var like in tempLikes) {
+            likesList.add(like.toString());
           }
         }
-      }
-      if (data[key]['comments'] != null) {
-        tempComments = data[key]['comments'];
-        for (var comment in tempComments) {
-          if (comment != null) {
-            var newComment = new Comment(
-              username: comment['username'],
-              date: comment['date'],
-              comment: comment['comment'],
-            );
-            commentsList.add(newComment);
+        if (data[key]['image'] != null) {
+          tempImages = data[key]['image'];
+          for (var image in tempImages) {
+            if (image != null) {
+              imagesList.add(image);
+            }
           }
         }
+        if (data[key]['comments'] != null) {
+          tempComments = data[key]['comments'];
+          for (var comment in tempComments) {
+            if (comment != null) {
+              var newComment = new Comment(
+                username: comment['username'],
+                date: comment['date'],
+                comment: comment['comment'],
+              );
+              commentsList.add(newComment);
+            }
+          }
+        }
+        Blogs blog = new Blogs(
+            image: imagesList,
+            uid: data[key]['uid'],
+            authorname: data[key]['authorname'],
+            title: data[key]['title'],
+            description: data[key]['description'],
+            likes: likesList,
+            comments: commentsList,
+            isFollowing: isFollowing,
+            date: data[key]['date'],
+            category: data[key]['category'],
+            time: data[key]['time'],
+            timeStamp: data[key]['timeStamp'],
+            blogPrivacy: data[key]['blogPrivacy']);
+        blogsList.add(blog);
       }
-      Blogs blog = new Blogs(
-          image: imagesList,
-          uid: data[key]['uid'],
-          authorname: data[key]['authorname'],
-          title: data[key]['title'],
-          description: data[key]['description'],
-          likes: likesList,
-          comments: commentsList,
-          isFollowing: isFollowing,
-          date: data[key]['date'],
-          category: data[key]['category'],
-          time: data[key]['time'],
-          timeStamp: data[key]['timeStamp'],
-          blogPrivacy: data[key]['blogPrivacy']);
-      blogsList.add(blog);
     }
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
@@ -146,56 +152,62 @@ class BlogsService {
             print(e);
           }
           isFollowing = followingList.contains(data[key]['uid']);
-          var tempLikes = [];
-          var likesList = new List<String>();
-          if (data[key]['likes'] != null) {
-            tempLikes = data[key]['likes'];
-            for (var like in tempLikes) {
-              likesList.add(like.toString());
-            }
-          }
-          var tempComments;
-          var commentsList = new List<Comment>();
-          if (data[key]['comments'] != null) {
-            tempComments = data[key]['comments'];
-            for (var comment in tempComments) {
-              if (comment != null) {
-                var newComment = new Comment(
-                  username: comment['username'],
-                  date: comment['date'],
-                  comment: comment['comment'],
-                );
-                commentsList.add(newComment);
+          print(
+              'before isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
+          if (isFollowing == true || data[key]['blogPrivacy'] == false) {
+            print(
+                'isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
+            var tempLikes = [];
+            var likesList = new List<String>();
+            if (data[key]['likes'] != null) {
+              tempLikes = data[key]['likes'];
+              for (var like in tempLikes) {
+                likesList.add(like.toString());
               }
             }
-          }
-          var tempImages = [];
-          var imagesList = new List<String>();
-          if (data[key]['image'] != null) {
-            tempImages = data[key]['image'];
-
-            for (var image in tempImages) {
-              if (image != null) {
-                imagesList.add(image);
+            var tempComments;
+            var commentsList = new List<Comment>();
+            if (data[key]['comments'] != null) {
+              tempComments = data[key]['comments'];
+              for (var comment in tempComments) {
+                if (comment != null) {
+                  var newComment = new Comment(
+                    username: comment['username'],
+                    date: comment['date'],
+                    comment: comment['comment'],
+                  );
+                  commentsList.add(newComment);
+                }
               }
             }
-          }
+            var tempImages = [];
+            var imagesList = new List<String>();
+            if (data[key]['image'] != null) {
+              tempImages = data[key]['image'];
 
-          Blogs blog = new Blogs(
-              image: imagesList,
-              uid: data[key]['uid'],
-              authorname: data[key]['authorname'],
-              title: data[key]['title'],
-              description: data[key]['description'],
-              likes: likesList,
-              comments: commentsList,
-              isFollowing: isFollowing,
-              date: data[key]['date'],
-              time: data[key]['time'],
-              category: data[key]['category'],
-              timeStamp: data[key]['timeStamp'],
-              blogPrivacy: data[key]['blogPrivacy']);
-          blogsList.add(blog);
+              for (var image in tempImages) {
+                if (image != null) {
+                  imagesList.add(image);
+                }
+              }
+            }
+
+            Blogs blog = new Blogs(
+                image: imagesList,
+                uid: data[key]['uid'],
+                authorname: data[key]['authorname'],
+                title: data[key]['title'],
+                description: data[key]['description'],
+                likes: likesList,
+                comments: commentsList,
+                isFollowing: isFollowing,
+                date: data[key]['date'],
+                time: data[key]['time'],
+                category: data[key]['category'],
+                timeStamp: data[key]['timeStamp'],
+                blogPrivacy: data[key]['blogPrivacy']);
+            blogsList.add(blog);
+          }
         }
       }
     } catch (e) {
