@@ -7,6 +7,7 @@ class Blogs {
   List<Comment> comments;
   int timeStamp;
   bool blogPrivacy;
+  bool isBookMarked;
   bool isFollowing;
   Blogs(
       {this.image,
@@ -21,6 +22,7 @@ class Blogs {
       this.time,
       this.timeStamp,
       this.blogPrivacy,
+      this.isBookMarked,
       this.isFollowing})
       : super();
 
@@ -38,6 +40,24 @@ class Blogs {
         category: parsedJson['category'] ?? '',
         time: parsedJson['time'] ?? '',
         timeStamp: parsedJson['timeStamp'] ?? '',
-        blogPrivacy: parsedJson['blogPrivacy'] ?? '');
+        blogPrivacy: parsedJson['blogPrivacy'] ?? '',
+        isBookMarked: parsedJson['isBookMarked'] ?? '');
   }
+  Map<String, dynamic> toJson() => _dimensionsToJson(this);
 }
+
+Map<String, dynamic> _dimensionsToJson(Blogs blog) => <String, dynamic>{
+      'image': blog.image,
+      'uid': blog.uid,
+      'authorname': blog.authorname,
+      'title': blog.title,
+      'description': blog.description,
+      'likes': blog.likes,
+      'comments': blog.comments,
+      'isFollowing': blog.isFollowing,
+      'date': blog.date,
+      'time': blog.time,
+      'category': blog.category,
+      'timeStamp': blog.timeStamp,
+      'blogPrivacy': blog.blogPrivacy
+    };

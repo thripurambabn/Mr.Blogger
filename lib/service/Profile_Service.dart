@@ -113,10 +113,10 @@ class ProfileService {
   Future getProfileDetails(String uid) async {
     var userid = await userService.getUserID();
     var currentUserid = uid == null ? userid : uid;
-    DatabaseReference blogsref =
+    DatabaseReference userref =
         FirebaseDatabase.instance.reference().child('users');
     final DataSnapshot snapshot =
-        await blogsref.orderByChild('uid').equalTo(currentUserid).once();
+        await userref.orderByChild('uid').equalTo(currentUserid).once();
     try {
       if (snapshot.value != null) {
         var refkey = snapshot.value.keys;
@@ -126,13 +126,21 @@ class ProfileService {
           var tempfollowing = [];
           var followingList = List<String>();
           if (data[key]['following'] != null) {
-            print('inside if ${data[key]['following']}');
             tempfollowing = data[key]['following'];
             for (var following in tempfollowing) {
               if (following != null) followingList.add(following.toString());
             }
           }
-          print('in service ${followingList}');
+          var tempBookMarks = [];
+          var bookMarkedList = List<Blogs>();
+          if (data[key]['bookMarks'] != null) {
+            print('inside if ${data[key]['bookMarks']}');
+            tempBookMarks = data[key]['bookMarks'];
+            for (var bookMark in tempBookMarks) {
+              if (tempBookMarks != null) bookMarkedList.add(bookMark);
+            }
+          }
+          print('in service ${bookMarkedList}');
           var tempfollowers = [];
           var followersList = List<String>();
           if (data[key]['followers'] != null) {

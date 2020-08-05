@@ -43,6 +43,8 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       yield* _mapDeletedBlogToState(event);
     } else if (event is FollowBlogs) {
       yield* _mapFollowBlogToState(event);
+    } else if (event is BookMark) {
+      yield* _mapBookMarkToState(event);
     }
   }
 
@@ -136,6 +138,18 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
       await _blogsService.setFollow(
         event.isFollowing,
         event.uid,
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Stream<BlogsState> _mapBookMarkToState(BookMark event) async* {
+    try {
+      print('inside book mark bloc ${event.isBookMarked} ${event.blog}');
+      await _blogsService.setBookMark(
+        event.isBookMarked,
+        event.blog,
       );
     } catch (e) {
       print(e);

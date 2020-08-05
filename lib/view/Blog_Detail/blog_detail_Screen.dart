@@ -6,6 +6,7 @@ import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/Add_edit_blog_screen.dart';
+import 'package:mr_blogger/view/Blog_Detail/widgets/book_mark_button.dart';
 
 class DetailPage extends StatefulWidget {
   final Blogs blogs;
@@ -81,6 +82,10 @@ class _DetailPageState extends State<DetailPage> {
           title: Text('Mr.Blogger',
               style: TextStyle(color: Colors.white, fontFamily: 'Paficico')),
           actions: <Widget>[
+            BookMarkButton(
+              isBookMarked: widget.blogs.isBookMarked,
+              blog: widget.blogs,
+            ),
             Container(
                 width: 50,
                 child: Visibility(

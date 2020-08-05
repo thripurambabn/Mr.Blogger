@@ -19,6 +19,7 @@ class BlogsUI extends StatefulWidget {
   final String date;
   final String time;
   final bool isFollowing;
+  final bool isBookMarked;
   final int timeStamp;
   BlogsUI({
     Key key,
@@ -33,6 +34,7 @@ class BlogsUI extends StatefulWidget {
     this.time,
     this.timeStamp,
     this.isFollowing,
+    this.isBookMarked,
   }) : super(key: key);
 
   @override
@@ -81,12 +83,12 @@ class _BlogsUIState extends State<BlogsUI> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    widget.title.substring(0, 26) ?? '',
+                    widget.title.substring(0, 26) + '..' ?? '',
                     maxLines: 1,
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        //  fontFamily: 'Paficico',
+                        fontFamily: 'Paficico',
                         color: Colors.purple),
                     textAlign: TextAlign.left,
                   ),

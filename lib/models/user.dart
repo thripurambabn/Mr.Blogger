@@ -1,15 +1,18 @@
+import 'package:mr_blogger/models/blogs.dart';
+
 class Users {
   String displayName, email, uid, imageUrl;
   List<String> following;
   List<String> followers;
-  Users({
-    this.displayName,
-    this.email,
-    this.uid,
-    this.imageUrl,
-    this.followers,
-    this.following,
-  });
+  List<Blogs> bookMarks;
+  Users(
+      {this.displayName,
+      this.email,
+      this.uid,
+      this.imageUrl,
+      this.followers,
+      this.following,
+      this.bookMarks});
   factory Users.fromJson(Map<String, dynamic> parsedJson) {
     return Users(
         displayName: parsedJson['username'] ?? '',
@@ -17,7 +20,8 @@ class Users {
         uid: parsedJson['uid'] ?? '',
         imageUrl: parsedJson['imageUrl'] ?? '',
         followers: parsedJson['followers'] ?? null,
-        following: parsedJson['following'] ?? null);
+        following: parsedJson['following'] ?? null,
+        bookMarks: parsedJson['bookMarks'] ?? null);
   }
 }
 

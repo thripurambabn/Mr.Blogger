@@ -16,8 +16,11 @@ class BlogsService {
   Future<List<Blogs>> getblogs() async {
     List<Blogs> blogsList = [];
     bool isFollowing;
+    bool isBookMarked;
     var tempfollowing = [];
     var followingList = List<String>();
+    var tempBookMark = [];
+    var bookMarkedList = List<String>();
     Query blogsref = FirebaseDatabase.instance
         .reference()
         .child('blogs')
@@ -43,17 +46,21 @@ class BlogsService {
                 followingList.add(following.toString());
               }
             }
+            if (data1[key]['bookMarks'] != null) {
+              tempBookMark = data1[key]['bookMarks'];
+              for (var bookMark in tempBookMark) {
+                bookMarkedList.add(bookMark.toString());
+              }
+            }
+            print('bookmarked in getblogs $bookMarkedList');
           }
         }
       } catch (e) {
         print(e);
       }
+      isBookMarked = bookMarkedList.contains(data[key]['timeStamp']);
       isFollowing = followingList.contains(data[key]['uid']);
-      print(
-          'before isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
       if (isFollowing == true || data[key]['blogPrivacy'] == false) {
-        print(
-            'isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
         var tempLikes = [];
         var tempImages = [];
         var tempComments;
@@ -101,7 +108,8 @@ class BlogsService {
             category: data[key]['category'],
             time: data[key]['time'],
             timeStamp: data[key]['timeStamp'],
-            blogPrivacy: data[key]['blogPrivacy']);
+            blogPrivacy: data[key]['blogPrivacy'],
+            isBookMarked: isBookMarked);
         blogsList.add(blog);
       }
     }
@@ -152,11 +160,7 @@ class BlogsService {
             print(e);
           }
           isFollowing = followingList.contains(data[key]['uid']);
-          print(
-              'before isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
           if (isFollowing == true || data[key]['blogPrivacy'] == false) {
-            print(
-                'isFollowing in service $isFollowing ${data[key]['blogPrivacy']}');
             var tempLikes = [];
             var likesList = new List<String>();
             if (data[key]['likes'] != null) {
@@ -397,7 +401,6 @@ class BlogsService {
           .child('users')
           .child(event.snapshot.key)
           .update({'following': followingList});
-      print('followingList $followingList');
     }, onError: (Object o) {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
@@ -433,6 +436,90 @@ class BlogsService {
       final DatabaseError error = o;
       print('Error: ${error.code} ${error.message}');
     });
+  }
+
+  Future setBookMark(bool isBookMarked, Blogs blog) async {
+    var userid = await userService.getUserID();
+    FirebaseDatabase.instance
+        .reference()
+        .child('users')
+        .orderByChild('uid')
+        .equalTo(userid)
+        .onChildAdded
+        .listen((Event event) {
+      var tempBookMark = [];
+      var bookMarkList = List<Blogs>();
+      if (event.snapshot.value['bookMarks'] != null) {
+        tempBookMark = event.snapshot.value['bookMarks'];
+        for (var bookMark in tempBookMark) {
+          print('bookMark in for $bookMark');
+          if (bookMark != null) {
+            var tempImages = [];
+            var imagesList = new List<String>();
+            if (bookMark['image'] != null) {
+              tempImages = bookMark['image'];
+
+              for (var image in tempImages) {
+                if (image != null) {
+                  imagesList.add(image);
+                }
+              }
+            }
+            var newBlog = new Blogs(
+                image: imagesList,
+                uid: bookMark['uid'],
+                authorname: bookMark['authorname'],
+                title: bookMark['title'],
+                description: bookMark['description'],
+                likes: bookMark['likes'],
+                comments: bookMark['comments'],
+                isFollowing: bookMark['isFollowing'],
+                date: bookMark['date'],
+                time: bookMark['time'],
+                category: bookMark['category'],
+                timeStamp: bookMark['timeStamp'],
+                blogPrivacy: bookMark['blogPrivacy']);
+            bookMarkList.add(newBlog);
+          }
+        }
+      }
+      if (isBookMarked) {
+        Blogs bookMarkedblog = new Blogs(
+            image: blog.image,
+            uid: blog.uid,
+            authorname: blog.authorname,
+            title: blog.title,
+            description: blog.description,
+            likes: blog.likes,
+            comments: blog.comments,
+            isFollowing: blog.isFollowing,
+            date: blog.date,
+            time: blog.time,
+            category: blog.category,
+            timeStamp: blog.timeStamp,
+            blogPrivacy: blog.blogPrivacy);
+        bookMarkList.add(bookMarkedblog);
+      } else {
+        bookMarkList.remove(blog);
+      }
+      List<Object> convertedBlogsList = convertBlogToJson(bookMarkList);
+      FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(event.snapshot.key)
+          .update({'bookMarks': convertedBlogsList});
+    }, onError: (Object o) {
+      final DatabaseError error = o;
+      print('Error: ${error.code} ${error.message}');
+    });
+  }
+
+  convertBlogToJson(List<Blogs> listOfBlogs) {
+    List<Object> blogsListObj = new List<Object>();
+    for (Blogs blog in listOfBlogs) {
+      blogsListObj.add(blog.toJson());
+    }
+    return blogsListObj;
   }
 
   convertToCommentJson(List<Comment> listOfComments) {

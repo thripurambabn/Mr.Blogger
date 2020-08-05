@@ -121,6 +121,18 @@ class FollowBlogs extends BlogsEvent {
   String toString() => 'Updateblog { blog: $uid }';
 }
 
+class BookMark extends BlogsEvent {
+  final bool isBookMarked;
+  final Blogs blog;
+
+  BookMark(this.isBookMarked, this.blog);
+  @override
+  List<Object> get props => [isBookMarked, blog];
+
+  @override
+  String toString() => 'Updateblog { blog: $blog }';
+}
+
 class BlogComments extends BlogsEvent {
   final int timeStamp;
   final String comment;
