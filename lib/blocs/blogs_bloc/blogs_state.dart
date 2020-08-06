@@ -3,7 +3,6 @@ import 'package:mr_blogger/models/blogs.dart';
 
 abstract class BlogsState extends Equatable {
   const BlogsState();
-
   @override
   List<Object> get props => [];
 }

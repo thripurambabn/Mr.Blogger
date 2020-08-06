@@ -9,9 +9,9 @@ import 'package:mr_blogger/service/user_service.dart';
 
 class ProfileService {
   var userService = UserService();
-
   var userData;
   bool isFollowing;
+  bool isBookMarked;
 //To fetch blogs of logged in user
   Future getblogs(String uid) async {
     List<Blogs> blogsList = [];
@@ -72,6 +72,16 @@ class ProfileService {
               }
             }
           }
+          var tempBookMark = [];
+          var bookMarkedList = List<String>();
+          if (data[key]['bookMarks'] != null) {
+            tempBookMark = data[key]['bookMarks'];
+            for (var bookMark in tempBookMark) {
+              bookMarkedList.add(bookMark.toString());
+            }
+          }
+          isBookMarked = bookMarkedList.contains(key);
+
           if (data[key]['comments'] != null) {
             tempComments = data[key]['comments'];
             for (var comment in tempComments) {
@@ -85,7 +95,10 @@ class ProfileService {
               }
             }
           }
+
           Blogs blog = new Blogs(
+              isFollowing: isFollowing,
+              isBookMarked: isBookMarked,
               image: imagesList,
               uid: data[key]['uid'],
               authorname: data[key]['authorname'],
@@ -132,15 +145,13 @@ class ProfileService {
             }
           }
           var tempBookMarks = [];
-          var bookMarkedList = List<Blogs>();
+          var bookMarkedList = List<String>();
           if (data[key]['bookMarks'] != null) {
-            print('inside if ${data[key]['bookMarks']}');
             tempBookMarks = data[key]['bookMarks'];
             for (var bookMark in tempBookMarks) {
               if (tempBookMarks != null) bookMarkedList.add(bookMark);
             }
           }
-          print('in service ${bookMarkedList}');
           var tempfollowers = [];
           var followersList = List<String>();
           if (data[key]['followers'] != null) {
@@ -165,6 +176,106 @@ class ProfileService {
       print(e);
     }
     return userData;
+  }
+
+  Future getBookMarkedDetails() async {
+    var bookMarksList = List<String>();
+    var bookMarksData = List<Blogs>();
+    var tempfollowing = [];
+    var followingList = List<String>();
+    var userid = await userService.getUserID();
+    final userRef = FirebaseDatabase.instance.reference().child('users');
+    final DataSnapshot snapshot =
+        await userRef.orderByChild('uid').equalTo(userid).once();
+    var refkey = snapshot.value.keys;
+    var data = snapshot.value;
+    for (var key in refkey) {
+      var tempBookMarks = [];
+      if (data[key]['bookMarks'] != null) {
+        tempBookMarks = data[key]['bookMarks'];
+        for (var bookMark in tempBookMarks) {
+          if (tempBookMarks != null) bookMarksList.add(bookMark);
+        }
+      }
+
+      if (data[key]['following'] != null) {
+        tempfollowing = data[key]['following'];
+        for (var following in tempfollowing) {
+          if (following != null) followingList.add(following.toString());
+        }
+      }
+    }
+
+    for (var book in bookMarksList) {
+      DatabaseReference blogsref =
+          FirebaseDatabase.instance.reference().child('blogs');
+      final DataSnapshot snapshot = await blogsref.once();
+      var refKey = snapshot.value.keys;
+      for (var key in refKey) {
+        if (key == book) {
+          DatabaseReference bookMarkref =
+              FirebaseDatabase.instance.reference().child('blogs');
+          final DataSnapshot snapshot1 = await bookMarkref.child(key).once();
+          var tempImages = [];
+          var bookMarkValue = snapshot1.value;
+          var tempLikes = [];
+          var likesList = List<String>();
+
+          if (bookMarkValue['likes'] != null) {
+            tempLikes = bookMarkValue['likes'];
+            for (var like in tempLikes) {
+              likesList.add(like.toString());
+            }
+          }
+
+          var imagesList = new List<String>();
+          if (bookMarkValue['image'] != null) {
+            tempImages = bookMarkValue['image'];
+            for (var image in tempImages) {
+              if (image != null) {
+                imagesList.add(image);
+              }
+            }
+          }
+
+          var tempComments;
+          var commentsList = new List<Comment>();
+          if (bookMarkValue['comments'] != null) {
+            tempComments = bookMarkValue['comments'];
+            for (var comment in tempComments) {
+              if (comment != null) {
+                var newComment = new Comment(
+                  username: comment['username'],
+                  date: comment['date'],
+                  comment: comment['comment'],
+                );
+                commentsList.add(newComment);
+              }
+            }
+          }
+
+          isBookMarked = bookMarksList.contains(key);
+          isFollowing = followingList.contains(bookMarkValue['uid']);
+          Blogs bookMakrkedBlog = new Blogs(
+              isBookMarked: isBookMarked,
+              image: imagesList,
+              uid: bookMarkValue['uid'],
+              authorname: bookMarkValue['authorname'],
+              title: bookMarkValue['title'],
+              description: bookMarkValue['description'],
+              likes: likesList,
+              comments: commentsList,
+              isFollowing: isFollowing,
+              date: bookMarkValue['date'],
+              time: bookMarkValue['time'],
+              category: bookMarkValue['category'],
+              timeStamp: bookMarkValue['timeStamp'],
+              blogPrivacy: bookMarkValue['blogPrivacy']);
+          bookMarksData.add(bookMakrkedBlog);
+        }
+      }
+    }
+    return bookMarksData;
   }
 
   Future getFollowersProfileDetails(List<String> uids) async {

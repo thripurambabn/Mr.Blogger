@@ -9,6 +9,7 @@ class ProfileUI extends StatefulWidget {
   final List<String> followers;
   final Function buttonPressed;
   final Function navigateToFollowerPage;
+  final Function navigateToBookMarkPage;
   ProfileUI(
       {Key key,
       this.displayname,
@@ -18,7 +19,8 @@ class ProfileUI extends StatefulWidget {
       this.navigateToFollowerPage,
       this.following,
       this.uid,
-      this.followers})
+      this.followers,
+      this.navigateToBookMarkPage})
       : super(key: key);
 
   @override
@@ -30,9 +32,6 @@ class _ProfileUIState extends State<ProfileUI> {
   Widget build(BuildContext context) {
     return new Column(children: <Widget>[
       Container(
-        //   decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       border: Border.all(color: Colors.purple[800], width: 0.0)),
         child: Stack(
           alignment: Alignment.topCenter,
           overflow: Overflow.visible,
@@ -94,7 +93,7 @@ class _ProfileUIState extends State<ProfileUI> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 75, 0),
+              margin: EdgeInsets.fromLTRB(10, 0, 30, 0),
               child: InkWell(
                 child: Row(
                   children: <Widget>[
@@ -121,35 +120,51 @@ class _ProfileUIState extends State<ProfileUI> {
               ),
             ),
             Container(
-                height: 20,
+                height: 30,
                 child: VerticalDivider(
                   color: Colors.grey[350],
                   thickness: 2,
                 )),
-            InkWell(
-              child: Row(
-                children: <Widget>[
-                  Text(widget.followers.length.toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15.0,
-                        // fontFamily: 'Paficico',
-                        color: Colors.purple[600],
-                      )),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  Text('Followers',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15.0,
-                        // fontFamily: 'Paficico',
-                        color: Colors.purple[600],
-                      )),
-                ],
+            Container(
+              margin: EdgeInsets.fromLTRB(5, 0, 20, 0),
+              child: InkWell(
+                child: Row(
+                  children: <Widget>[
+                    Text(widget.followers.length.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15.0,
+                          // fontFamily: 'Paficico',
+                          color: Colors.purple[600],
+                        )),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Text('Followers',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15.0,
+                          // fontFamily: 'Paficico',
+                          color: Colors.purple[600],
+                        )),
+                  ],
+                ),
+                onTap: widget.navigateToFollowerPage,
               ),
-              onTap: widget.navigateToFollowerPage,
             ),
+            Container(
+                height: 30,
+                child: VerticalDivider(
+                  color: Colors.grey[350],
+                  thickness: 2,
+                )),
+            Container(
+                child: IconButton(
+                    color: Colors.purple,
+                    icon: Icon(
+                      Icons.bookmark_border,
+                    ),
+                    onPressed: widget.navigateToBookMarkPage)),
           ],
         ),
       ),

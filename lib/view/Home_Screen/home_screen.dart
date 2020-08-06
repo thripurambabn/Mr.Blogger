@@ -238,9 +238,6 @@ class _HomepageState extends State<Homepage> {
                 MaterialPageRoute(
                     builder: (context) =>
                         AddBlogScreen(blog: null, isEdit: false)));
-            //     .then((value) {
-            //   setState(() => getBlogs());
-            // });
           },
           child: Icon(FontAwesomeIcons.solidEdit),
         ));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -8,6 +9,7 @@ import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 import 'package:mr_blogger/view/Profile_Screen/widgets/profile_ui.dart';
+import 'package:mr_blogger/view/book_marked_blogs/book_marked_blogs.dart';
 import 'package:mr_blogger/view/followers_following_screen/followers_following_screem.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -45,6 +47,12 @@ class _ProfilePageState extends State<ProfilePage>
         userName: name,
         followers: followers,
       );
+    }));
+  }
+
+  navigateToBookMarkPage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return BookMarkedPage();
     }));
   }
 
@@ -91,6 +99,9 @@ class _ProfilePageState extends State<ProfilePage>
                         buttonPressed: () {
                           buttonPressed(state.displayName, state.email,
                               state.imageUrl, context);
+                        },
+                        navigateToBookMarkPage: () {
+                          navigateToBookMarkPage();
                         },
                         navigateToFollowerPage: () {
                           navigateToFollowerPage(state.following,
