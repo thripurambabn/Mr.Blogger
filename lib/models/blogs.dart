@@ -43,21 +43,21 @@ class Blogs {
         blogPrivacy: parsedJson['blogPrivacy'] ?? '',
         isBookMarked: parsedJson['isBookMarked'] ?? '');
   }
-  // Map<String, dynamic> toJson() => _dimensionsToJson(this);
+//  Map<String, dynamic> toJson() => toJson();
 }
 
-// Map<String, dynamic> _dimensionsToJson(Blogs blog) => <String, dynamic>{
-//       'image': blog.image,
-//       'uid': blog.uid,
-//       'authorname': blog.authorname,
-//       'title': blog.title,
-//       'description': blog.description,
-//       'likes': blog.likes,
-//       'comments': blog.comments,
-//       'isFollowing': blog.isFollowing,
-//       'date': blog.date,
-//       'time': blog.time,
-//       'category': blog.category,
-//       'timeStamp': blog.timeStamp,
-//       'blogPrivacy': blog.blogPrivacy
-//   };
+Map<String, dynamic> toJson(Blogs blog) => <String, dynamic>{
+      'image': blog.image,
+      'uid': blog.uid,
+      'authorname': blog.authorname,
+      'title': blog.title,
+      'description': blog.description,
+      'likes': blog.likes,
+      'comments': blog.comments,
+      'isFollowing': blog.isFollowing,
+      'date': blog.date,
+      'time': blog.time,
+      'category': blog.category,
+      'timeStamp': blog.timeStamp,
+      'blogPrivacy': blog.blogPrivacy
+    };
