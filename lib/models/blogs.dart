@@ -27,26 +27,61 @@ class Blogs {
       : super();
 
   factory Blogs.fromJson(Map<String, dynamic> parsedJson) {
+    var tempLikes = [];
+    var tempImages = [];
+    var tempComments;
+    var commentsList = new List<Comment>();
+    var likesList = new List<String>();
+    var imagesList = new List<String>();
+    if (parsedJson['likes'] != null) {
+      tempLikes = parsedJson['likes'];
+
+      for (var like in tempLikes) {
+        likesList.add(like.toString());
+      }
+    }
+    if (parsedJson['image'] != null) {
+      tempImages = parsedJson['image'];
+      for (var image in tempImages) {
+        if (image != null) {
+          imagesList.add(image);
+        }
+      }
+    }
+    if (parsedJson['comments'] != null) {
+      tempComments = parsedJson['comments'];
+      for (var comment in tempComments) {
+        if (comment != null) {
+          var newComment = new Comment(
+            username: comment['username'],
+            date: comment['date'],
+            comment: comment['comment'],
+          );
+          commentsList.add(newComment);
+        }
+      }
+    }
     return Blogs(
-        image: parsedJson['image'] ?? '',
-        uid: parsedJson['uid'] ?? '',
-        authorname: parsedJson['authorname'] ?? '',
-        title: parsedJson['title'] ?? '',
-        description: parsedJson['description'] ?? '',
-        likes: parsedJson['likes'] ?? null,
-        isFollowing: parsedJson['isFollowing'] ?? '',
-        comments: parsedJson['comments'] ?? null,
-        date: parsedJson['date'] ?? '',
-        category: parsedJson['category'] ?? '',
-        time: parsedJson['time'] ?? '',
-        timeStamp: parsedJson['timeStamp'] ?? '',
-        blogPrivacy: parsedJson['blogPrivacy'] ?? '',
-        isBookMarked: parsedJson['isBookMarked'] ?? '');
+      image: imagesList ?? '',
+      uid: parsedJson['uid'] ?? '',
+      authorname: parsedJson['authorname'] ?? '',
+      title: parsedJson['title'] ?? '',
+      description: parsedJson['description'] ?? '',
+      likes: likesList ?? null,
+      isFollowing: parsedJson['isFollowing'] ?? '',
+      comments: commentsList ?? null,
+      date: parsedJson['date'] ?? '',
+      category: parsedJson['category'] ?? '',
+      time: parsedJson['time'] ?? '',
+      timeStamp: parsedJson['timeStamp'] ?? '',
+      blogPrivacy: parsedJson['blogPrivacy'] ?? '',
+      //  isBookMarked: parsedJson['isBookMarked'] ?? ''
+    );
   }
-//  Map<String, dynamic> toJson() => toJson();
+  Map<String, dynamic> toJson() => toMap(this);
 }
 
-Map<String, dynamic> toJson(Blogs blog) => <String, dynamic>{
+Map<String, dynamic> toMap(Blogs blog) => <String, dynamic>{
       'image': blog.image,
       'uid': blog.uid,
       'authorname': blog.authorname,

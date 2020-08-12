@@ -9,11 +9,22 @@ class BlogDao {
 
   Future<Database> get _db async => AppDatabase.instance.database;
 
-  Future<List<Blogs>> getBlogs() async {
-    print('blogsStrore $_blogStore');
-    final recordSnapshot = await _blogStore.find(await _db);
-    print('recordnapshot $recordSnapshot');
-    return recordSnapshot.map((snapshot) {
+  Future insert(Blogs blog) async {
+    var key = await _blogStore.add(await _db, blog.toJson());
+    var record = _blogStore.record(key);
+    await record.put(await _db, blog.toJson(), merge: true);
+
+    //readMap = await record.get(db);
+  }
+
+  Future<List<Blogs>> getAllSortedByTImeStamp() async {
+    final finder = Finder(sortOrders: [SortOrder("timeStamp", true)]);
+
+    final snapshot = await _blogStore.find(
+      await _db,
+      finder: finder,
+    );
+    return snapshot.map((snapshot) {
       final blog = Blogs.fromJson(snapshot.value);
       return blog;
     }).toList();

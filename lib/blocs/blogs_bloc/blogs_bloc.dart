@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
@@ -14,7 +17,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   ProfileService _profileService = new ProfileService();
   UserService _userService = new UserService();
   //contructor for blogs bloc
-  BlogDao _blogDao;
   BlogsBloc({@required BlogsService blogsService});
 
   @override
@@ -54,35 +56,44 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   Stream<BlogsState> _mapLoadedBlogsState(
       FetchBlogs event, BlogsState state) async* {
     final uid = await _userService.save();
-    // try {
-    //   if (state is BlogsLoading && !_hasReachedMax(state)) {
-    //     yield BlogsLoading();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      print('iam connected to the internet');
+      try {
+        if (state is BlogsLoading && !_hasReachedMax(state)) {
+          yield BlogsLoading();
 
-    //     List<Blogs> blogslist = await _blogsService.getblogs();
-    //     yield BlogsLoaded(blogs: blogslist, hasReachedMax: false, uid: uid.uid);
-    //   } else if (state is BlogsLoaded && !_hasReachedMax(state)) {
-    //     List<Blogs> moreblogslist =
-    //         await _blogsService.getMoreBlogs(state.blogs);
+          List<Blogs> blogslist = await _blogsService.getblogs();
+          yield BlogsLoaded(
+              blogs: blogslist, hasReachedMax: false, uid: uid.uid);
+        } else if (state is BlogsLoaded && !_hasReachedMax(state)) {
+          List<Blogs> moreblogslist =
+              await _blogsService.getMoreBlogs(state.blogs);
 
-    //     final testlist = state.blogs + moreblogslist;
-    //     if (moreblogslist.length == 0) {
-    //       state.copyWith(hasReachedMax: true);
-    //       yield BlogsLoaded(
-    //           blogs: state.blogs, hasReachedMax: true, uid: uid.uid);
-    //     } else {
-    //       yield BlogsLoaded(
-    //           blogs: testlist, hasReachedMax: false, uid: uid.uid);
-    //     }
-    //   } else if (state is BlogsLoaded) {
-    //     yield BlogsLoaded(
-    //         blogs: state.blogs, hasReachedMax: true, uid: uid.uid);
-    //   }
-    // } catch (_) {
-    //   yield BlogsNotLoaded();
-    // }
-    final offlineblogsList = await _blogDao.getBlogs();
-    yield (BlogsLoaded(
-        blogs: offlineblogsList, hasReachedMax: true, uid: uid.uid));
+          final testlist = state.blogs + moreblogslist;
+          if (moreblogslist.length == 0) {
+            state.copyWith(hasReachedMax: true);
+            yield BlogsLoaded(
+                blogs: state.blogs, hasReachedMax: true, uid: uid.uid);
+          } else {
+            yield BlogsLoaded(
+                blogs: testlist, hasReachedMax: false, uid: uid.uid);
+          }
+        } else if (state is BlogsLoaded) {
+          yield BlogsLoaded(
+              blogs: state.blogs, hasReachedMax: true, uid: uid.uid);
+        }
+      } on SocketException catch (_) {
+        yield BlogsNotLoaded();
+      }
+    } else {
+      print('iam Not connected to the internet');
+      BlogDao _blogsDao = BlogDao();
+      final offlineBlogsList = await _blogsDao.getAllSortedByTImeStamp();
+      yield BlogsLoaded(
+          blogs: offlineBlogsList, hasReachedMax: false, uid: uid.uid);
+    }
   }
 
 //reached end of the scroller

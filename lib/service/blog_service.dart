@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mr_blogger/data/blog_dao.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/models/comment.dart';
 
@@ -9,7 +10,7 @@ import 'package:mr_blogger/service/user_service.dart';
 
 class BlogsService {
   var userService = UserService();
-
+  BlogDao _blogsDao = BlogDao();
   int value = 4;
 
 //To fetch first set of blogs from the firebase database
@@ -111,10 +112,13 @@ class BlogsService {
             blogPrivacy: data[key]['blogPrivacy'],
             isBookMarked: isBookMarked);
         blogsList.add(blog);
+        await _blogsDao.insert(blog);
       }
     }
+
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
+    // await _blogsDao.insert(blogsList);
     return blogsList;
   }
 
@@ -211,6 +215,7 @@ class BlogsService {
                 timeStamp: data[key]['timeStamp'],
                 blogPrivacy: data[key]['blogPrivacy']);
             blogsList.add(blog);
+            await _blogsDao.insert(blog);
           }
         }
       }
@@ -219,6 +224,7 @@ class BlogsService {
     }
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
+    //await _blogsDao.insert(blogsList);
     return blogsList;
   }
 

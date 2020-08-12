@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/comment.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/comment_button.dart';
@@ -83,7 +82,7 @@ class _BlogsUIState extends State<BlogsUI> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    widget.title.substring(0, 26) + '..' ?? '',
+                    widget.title ?? '',
                     maxLines: 1,
                     style: TextStyle(
                         fontSize: 20.0,
