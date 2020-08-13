@@ -4,6 +4,8 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+import 'package:mr_blogger/Internetconnectivity.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_state.dart';
@@ -59,76 +61,87 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
           }
         },
         child: new WillPopScope(
-          onWillPop: _onWillPop,
-          child: new Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.purple[800],
-              title: isEdit
-                  ? Text(
-                      'Edit blog',
-                      style: TextStyle(
-                          color: Colors.white, fontFamily: 'Paficico'),
-                    )
-                  : Text(
-                      'Add blog',
-                      style: TextStyle(
-                          color: Colors.white, fontFamily: 'Paficico'),
+            onWillPop: _onWillPop,
+            child: new Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.purple[800],
+                  title: isEdit
+                      ? Text(
+                          'Edit blog',
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'Paficico'),
+                        )
+                      : Text(
+                          'Add blog',
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'Paficico'),
+                        ),
+                ),
+                body: Builder(builder: (BuildContext context) {
+                  return OfflineBuilder(
+                    connectivityBuilder: (BuildContext context,
+                        ConnectivityResult connectivity, Widget child) {
+                      final bool connected =
+                          connectivity != ConnectivityResult.none;
+                      return InternetConnectivity(
+                        child: child,
+                        connected: connected,
+                      );
+                    },
+                    child: SingleChildScrollView(
+                      child: new Center(
+                        child: imageUrl == null
+                            ? BeforeUpload(
+                                changeIt: (newdropdownValue) {
+                                  changeIt(newdropdownValue);
+                                },
+                                blog: widget.blog,
+                                imageUrlList: imageUrlList,
+                                isEdit: widget.isEdit,
+                                toggleValue: toggleValue,
+                                toggleButton: () {
+                                  toggleButton();
+                                },
+                                imageLoading: imageLoading,
+                                titleController: _titleController,
+                                mytitlevalue: _mytitlevalue,
+                                myValue: _myvalue,
+                                dropdownValue: widget.isEdit == true
+                                    ? widget.blog.category
+                                    : dropdownValue,
+                                descriptionController: _descriptionController,
+                                getImage: () {
+                                  getImage();
+                                })
+                            : EnableUpload(
+                                changeIt: (newdropdownValue) {
+                                  changeIt(newdropdownValue);
+                                },
+                                gridview: buildGridView,
+                                toggleButton: toggleButton(),
+                                toggleValue: toggleValue,
+                                dropdownValue: widget.isEdit == true
+                                    ? widget.blog.category
+                                    : dropdownValue,
+                                titleController: _titleController,
+                                descriptionController: _descriptionController,
+                                isEdit: widget.isEdit,
+                                blog: widget.blog,
+                                formKey: formKey,
+                                updateBlog: () {
+                                  updateBlog();
+                                },
+                                addBlog: () {
+                                  addBlog();
+                                },
+                                getImage: () {
+                                  getImage();
+                                },
+                                mytitleValue: _mytitlevalue),
+                      ),
                     ),
-            ),
-            body: SingleChildScrollView(
-              child: new Center(
-                child: imageUrl == null
-                    ? BeforeUpload(
-                        changeIt: (newdropdownValue) {
-                          changeIt(newdropdownValue);
-                        },
-                        blog: widget.blog,
-                        imageUrlList: imageUrlList,
-                        isEdit: widget.isEdit,
-                        toggleValue: toggleValue,
-                        toggleButton: () {
-                          toggleButton();
-                        },
-                        imageLoading: imageLoading,
-                        titleController: _titleController,
-                        mytitlevalue: _mytitlevalue,
-                        myValue: _myvalue,
-                        dropdownValue: widget.isEdit == true
-                            ? widget.blog.category
-                            : dropdownValue,
-                        descriptionController: _descriptionController,
-                        getImage: () {
-                          getImage();
-                        })
-                    : EnableUpload(
-                        changeIt: (newdropdownValue) {
-                          changeIt(newdropdownValue);
-                        },
-                        gridview: buildGridView,
-                        toggleButton: toggleButton(),
-                        toggleValue: toggleValue,
-                        dropdownValue: widget.isEdit == true
-                            ? widget.blog.category
-                            : dropdownValue,
-                        titleController: _titleController,
-                        descriptionController: _descriptionController,
-                        isEdit: widget.isEdit,
-                        blog: widget.blog,
-                        formKey: formKey,
-                        updateBlog: () {
-                          updateBlog();
-                        },
-                        addBlog: () {
-                          addBlog();
-                        },
-                        getImage: () {
-                          getImage();
-                        },
-                        mytitleValue: _mytitlevalue),
-              ),
-            ),
-          ),
-        ));
+                  );
+                }))));
   }
 
   @override

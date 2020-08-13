@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mr_blogger/Internetconnectivity.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
@@ -75,32 +77,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-            child: Container(
-          child: Column(children: <Widget>[
-            Container(
-              child: BlocBuilder<ProfileBloc, ProfileState>(
-                bloc: BlocProvider.of<ProfileBloc>(context),
-                builder: (context, state) {
-                  if (state is ProfileLoading) {
-                    return Image.network(
-                        'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                  } else if (state is ProfileLoaded) {
-                    return EditProfileUI(
-                      nameController: _nameController,
-                      imageUrl: state.imageUrl,
-                      getImage: () {
-                        getImage();
+        body: Builder(builder: (BuildContext context) {
+          return OfflineBuilder(
+              connectivityBuilder: (BuildContext context,
+                  ConnectivityResult connectivity, Widget child) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                return InternetConnectivity(
+                  child: child,
+                  connected: connected,
+                );
+              },
+              child: SingleChildScrollView(
+                  child: Container(
+                child: Column(children: <Widget>[
+                  Container(
+                    child: BlocBuilder<ProfileBloc, ProfileState>(
+                      bloc: BlocProvider.of<ProfileBloc>(context),
+                      builder: (context, state) {
+                        if (state is ProfileLoading) {
+                          return Image.network(
+                              'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                        } else if (state is ProfileLoaded) {
+                          return EditProfileUI(
+                            nameController: _nameController,
+                            imageUrl: state.imageUrl,
+                            getImage: () {
+                              getImage();
+                            },
+                          );
+                        } else if (state is ProfileNotLoaded) {
+                          return errorUI();
+                        }
                       },
-                    );
-                  } else if (state is ProfileNotLoaded) {
-                    return errorUI();
-                  }
-                },
-              ),
-            ),
-          ]),
-        )));
+                    ),
+                  ),
+                ]),
+              )));
+        }));
   }
 
   Future getImage() async {

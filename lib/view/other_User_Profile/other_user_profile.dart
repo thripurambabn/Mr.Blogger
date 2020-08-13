@@ -1,10 +1,13 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_bloc.dart';
 import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_event.dart';
 import 'package:mr_blogger/blocs/other_user_profile_details_bloc/other_user_profile_details_state.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_bloc.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
+import 'package:mr_blogger/Internetconnectivity.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Edit_Profile/edit_profile.dart';
@@ -72,97 +75,113 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage>
               ),
             ),
             preferredSize: Size.fromHeight(40.0)),
-        body: SingleChildScrollView(
-            child: Container(
-          child: Column(children: <Widget>[
-            Container(
-              child: BlocBuilder<OtherUserProfileDetailsBloc,
-                  OtherUserProfileDetailsState>(
-                bloc: BlocProvider.of<OtherUserProfileDetailsBloc>(context),
-                builder: (context, state) {
-                  if (state is OtherUserProfileDetailsLoading) {
-                    return Image.network(
-                        'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                  } else if (state is OtherUserProfileDetailsLoaded) {
-                    return OtherUserProfileUI(
-                        uid: state.uid,
-                        following: state.following,
-                        followers: state.followers,
-                        displayname: state.displayName,
-                        email: state.email,
-                        imageUrl: state.imageUrl,
-                        buttonPressed: () {
-                          buttonPressed(state.displayName, state.email,
-                              state.imageUrl, context);
+        body: Builder(builder: (BuildContext context) {
+          return OfflineBuilder(
+              connectivityBuilder: (BuildContext context,
+                  ConnectivityResult connectivity, Widget child) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                return InternetConnectivity(
+                  child: child,
+                  connected: connected,
+                );
+              },
+              child: SingleChildScrollView(
+                  child: Container(
+                child: Column(children: <Widget>[
+                  Container(
+                    child: BlocBuilder<OtherUserProfileDetailsBloc,
+                        OtherUserProfileDetailsState>(
+                      bloc:
+                          BlocProvider.of<OtherUserProfileDetailsBloc>(context),
+                      builder: (context, state) {
+                        if (state is OtherUserProfileDetailsLoading) {
+                          return Image.network(
+                              'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                        } else if (state is OtherUserProfileDetailsLoaded) {
+                          return OtherUserProfileUI(
+                              uid: state.uid,
+                              following: state.following,
+                              followers: state.followers,
+                              displayname: state.displayName,
+                              email: state.email,
+                              imageUrl: state.imageUrl,
+                              buttonPressed: () {
+                                buttonPressed(state.displayName, state.email,
+                                    state.imageUrl, context);
+                              },
+                              navigateToFollowerPage: () {
+                                navigateToFollowerPage(state.following,
+                                    state.displayName, state.followers);
+                              });
+                        } else if (state is OtherUserProfileDetailsNotLoaded) {
+                          return Text(
+                            'Something went wrong please try again later',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 10.0,
+                                    color: Colors.purple[200],
+                                    offset: Offset(8.0, 8.0),
+                                  ),
+                                ],
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Paficico',
+                                color: Colors.purple),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  Container(
+                    child: Container(
+                      child: BlocBuilder<OtherUserProfileDetailsBloc,
+                          OtherUserProfileDetailsState>(
+                        bloc: BlocProvider.of<OtherUserProfileDetailsBloc>(
+                            context),
+                        builder: (context, state) {
+                          if (state is OtherUserProfileDetailsLoading) {
+                            return Image.network(
+                                'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
+                          } else if (state is OtherUserProfileDetailsLoaded) {
+                            return ListView.builder(
+                              physics: ScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: state.blogs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                    onTap: () => navigateToDetailPage(
+                                        state.blogs[index], state.uid),
+                                    title: BlogsUI(
+                                      isFollowing:
+                                          state.blogs[index].isFollowing,
+                                      images: state.blogs[index].image,
+                                      uid: state.blogs[index].uid,
+                                      authorname: state.blogs[index].authorname,
+                                      title: state.blogs[index].title,
+                                      description:
+                                          state.blogs[index].description,
+                                      likes: state.blogs[index].likes,
+                                      comments: state.blogs[index].comments,
+                                      date: state.blogs[index].date,
+                                      time: state.blogs[index].time,
+                                      timeStamp: state.blogs[index].timeStamp,
+                                    ));
+                              },
+                            );
+                          } else if (state
+                              is OtherUserProfileDetailsNotLoaded) {
+                            return errorUI();
+                          }
                         },
-                        navigateToFollowerPage: () {
-                          navigateToFollowerPage(state.following,
-                              state.displayName, state.followers);
-                        });
-                  } else if (state is OtherUserProfileDetailsNotLoaded) {
-                    return Text(
-                      'Something went wrong please try again later',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          shadows: [
-                            Shadow(
-                              blurRadius: 10.0,
-                              color: Colors.purple[200],
-                              offset: Offset(8.0, 8.0),
-                            ),
-                          ],
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Paficico',
-                          color: Colors.purple),
-                    );
-                  }
-                },
-              ),
-            ),
-            Container(
-              child: Container(
-                child: BlocBuilder<OtherUserProfileDetailsBloc,
-                    OtherUserProfileDetailsState>(
-                  bloc: BlocProvider.of<OtherUserProfileDetailsBloc>(context),
-                  builder: (context, state) {
-                    if (state is OtherUserProfileDetailsLoading) {
-                      return Image.network(
-                          'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
-                    } else if (state is OtherUserProfileDetailsLoaded) {
-                      return ListView.builder(
-                        physics: ScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: state.blogs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                              onTap: () => navigateToDetailPage(
-                                  state.blogs[index], state.uid),
-                              title: BlogsUI(
-                                isFollowing: state.blogs[index].isFollowing,
-                                images: state.blogs[index].image,
-                                uid: state.blogs[index].uid,
-                                authorname: state.blogs[index].authorname,
-                                title: state.blogs[index].title,
-                                description: state.blogs[index].description,
-                                likes: state.blogs[index].likes,
-                                comments: state.blogs[index].comments,
-                                date: state.blogs[index].date,
-                                time: state.blogs[index].time,
-                                timeStamp: state.blogs[index].timeStamp,
-                              ));
-                        },
-                      );
-                    } else if (state is OtherUserProfileDetailsNotLoaded) {
-                      return errorUI();
-                    }
-                  },
-                ),
-              ),
-            )
-          ]),
-        )));
+                      ),
+                    ),
+                  )
+                ]),
+              )));
+        }));
   }
 
   buttonPressed(

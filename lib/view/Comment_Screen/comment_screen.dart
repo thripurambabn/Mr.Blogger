@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:mr_blogger/Internetconnectivity.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_bloc.dart';
 import 'package:mr_blogger/blocs/blogs_bloc/blogs_event.dart';
 import 'package:mr_blogger/models/comment.dart';
@@ -55,79 +57,91 @@ class _CommentsScreenState extends State<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple[800],
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+        appBar: AppBar(
+          backgroundColor: Colors.purple[800],
+          title: Text(
+            widget.title,
+            style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
+          ),
         ),
-      ),
-      body: Column(children: <Widget>[
-        commentsList(),
-        Container(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              autocorrect: false,
-              textCapitalization: TextCapitalization.sentences,
-              controller: _commentController,
-              validator: (text) {
-                if (text == null || text.isEmpty) {
-                  return 'Comment cant be empty';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                    icon: Icon(FontAwesomeIcons.paperPlane,
-                        color: Colors.purple[800]),
-                    onPressed: () => {
-                          if (commentIndex != null)
-                            {
-                              widget.comments[commentIndex].comment =
-                                  _commentController.text,
-                              (!_commentController.text.isEmpty)
-                                  ? {
-                                      setState(() {
-                                        commentsList();
-                                      }),
-                                      editComments(
-                                        widget.timeStamp,
-                                        widget.comments[commentIndex].date,
+        body: Builder(builder: (BuildContext context) {
+          return OfflineBuilder(
+            connectivityBuilder: (BuildContext context,
+                ConnectivityResult connectivity, Widget child) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              return InternetConnectivity(
+                child: child,
+                connected: connected,
+              );
+            },
+            child: Column(children: <Widget>[
+              commentsList(),
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.sentences,
+                    controller: _commentController,
+                    validator: (text) {
+                      if (text == null || text.isEmpty) {
+                        return 'Comment cant be empty';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          icon: Icon(FontAwesomeIcons.paperPlane,
+                              color: Colors.purple[800]),
+                          onPressed: () => {
+                                if (commentIndex != null)
+                                  {
+                                    widget.comments[commentIndex].comment =
                                         _commentController.text,
-                                      ),
-                                      _commentController.clear(),
-                                    }
-                                  : null,
-                              commentIndex = null,
-                            }
-                          else
-                            {
-                              (!_commentController.text.isEmpty)
-                                  ? {
-                                      setState(() {
-                                        commentsList();
-                                      }),
-                                      setComments(
-                                          widget.timeStamp,
-                                          _commentController.text,
-                                          widget.comments,
-                                          widget.uid),
-                                      _commentController.clear(),
-                                    }
-                                  : null
-                            }
-                        }),
-                icon: Icon(
-                  FontAwesomeIcons.comment,
-                  color: Colors.purple[800],
-                ),
-                labelText: 'write your comment',
-              )),
-        ),
-      ]),
-    );
+                                    (!_commentController.text.isEmpty)
+                                        ? {
+                                            setState(() {
+                                              commentsList();
+                                            }),
+                                            editComments(
+                                              widget.timeStamp,
+                                              widget
+                                                  .comments[commentIndex].date,
+                                              _commentController.text,
+                                            ),
+                                            _commentController.clear(),
+                                          }
+                                        : null,
+                                    commentIndex = null,
+                                  }
+                                else
+                                  {
+                                    (!_commentController.text.isEmpty)
+                                        ? {
+                                            setState(() {
+                                              commentsList();
+                                            }),
+                                            setComments(
+                                                widget.timeStamp,
+                                                _commentController.text,
+                                                widget.comments,
+                                                widget.uid),
+                                            _commentController.clear(),
+                                          }
+                                        : null
+                                  }
+                              }),
+                      icon: Icon(
+                        FontAwesomeIcons.comment,
+                        color: Colors.purple[800],
+                      ),
+                      labelText: 'write your comment',
+                    )),
+              ),
+            ]),
+          );
+        }));
   }
 
   void navigateToLoadingPage() {

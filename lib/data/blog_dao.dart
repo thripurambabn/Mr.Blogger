@@ -13,8 +13,6 @@ class BlogDao {
     var key = await _blogStore.add(await _db, blog.toJson());
     var record = _blogStore.record(key);
     await record.put(await _db, blog.toJson(), merge: true);
-
-    //readMap = await record.get(db);
   }
 
   Future<List<Blogs>> getAllSortedByTImeStamp() async {

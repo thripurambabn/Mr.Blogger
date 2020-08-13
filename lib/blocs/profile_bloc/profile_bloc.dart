@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
@@ -42,8 +43,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       List<Blogs> profileblogslist = await _profileService.getblogs(null);
       yield ProfileLoaded(profileblogslist, test.displayName, test.email,
           test.uid, test.imageUrl, test.following, test.followers);
-    } catch (e) {
-      print(e);
+    } on SocketException catch (e) {
+      ProfileNotLoaded();
     }
   }
 

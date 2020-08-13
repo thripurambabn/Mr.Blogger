@@ -3,31 +3,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_bloc.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_event.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_state.dart';
-import 'package:mr_blogger/view/followers_following_screen/followers_tile_widget.dart';
-import 'package:mr_blogger/view/followers_following_screen/following_tile_widget.dart';
+import 'package:mr_blogger/view/followers_following_screen/widgets/following_tile_widget.dart';
 
-class FollowersWidget extends StatefulWidget {
+class FollowingWidget extends StatefulWidget {
   final String uid;
-  final List<String> followers;
+  final List<String> following;
   final Function(String) navigateToProfilePage;
   final String userName;
-  const FollowersWidget(
+  const FollowingWidget(
       {Key key,
-      this.followers,
+      this.following,
       this.userName,
       this.navigateToProfilePage,
       this.uid})
       : super(key: key);
 
   @override
-  _FollowersWidgetState createState() => _FollowersWidgetState();
+  _FollowingWidgetState createState() => _FollowingWidgetState();
 }
 
-class _FollowersWidgetState extends State<FollowersWidget> {
+class _FollowingWidgetState extends State<FollowingWidget> {
   void initState() {
     //calls loaded profile details event
     BlocProvider.of<OtherUserProfileBloc>(context).add(
-      OtherUserProfileEvent(widget.followers),
+      OtherUserProfileEvent(widget.following),
     );
     super.initState();
   }
@@ -41,14 +40,15 @@ class _FollowersWidgetState extends State<FollowersWidget> {
           return Image.network(
               'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
         } else if (state is OtherUserProfileLoaded) {
+          print('sate ${state.userData.uid}');
           return ListView.builder(
             itemCount: state.users.length,
             itemBuilder: (context, i) {
-              return widget.followers != null
-                  ? FollowersTileWidget(
+              return widget.following != null
+                  ? FollowingTileWidget(
                       currentUid: state.userData.uid,
                       uid: widget.uid,
-                      followerUser: state.users[i],
+                      followingUser: state.users[i],
                       navigateToProfilePage: (value) {
                         widget.navigateToProfilePage(value);
                       },
