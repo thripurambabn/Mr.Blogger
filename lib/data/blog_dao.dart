@@ -16,7 +16,7 @@ class BlogDao {
   }
 
   Future<List<Blogs>> getAllSortedByTImeStamp() async {
-    final finder = Finder(sortOrders: [SortOrder("timeStamp", true)]);
+    final finder = Finder(sortOrders: [SortOrder("timeStamp", false)]);
 
     final snapshot = await _blogStore.find(
       await _db,

@@ -76,6 +76,7 @@ class _DetailPageState extends State<DetailPage> {
       }
     }
 
+    print('bookmark value in blod_detail ${widget.blogs.isBookMarked}');
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],

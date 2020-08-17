@@ -165,6 +165,7 @@ class _HomepageState extends State<Homepage> {
                           onTap: () => navigateToDetailPage(
                               state.blogs[index], state.uid),
                           title: BlogsUI(
+                            isBookMarked: state.blogs[index].isBookMarked,
                             isFollowing: state.blogs[index].isFollowing,
                             images: state.blogs[index].image,
                             uid: state.blogs[index].uid,

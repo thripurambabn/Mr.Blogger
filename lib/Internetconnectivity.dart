@@ -29,12 +29,26 @@ class _InternetConnectivityState extends State<InternetConnectivity> {
         widget.connected
             ? Container()
             : AlertDialog(
-                title: Text('No Internet connection'),
+                title: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.cloud_off,
+                      size: 23,
+                    ),
+                    Text(
+                      ' No Internet connection',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
                 content: Text(
-                    'please check your internet connection and try again later!'),
+                    'Please check your internet connection and try again later!'),
                 actions: <Widget>[
                   FlatButton(
-                      child: Text('Ok'),
+                      child: Text(
+                        'Ok',
+                        style: TextStyle(color: Colors.purple[800]),
+                      ),
                       onPressed: () {
                         navigateToHomePage();
                       })

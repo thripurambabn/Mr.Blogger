@@ -28,12 +28,14 @@ class RegisterScreen extends StatelessWidget {
                   left: 0.0,
                   right: 0.0,
                   height: 32.0,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    color: connected ? Colors.purple[800] : Color(0xFFEE4400),
-                    child: connected
-                        ? Container
-                        : Row(
+                  child: connected
+                      ? Container()
+                      : AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          color: connected
+                              ? Colors.purple[800]
+                              : Color(0xFFEE4400),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
@@ -54,7 +56,7 @@ class RegisterScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                  ),
+                        ),
                 ),
               ],
             );

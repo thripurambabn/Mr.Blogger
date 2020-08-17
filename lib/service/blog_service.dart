@@ -60,6 +60,7 @@ class BlogsService {
       }
 
       isBookMarked = bookMarkedList.contains(key);
+      print('in service $isBookMarked ,$key');
       isFollowing = followingList.contains(data[key]['uid']);
       if (isFollowing == true || data[key]['blogPrivacy'] == false) {
         var tempLikes = [];

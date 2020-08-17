@@ -20,13 +20,14 @@ class BookMarkButton extends StatefulWidget {
 class _BookMarkButtonState extends State<BookMarkButton> {
   @override
   Widget build(BuildContext context) {
-    void setfollow(
+    void setBookMark(
       bool isBookMarked,
       Blogs blog,
     ) {
       BlocProvider.of<BlogsBloc>(context).add(BookMark(isBookMarked, blog));
     }
 
+    print('bookmark value in book_mark button ${widget.isBookMarked}');
     return new Row(children: <Widget>[
       GestureDetector(
           onTap: () => {
@@ -37,7 +38,7 @@ class _BookMarkButtonState extends State<BookMarkButton> {
                     widget.isBookMarked = true;
                   }
                 }),
-                setfollow(
+                setBookMark(
                   widget.isBookMarked,
                   widget.blog,
                 ),

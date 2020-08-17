@@ -76,68 +76,119 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Builder(
-        builder: (BuildContext context) {
-          return OfflineBuilder(
-            connectivityBuilder: (BuildContext context,
-                ConnectivityResult connectivity, Widget child) {
-              final bool connected = connectivity != ConnectivityResult.none;
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  child,
-                  Positioned(
-                    left: 0.0,
-                    right: 0.0,
-                    height: 32.0,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      color: connected ? Colors.purple[800] : Color(0xFFEE4400),
-                      child: connected
-                          ? Container
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "OFFLINE",
-                                  style: TextStyle(color: Colors.white),
+        debugShowCheckedModeBanner: false,
+        home: Builder(builder: (BuildContext context) {
+          return OfflineBuilder(connectivityBuilder: (BuildContext context,
+              ConnectivityResult connectivity, Widget child) {
+            final bool connected = connectivity != ConnectivityResult.none;
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                child,
+                Positioned(
+                  left: 0.0,
+                  right: 0.0,
+                  height: 32.0,
+                  //  child:
+                  // color: connected ? Colors.purple[900] : Color(0xFFEE4400),
+                  child: connected
+                      ? Container()
+                      : AnimatedContainer(
+                          color: Color(0xFFEE4400),
+                          duration: const Duration(milliseconds: 300),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Offline",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    decoration: TextDecoration.none,
+                                    color: Colors.white),
+                              ),
+                              SizedBox(
+                                width: 8.0,
+                              ),
+                              SizedBox(
+                                width: 12.0,
+                                height: 12.0,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
                                 ),
-                                SizedBox(
-                                  width: 8.0,
-                                ),
-                                SizedBox(
-                                  width: 12.0,
-                                  height: 12.0,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                  ),
-                ],
-              );
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              ],
+            );
+          }, child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              if (state is AuthenticationFailure) {
+                return InitialScreen(
+                  userService: _userService,
+                );
+              }
+              if (state is AuthenticationSuccess) {
+                return Homepage();
+              }
+              return SplashPage();
             },
-            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, state) {
-                if (state is AuthenticationFailure) {
-                  return InitialScreen(
-                    userService: _userService,
-                  );
-                }
-                if (state is AuthenticationSuccess) {
-                  return Homepage();
-                }
-                return SplashPage();
-              },
-            ),
-          );
-        },
-      )),
-    );
+          ));
+        }));
   }
 }
+//       home: Scaffold(body: Builder(
+//         builder: (BuildContext context) {
+//           return OfflineBuilder(
+//             connectivityBuilder: (BuildContext context,
+//                 ConnectivityResult connectivity, Widget child) {
+//               final bool connected = connectivity != ConnectivityResult.none;
+//               return Stack(
+//                 fit: StackFit.expand,
+//                 children: [
+//                   child,
+//                   Positioned(
+//                     left: 0.0,
+//                     right: 0.0,
+//                     height: 32.0,
+//                     child: AnimatedContainer(
+//                       duration: const Duration(milliseconds: 300),
+//                       color: connected ? Colors.purple[800] : Color(0xFFEE4400),
+//                       child: connected
+//                           ? Container
+//                           : Row(
+//                               mainAxisAlignment: MainAxisAlignment.center,
+//                               children: <Widget>[
+//                                 Text(
+//                                   "OFFLINE",
+//                                   style: TextStyle(color: Colors.white),
+//                                 ),
+//                                 SizedBox(
+//                                   width: 8.0,
+//                                 ),
+//                                 SizedBox(
+//                                   width: 12.0,
+//                                   height: 12.0,
+//                                   child: CircularProgressIndicator(
+//                                     strokeWidth: 2.0,
+//                                     valueColor: AlwaysStoppedAnimation<Color>(
+//                                         Colors.white),
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                     ),
+//                   ),
+//                 ],
+//               );
+//             },
+
+//           );
+//         },
+//       )),
+//     );
+//   }
+// }
