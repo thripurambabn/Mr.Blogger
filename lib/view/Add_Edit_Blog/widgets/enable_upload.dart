@@ -5,6 +5,7 @@ import 'package:mr_blogger/view/Add_Edit_Blog/widgets/description.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/widgets/dropbox.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/widgets/title.dart';
 import 'package:mr_blogger/view/Loading_Page/loading_page.dart';
+import 'package:zefyr/zefyr.dart';
 
 class EnableUpload extends StatefulWidget {
   final Function gridview;
@@ -15,11 +16,13 @@ class EnableUpload extends StatefulWidget {
   final bool toggleValue;
   final String dropdownValue;
   final TextEditingController titleController;
+  //final ZefyrController descriptionController;
   final TextEditingController descriptionController;
   final bool isEdit;
   final Blogs blog;
   final String mytitleValue;
   final Function changeIt;
+  final focusNode;
   bool isbuttondisabled = false;
   final formKey;
   EnableUpload(
@@ -37,7 +40,8 @@ class EnableUpload extends StatefulWidget {
       this.mytitleValue,
       this.formKey,
       this.getImage,
-      this.changeIt})
+      this.changeIt,
+      this.focusNode})
       : super(key: key);
 
   @override
@@ -119,6 +123,7 @@ class _EnableUploadState extends State<EnableUpload> {
             ),
             DescriptionField(
               descriptionController: widget.descriptionController,
+              //focusNode: widget.focusNode,
               // myValue: _myvalue,
             ),
             SizedBox(

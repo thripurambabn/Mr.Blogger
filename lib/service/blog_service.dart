@@ -60,7 +60,6 @@ class BlogsService {
       }
 
       isBookMarked = bookMarkedList.contains(key);
-      print('in service $isBookMarked ,$key');
       isFollowing = followingList.contains(data[key]['uid']);
       if (isFollowing == true || data[key]['blogPrivacy'] == false) {
         var tempLikes = [];
@@ -351,8 +350,6 @@ class BlogsService {
               category: data[key]['category'],
               timeStamp: data[key]['timeStamp'],
               blogPrivacy: data[key]['blogPrivacy']);
-
-          blogsList.clear();
           blogsList.add(blog);
         }
       }

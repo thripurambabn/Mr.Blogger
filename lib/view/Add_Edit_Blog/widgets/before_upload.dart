@@ -6,6 +6,7 @@ import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/widgets/description.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/widgets/dropbox.dart';
 import 'package:mr_blogger/view/Add_Edit_Blog/widgets/title.dart';
+import 'package:zefyr/zefyr.dart';
 
 class BeforeUpload extends StatefulWidget {
   final Blogs blog;
@@ -19,24 +20,27 @@ class BeforeUpload extends StatefulWidget {
   final String mytitlevalue;
   final String myValue;
   String dropdownValue;
+  // final focusNode;
   final Function(String) changeIt;
+  //final ZefyrController descriptionController;
   final TextEditingController descriptionController;
-  BeforeUpload(
-      {Key key,
-      this.blog,
-      this.imageUrlList,
-      this.isEdit,
-      this.toggleValue,
-      this.toggleButton,
-      this.imageLoading,
-      this.titleController,
-      this.mytitlevalue,
-      this.myValue,
-      this.dropdownValue,
-      this.descriptionController,
-      this.getImage,
-      this.changeIt})
-      : super(key: key);
+  BeforeUpload({
+    Key key,
+    this.blog,
+    this.imageUrlList,
+    this.isEdit,
+    this.toggleValue,
+    this.toggleButton,
+    this.imageLoading,
+    this.titleController,
+    this.mytitlevalue,
+    this.myValue,
+    this.dropdownValue,
+    this.descriptionController,
+    this.getImage,
+    this.changeIt,
+    // this.focusNode
+  }) : super(key: key);
 
   @override
   _BeforeUploadState createState() => _BeforeUploadState();
@@ -108,7 +112,8 @@ class _BeforeUploadState extends State<BeforeUpload> {
           ),
           widget.isEdit
               ? InkWell(
-                  child: SizedBox(
+                  child: Container(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                       height: 240.0,
                       width: MediaQuery.of(context).size.width,
                       child: Carousel(
@@ -136,7 +141,9 @@ class _BeforeUploadState extends State<BeforeUpload> {
                                   fontFamily: 'Paficico'))))
                   : InkWell(
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(10, 20, 20, 10),
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.all(10),
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                         color: Colors.purple[200],
                         alignment: Alignment.center,
                         height: 240,
@@ -161,7 +168,7 @@ class _BeforeUploadState extends State<BeforeUpload> {
                             )
                           ],
                         ),
-                        width: 340,
+                        //   width: 340,
                       ),
                       onTap: widget.getImage,
                     ),
@@ -170,6 +177,7 @@ class _BeforeUploadState extends State<BeforeUpload> {
           ),
           DescriptionField(
             descriptionController: widget.descriptionController,
+            //focusNode: widget.focusNode,
             // myValue: _myvalue,
           ),
           RaisedButton(

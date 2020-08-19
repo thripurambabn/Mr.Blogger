@@ -14,6 +14,7 @@ class _TitleWidgetState extends State<TitleWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: MediaQuery.of(context).size.width,
       child: Column(children: <Widget>[
         Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),

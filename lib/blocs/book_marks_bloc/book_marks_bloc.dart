@@ -3,12 +3,9 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:mr_blogger/blocs/book_marks_bloc/book_marks_event.dart';
 import 'package:mr_blogger/blocs/book_marks_bloc/book_marks_state.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_event.dart';
-import 'package:mr_blogger/blocs/profile_bloc/profile_state.dart';
 import 'package:mr_blogger/models/blogs.dart';
 import 'package:mr_blogger/service/Profile_Service.dart';
 import 'package:mr_blogger/service/blog_service.dart';
-import 'package:mr_blogger/service/user_service.dart';
 
 class BookMarkBloc extends Bloc<BookMarkEvent, BookMarksState> {
   final BlogsService _blogsService;
@@ -37,7 +34,6 @@ class BookMarkBloc extends Bloc<BookMarkEvent, BookMarksState> {
     try {
       List<Blogs> bookMarkedBlogslist =
           await _profileService.getBookMarkedDetails();
-      print('bookMarkedBlogslist in bloc $bookMarkedBlogslist');
       yield BookMarkedBlogLoaded(bookMarkedBlogslist);
     } catch (e) {
       print(e);

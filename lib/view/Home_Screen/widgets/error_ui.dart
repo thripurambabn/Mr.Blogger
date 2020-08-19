@@ -15,7 +15,7 @@ class ErrorUI extends StatelessWidget {
             Shadow(
               blurRadius: 10.0,
               color: Colors.purple[200],
-              offset: Offset(8.0, 8.0),
+              offset: Offset(3.0, 3.0),
             ),
           ],
           fontSize: 25.0,

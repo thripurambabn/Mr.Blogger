@@ -27,7 +27,6 @@ class _BookMarkButtonState extends State<BookMarkButton> {
       BlocProvider.of<BlogsBloc>(context).add(BookMark(isBookMarked, blog));
     }
 
-    print('bookmark value in book_mark button ${widget.isBookMarked}');
     return new Row(children: <Widget>[
       GestureDetector(
           onTap: () => {

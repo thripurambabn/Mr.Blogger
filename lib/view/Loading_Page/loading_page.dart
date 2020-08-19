@@ -22,6 +22,9 @@ class LoadingPage extends StatelessWidget {
           },
           child: Center(
               child: Image(
+            height: double.infinity,
+            width: double.infinity,
+            alignment: Alignment.center,
             fit: BoxFit.cover,
             image: NetworkImage(
                 'https://i.pinimg.com/originals/07/bf/6f/07bf6f0f7d5dd64829822e95e97f908d.gif'),

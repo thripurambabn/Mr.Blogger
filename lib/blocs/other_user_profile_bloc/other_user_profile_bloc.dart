@@ -38,11 +38,6 @@ class OtherUserProfileBloc
       var test = await _profileService.getFollowersProfileDetails(event.uid);
       UserService _userService = UserService();
       var userData = await _userService.save();
-
-      for (var user in test) {
-        print('profile bloc ${user.displayName}');
-      }
-
       yield OtherUserProfileLoaded(test, userData);
     } catch (e) {
       print(e);

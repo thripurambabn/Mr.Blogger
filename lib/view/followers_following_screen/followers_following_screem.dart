@@ -26,8 +26,6 @@ class _FollowPageState extends State<FollowPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('follwoer_following screen ${widget.uid}');
-
     return Container(
         child: DefaultTabController(
             length: 2,

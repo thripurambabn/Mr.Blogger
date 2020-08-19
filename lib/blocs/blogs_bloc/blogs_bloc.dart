@@ -162,7 +162,6 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapBookMarkToState(BookMark event) async* {
     try {
-      print('inside book mark bloc ${event.isBookMarked} ${event.blog}');
       await _blogsService.setBookMark(
         event.isBookMarked,
         event.blog,
@@ -195,7 +194,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
 
   Stream<BlogsState> _mapDeleteCommentsToState(DeleteComments event) async* {
     try {
-      var user = await _userService.save();
+      //  var user = await _userService.save();
       await _blogsService.deleteComments(
         event.blogsTimeStamp,
         event.commentTimeStamp,

@@ -65,7 +65,7 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Container(
-                    height: 759,
+                    height: MediaQuery.of(context).size.height,
                     width: double.infinity,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -106,7 +106,7 @@ class LoginScreen extends StatelessWidget {
                         Container(
                           alignment: Alignment.bottomCenter,
                           child: Container(
-                            height: 545,
+                            height: MediaQuery.of(context).size.height * 0.76,
                             alignment: Alignment.bottomCenter,
                             decoration: BoxDecoration(
                                 color: Colors.white,

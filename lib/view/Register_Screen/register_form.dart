@@ -58,6 +58,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                duration: const Duration(seconds: 8),
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

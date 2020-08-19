@@ -34,7 +34,6 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage>
   List<Blogs> blogsList = [];
   @override
   void initState() {
-    print('widget.uid in OtherUserProfilePage ${widget.uid}');
     //calls loaded profile details event
     BlocProvider.of<OtherUserProfileDetailsBloc>(context).add(
       LoadedOtherUserProfileDeatils(widget.uid),
@@ -122,7 +121,7 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage>
                                   Shadow(
                                     blurRadius: 10.0,
                                     color: Colors.purple[200],
-                                    offset: Offset(8.0, 8.0),
+                                    offset: Offset(3.0, 3.0),
                                   ),
                                 ],
                                 fontSize: 25.0,
@@ -205,7 +204,7 @@ class _OtherUserProfilePageState extends State<OtherUserProfilePage>
             Shadow(
               blurRadius: 10.0,
               color: Colors.purple[200],
-              offset: Offset(8.0, 8.0),
+              offset: Offset(3.0, 3.0),
             ),
           ],
           fontSize: 25.0,

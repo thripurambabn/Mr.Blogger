@@ -40,7 +40,6 @@ class OtherUserProfileDetailsBloc
       var test = await _profileService.getProfileDetails(event.uid);
 
       List<Blogs> profileblogslist = await _profileService.getblogs(event.uid);
-      print('profile Other user details bloc ${test.displayName}');
       yield OtherUserProfileDetailsLoaded(profileblogslist, test.displayName,
           test.email, test.uid, test.imageUrl, test.following, test.followers);
     } catch (e) {

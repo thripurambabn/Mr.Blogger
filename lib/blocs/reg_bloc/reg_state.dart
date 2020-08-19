@@ -81,7 +81,6 @@ class RegisterState {
       bool isEmailValid,
       bool isPasswordValid,
       bool isConfirmPasswordValid}) {
-    print('inside update $isPasswordValid,$isConfirmPasswordValid');
     return copyWith(
       isUsernameValid: isUsernameValid,
       isEmailValid: isEmailValid,

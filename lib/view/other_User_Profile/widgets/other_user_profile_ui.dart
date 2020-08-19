@@ -31,8 +31,6 @@ class OtherUserProfileUI extends StatefulWidget {
 class _OtherUserProfileUIState extends State<OtherUserProfileUI> {
   @override
   Widget build(BuildContext context) {
-    print(
-        'widget.following ${widget.following} widget.followers ${widget.followers}');
     return new Column(children: <Widget>[
       Container(
         child: Stack(

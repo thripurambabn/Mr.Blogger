@@ -69,31 +69,54 @@ class _BookMarkedPageState extends State<BookMarkedPage> {
                         return Image.network(
                             'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
                       } else if (state is BookMarkedBlogLoaded) {
-                        print('blogs ${state.blogs}');
-                        return ListView.builder(
-                          physics: ScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: state.blogs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                                onTap: () => navigateToDetailPage(
-                                    state.blogs[index], state.blogs[index].uid),
-                                title: BlogsUI(
-                                  isFollowing: state.blogs[index].isFollowing,
-                                  images: state.blogs[index].image,
-                                  uid: state.blogs[index].uid,
-                                  authorname: state.blogs[index].authorname,
-                                  title: state.blogs[index].title,
-                                  description: state.blogs[index].description,
-                                  likes: state.blogs[index].likes,
-                                  comments: state.blogs[index].comments,
-                                  date: state.blogs[index].date,
-                                  time: state.blogs[index].time,
-                                  timeStamp: state.blogs[index].timeStamp,
-                                ));
-                          },
-                        );
+                        return state.blogs.length == 0
+                            ? Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'You havent book marked any blog yet!',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 10.0,
+                                          color: Colors.purple[200],
+                                          offset: Offset(3.0, 3.0),
+                                        ),
+                                      ],
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Paficico',
+                                      color: Colors.purple),
+                                ),
+                              )
+                            : ListView.builder(
+                                physics: ScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: state.blogs.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ListTile(
+                                      onTap: () => navigateToDetailPage(
+                                          state.blogs[index],
+                                          state.blogs[index].uid),
+                                      title: BlogsUI(
+                                        isFollowing:
+                                            state.blogs[index].isFollowing,
+                                        images: state.blogs[index].image,
+                                        uid: state.blogs[index].uid,
+                                        authorname:
+                                            state.blogs[index].authorname,
+                                        title: state.blogs[index].title,
+                                        description:
+                                            state.blogs[index].description,
+                                        likes: state.blogs[index].likes,
+                                        comments: state.blogs[index].comments,
+                                        date: state.blogs[index].date,
+                                        time: state.blogs[index].time,
+                                        timeStamp: state.blogs[index].timeStamp,
+                                      ));
+                                },
+                              );
                       } else if (state is BookMarkedBlogNotLoaded) {
                         return errorUI();
                       }
@@ -107,14 +130,14 @@ class _BookMarkedPageState extends State<BookMarkedPage> {
   Widget errorUI() {
     return new Center(
         child: Text(
-      'There are no blogs yet!☹️...\nAdd Yours Now🥳',
+      'Error in loading blogs please try again later!',
       textAlign: TextAlign.center,
       style: TextStyle(
           shadows: [
             Shadow(
               blurRadius: 10.0,
               color: Colors.purple[200],
-              offset: Offset(8.0, 8.0),
+              offset: Offset(3.0, 3.0),
             ),
           ],
           fontSize: 25.0,

@@ -42,7 +42,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Stream<RegisterState> mapEventToState(
     RegisterEvent event,
   ) async* {
-    print('event $event');
     if (event is RegisterEmailChanged) {
       yield* _mapRegisterEmailChangedToState(event.email);
     } else if (event is RegisterPasswordChanged) {

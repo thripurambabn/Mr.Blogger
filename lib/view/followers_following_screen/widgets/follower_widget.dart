@@ -4,7 +4,6 @@ import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_bloc
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_event.dart';
 import 'package:mr_blogger/blocs/other_user_profile_bloc/other_user_profile_state.dart';
 import 'package:mr_blogger/view/followers_following_screen/widgets/followers_tile_widget.dart';
-import 'package:mr_blogger/view/followers_following_screen/widgets/following_tile_widget.dart';
 
 class FollowersWidget extends StatefulWidget {
   final String uid;
@@ -41,21 +40,41 @@ class _FollowersWidgetState extends State<FollowersWidget> {
           return Image.network(
               'https://i.pinimg.com/originals/1a/e0/90/1ae090fce667925b01954c2eb72308b6.gif');
         } else if (state is OtherUserProfileLoaded) {
-          return ListView.builder(
-            itemCount: state.users.length,
-            itemBuilder: (context, i) {
-              return widget.followers != null
-                  ? FollowersTileWidget(
-                      currentUid: state.userData.uid,
-                      uid: widget.uid,
-                      followerUser: state.users[i],
-                      navigateToProfilePage: (value) {
-                        widget.navigateToProfilePage(value);
-                      },
-                    )
-                  : Container(child: Text('you have no followers yet'));
-            },
-          );
+          return widget.followers.length == 0
+              ? Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'You are not being followed by anyone yet!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        shadows: [
+                          Shadow(
+                            blurRadius: 5.0,
+                            color: Colors.purple[200],
+                            offset: Offset(3.0, 3.0),
+                          ),
+                        ],
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Paficico',
+                        color: Colors.purple[700]),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: state.users.length,
+                  itemBuilder: (context, i) {
+                    return widget.followers != null
+                        ? FollowersTileWidget(
+                            currentUid: state.userData.uid,
+                            uid: widget.uid,
+                            followerUser: state.users[i],
+                            navigateToProfilePage: (value) {
+                              widget.navigateToProfilePage(value);
+                            },
+                          )
+                        : Container(child: Text('you have no followers yet'));
+                  },
+                );
         } else if (state is OtherUserProfileNotLoaded) {
           return Text(
             'Something went wrong please try again later',

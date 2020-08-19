@@ -45,7 +45,8 @@ class AddBlog extends BlogsEvent {
 
 class UploadBlog extends BlogsEvent {
   final File image;
-  final String title, description, category;
+  final String title, category;
+  final description;
   final bool blogPrivacy;
   final List<String> url;
   const UploadBlog({
@@ -67,7 +68,8 @@ class UploadBlog extends BlogsEvent {
 class UpdateBlog extends BlogsEvent {
   final List<String> image;
   final bool blogPrivacy;
-  final String url, title, description, category;
+  final String url, title, category;
+  final description;
   int timeStamp;
 
   UpdateBlog(

@@ -19,10 +19,11 @@ class _DropBoxState extends State<DropBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 340,
+      margin: EdgeInsets.all(10),
+      //width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
       decoration: BoxDecoration(border: Border.all(color: Colors.purple[400])),
-      alignment: Alignment.bottomLeft,
+      alignment: Alignment.bottomCenter,
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           isExpanded: true,
