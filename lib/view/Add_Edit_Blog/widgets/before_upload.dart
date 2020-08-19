@@ -180,6 +180,13 @@ class _BeforeUploadState extends State<BeforeUpload> {
             //focusNode: widget.focusNode,
             // myValue: _myvalue,
           ),
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Text(
+              'Note: You need update image to enable update blog button',
+              textAlign: TextAlign.left,
+            ),
+          ),
           RaisedButton(
             child: Text(
               widget.isEdit == true ? 'update blog' : 'upload blog',

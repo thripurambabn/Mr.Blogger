@@ -98,7 +98,9 @@ class _RegisterFormState extends State<RegisterForm> {
       },
       child: BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
-          return Padding(
+          return Center(
+              child: Container(
+            height: MediaQuery.of(context).size.height,
             padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
             child: Form(
               child: ListView(
@@ -136,7 +138,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     },
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextFormField(
                     controller: _emailController,
@@ -155,7 +157,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     },
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextFormField(
                       controller: _passwordController,
@@ -187,7 +189,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             : null;
                       }),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   TextFormField(
                       controller: _confirmPasswordController,
@@ -221,7 +223,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             : null;
                       }),
                   SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   Text(
                     'Note: Password should contain Minimum eight characters, at least one letter and one number.',
@@ -250,7 +252,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 ],
               ),
             ),
-          );
+          ));
         },
       ),
     );

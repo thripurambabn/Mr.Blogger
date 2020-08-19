@@ -1,3 +1,4 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:custom_switch_button/custom_switch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_blogger/models/blogs.dart';
@@ -15,6 +16,7 @@ class EnableUpload extends StatefulWidget {
   final Function getImage;
   final bool toggleValue;
   final String dropdownValue;
+  final List<String> imageUrlList;
   final TextEditingController titleController;
   //final ZefyrController descriptionController;
   final TextEditingController descriptionController;
@@ -23,7 +25,8 @@ class EnableUpload extends StatefulWidget {
   final String mytitleValue;
   final Function changeIt;
   final focusNode;
-  bool isbuttondisabled = false;
+  bool isbuttondisabled;
+  final bool imageLoading;
   final formKey;
   EnableUpload(
       {Key key,
@@ -41,7 +44,11 @@ class EnableUpload extends StatefulWidget {
       this.formKey,
       this.getImage,
       this.changeIt,
-      this.focusNode})
+      this.focusNode,
+      Function(String newdropdownValue),
+      this.isbuttondisabled,
+      this.imageUrlList,
+      this.imageLoading})
       : super(key: key);
 
   @override
@@ -60,6 +67,17 @@ class _EnableUploadState extends State<EnableUpload> {
       ));
     }
 
+    print('widget imageurl ${widget.imageUrlList}');
+    List<NetworkImage> networkImages = List<NetworkImage>();
+    if (widget.imageUrlList != null) {
+      for (var image in widget.imageUrlList) {
+        //widget.imageUrlList.add(image);
+        networkImages.add(
+          NetworkImage(image),
+        );
+      }
+    }
+    print('isbuttondisabled ${networkImages}');
     //view after entering the blog details
     return new Container(
       child: new Form(
@@ -111,13 +129,41 @@ class _EnableUploadState extends State<EnableUpload> {
             SizedBox(
               height: 20,
             ),
-            InkWell(
-                onTap: widget.getImage,
-                child: Container(
-                    color: Colors.purple[50],
-                    alignment: Alignment.center,
+            widget.imageLoading
+                ? Container(
+                    color: Colors.purple[100],
                     height: 240,
-                    child: widget.gridview())),
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                        child: Text('Loading your images...',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.purple,
+                                fontFamily: 'Paficico'))))
+                : InkWell(
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        height: 240.0,
+                        width: MediaQuery.of(context).size.width,
+                        child: Carousel(
+                          images: networkImages,
+                          dotSize: 8.0,
+                          dotSpacing: 15.0,
+                          dotColor: Colors.purple[800],
+                          indicatorBgPadding: 5.0,
+                          autoplay: false,
+                          dotBgColor: Colors.white.withOpacity(0),
+                          borderRadius: true,
+                        )),
+                    onTap: widget.getImage,
+                  ),
+            // InkWell(
+            //     onTap: widget.getImage,
+            //     child: Container(
+            //         color: Colors.purple[50],
+            //         alignment: Alignment.center,
+            //         height: 240,
+            //         child: widget.gridview())),
             SizedBox(
               height: 10.0,
             ),
@@ -129,9 +175,10 @@ class _EnableUploadState extends State<EnableUpload> {
             SizedBox(
               height: 10.0,
             ),
+            Text('Note: You need upload iamge to enable update blog button'),
             RaisedButton(
               child: Text(
-                widget.isEdit == true ? 'update blog' : 'uploade blog',
+                widget.isEdit == true ? 'update blog' : 'upload blog',
                 style: TextStyle(color: Colors.white, fontFamily: 'Paficico'),
               ),
               color: Colors.purple[800],

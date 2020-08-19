@@ -350,6 +350,8 @@ class ProfileService {
 //To update a blog from firebase
   Future updateBlog(
       url, mytitlevalue, myvalue, category, blogtimeStamp, blogPrivacy) {
+    print(
+        'in service  $url, $mytitlevalue, $myvalue, $category, $blogtimeStamp, $blogPrivacy');
     try {
       var dbkey = new DateTime.now();
       var formatdate = new DateFormat('MMM d,yyyy');

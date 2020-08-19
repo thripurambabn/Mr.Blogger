@@ -196,7 +196,7 @@ class _DetailPageState extends State<DetailPage> {
                             borderRadius: BorderRadius.circular(5),
                             child: SizedBox(
                                 height: 200.0,
-                                width: 350.0,
+                                width: MediaQuery.of(context).size.width,
                                 child: Carousel(
                                   images: cachednetworkImages,
                                   dotSize: 8.0,

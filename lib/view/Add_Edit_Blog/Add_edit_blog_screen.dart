@@ -116,6 +116,9 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                                   getImage();
                                 })
                             : EnableUpload(
+                                imageUrlList: widget.blog.image,
+                                imageLoading: imageLoading,
+                                isbuttondisabled: isbuttondisabled,
                                 changeIt: (newdropdownValue) {
                                   changeIt(newdropdownValue);
                                 },
@@ -307,7 +310,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
       UpdateBlog(
           image: imageUrl,
           title: _titleController.text,
-          description: _descriptionController,
+          description: _descriptionController.text,
           category: widget.isEdit == true ? widget.blog.category : '',
           timeStamp: widget.blog.timeStamp,
           blogPrivacy: widget.blog.blogPrivacy),

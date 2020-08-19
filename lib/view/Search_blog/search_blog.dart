@@ -6,7 +6,6 @@ import 'package:mr_blogger/blocs/serach_bloc/search_event.dart';
 import 'package:mr_blogger/blocs/serach_bloc/search_state.dart';
 import 'package:mr_blogger/blocs/serach_bloc/serach_bloc.dart';
 import 'package:mr_blogger/models/blogs.dart';
-
 import 'package:mr_blogger/view/Blog_Detail/blog_detail_Screen.dart';
 import 'package:mr_blogger/view/Home_Screen/widgets/blogs_ui.dart';
 
@@ -24,6 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<SearchBlogsBloc>(context).add((InitialSearch()));
   }
 
 //navigate to detail page page
@@ -103,6 +103,14 @@ class _SearchPageState extends State<SearchPage> {
                       bloc: BlocProvider.of<SearchBlogsBloc>(context),
                       builder: (context, state) {
                         //Loading state
+                        if (state is SearchInitialState) {
+                          return Text('Enter something to search.....',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.normal,
+                                  fontFamily: 'Paficico',
+                                  color: Colors.purple));
+                        }
                         if (state is SearchBlogsLoading) {
                           return Column(children: <Widget>[
                             Image.network(
@@ -118,53 +126,70 @@ class _SearchPageState extends State<SearchPage> {
                           ]);
                         } //Loaded state
                         else if (state is SearchBlogsLoaded) {
-                          return Column(children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Results for "${searchBlog.text}"...',
-                                style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.normal,
-                                    fontFamily: 'Paficico',
-                                    color: Colors.purple),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: ScrollPhysics(),
-                              itemCount: state.hasReachedMax
-                                  ? state.blogs.length
-                                  : state.blogs.length + 1,
-                              itemBuilder: (BuildContext context, int index) {
-                                return index >= state.blogs.length
-                                    ? bottomLoader()
-                                    : ListTile(
-                                        onTap: () => navigateToDetailPage(
-                                            state.blogs[index]),
-                                        title: BlogsUI(
-                                          isFollowing:
-                                              state.blogs[index].isFollowing,
-                                          images: state.blogs[index].image,
-                                          uid: state.blogs[index].uid,
-                                          authorname:
-                                              state.blogs[index].authorname,
-                                          title: state.blogs[index].title,
-                                          description:
-                                              state.blogs[index].description,
-                                          likes: state.blogs[index].likes,
-                                          comments: state.blogs[index].comments,
-                                          date: state.blogs[index].date,
-                                          time: state.blogs[index].time,
-                                          timeStamp:
-                                              state.blogs[index].timeStamp,
-                                        ));
-                              },
-                            )
-                          ]);
+                          return state.blogs.length == 0
+                              ? Container(
+                                  padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'No results found for "${searchBlog.text}"...',
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.normal,
+                                        fontFamily: 'Paficico',
+                                        color: Colors.purple),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                )
+                              : Column(children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(17, 10, 0, 0),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      'Results for "${searchBlog.text}"...',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.normal,
+                                          fontFamily: 'Paficico',
+                                          color: Colors.purple),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    physics: ScrollPhysics(),
+                                    itemCount: state.hasReachedMax
+                                        ? state.blogs.length
+                                        : state.blogs.length + 1,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return index >= state.blogs.length
+                                          ? bottomLoader()
+                                          : ListTile(
+                                              onTap: () => navigateToDetailPage(
+                                                  state.blogs[index]),
+                                              title: BlogsUI(
+                                                isFollowing: state
+                                                    .blogs[index].isFollowing,
+                                                images:
+                                                    state.blogs[index].image,
+                                                uid: state.blogs[index].uid,
+                                                authorname: state
+                                                    .blogs[index].authorname,
+                                                title: state.blogs[index].title,
+                                                description: state
+                                                    .blogs[index].description,
+                                                likes: state.blogs[index].likes,
+                                                comments:
+                                                    state.blogs[index].comments,
+                                                date: state.blogs[index].date,
+                                                time: state.blogs[index].time,
+                                                timeStamp: state
+                                                    .blogs[index].timeStamp,
+                                              ));
+                                    },
+                                  )
+                                ]);
                           //error state
                         } else if (state is SearchBlogsNotLoaded) {
                           return errorUI();

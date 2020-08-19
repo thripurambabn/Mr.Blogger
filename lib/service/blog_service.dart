@@ -26,11 +26,13 @@ class BlogsService {
         .reference()
         .child('blogs')
         .orderByChild('timeStamp')
-        .limitToFirst(value);
+        .limitToLast(value);
     final DataSnapshot snapshot = await blogsref.once();
-    var refkey = snapshot.value.keys;
+
+    var refKey = snapshot.value.keys;
     var data = snapshot.value;
-    for (var key in refkey) {
+
+    for (var key in refKey) {
       var userid = await userService.getUserID();
       DatabaseReference usersRef =
           FirebaseDatabase.instance.reference().child('users');
@@ -61,7 +63,10 @@ class BlogsService {
 
       isBookMarked = bookMarkedList.contains(key);
       isFollowing = followingList.contains(data[key]['uid']);
-      if (isFollowing == true || data[key]['blogPrivacy'] == false) {
+
+      if (isFollowing == true ||
+          data[key]['blogPrivacy'] == false ||
+          userid == data[key]['uid']) {
         var tempLikes = [];
         var tempImages = [];
         var tempComments;
@@ -118,14 +123,18 @@ class BlogsService {
 
     //sort blogs on timestamp
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
-    // await _blogsDao.insert(blogsList);
-    return blogsList;
+    var reversedBlogList = blogsList.reversed.toList();
+
+    return reversedBlogList;
   }
 
 //To fetch more blogs from the firebase database on scroll(pagination)
   Future<List<Blogs>> getMoreBlogs(List<Blogs> blogs) async {
     List<Blogs> blogsList = [];
     bool isFollowing;
+    bool isBookMarked;
+    var tempBookMark = [];
+    var bookMarkedList = List<String>();
     var queryTimeStamp = blogs[blogs.length - 1].timeStamp;
     var tempfollowing = [];
     var followingList = List<String>();
@@ -133,8 +142,8 @@ class BlogsService {
         .reference()
         .child('blogs')
         .orderByChild('timeStamp')
-        .startAt(queryTimeStamp + 1)
-        .limitToFirst(value);
+        .endAt(queryTimeStamp - 1)
+        .limitToLast(value);
     final DataSnapshot snapshot = await blogsref.once();
     try {
       if (snapshot.value != null) {
@@ -158,13 +167,22 @@ class BlogsService {
                     followingList.add(following.toString());
                   }
                 }
+                if (data1[key]['bookMarks'] != null) {
+                  tempBookMark = data1[key]['bookMarks'];
+                  for (var bookMark in tempBookMark) {
+                    bookMarkedList.add(bookMark.toString());
+                  }
+                }
               }
             }
           } catch (e) {
             print(e);
           }
           isFollowing = followingList.contains(data[key]['uid']);
-          if (isFollowing == true || data[key]['blogPrivacy'] == false) {
+          isBookMarked = bookMarkedList.contains(key);
+          if (isFollowing == true ||
+              data[key]['blogPrivacy'] == false ||
+              userid == data[key]['uid']) {
             var tempLikes = [];
             var likesList = new List<String>();
             if (data[key]['likes'] != null) {
@@ -188,6 +206,7 @@ class BlogsService {
                 }
               }
             }
+
             var tempImages = [];
             var imagesList = new List<String>();
             if (data[key]['image'] != null) {
@@ -201,6 +220,7 @@ class BlogsService {
             }
 
             Blogs blog = new Blogs(
+                isBookMarked: isBookMarked,
                 image: imagesList,
                 uid: data[key]['uid'],
                 authorname: data[key]['authorname'],
@@ -222,10 +242,14 @@ class BlogsService {
     } catch (e) {
       print(e);
     }
-    //sort blogs on timestamp
+    if (blogsList.length > 0) {
+      var removedObj = blogsList.removeAt(0);
+      blogsList.remove(removedObj);
+      //sort blogs on timestamp
+    }
     blogsList.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
-    //await _blogsDao.insert(blogsList);
-    return blogsList;
+    var reversedBlogList = blogsList.reversed.toList();
+    return reversedBlogList;
   }
 
 //To add new blog to the firebase database

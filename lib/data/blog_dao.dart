@@ -1,5 +1,6 @@
 import 'package:mr_blogger/data/app_database.dart';
 import 'package:mr_blogger/models/blogs.dart';
+import 'package:mr_blogger/models/comment.dart';
 import 'package:sembast/sembast.dart';
 
 class BlogDao {

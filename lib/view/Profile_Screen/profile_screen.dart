@@ -189,6 +189,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           onTap: () => navigateToDetailPage(
                                               state.blogs[index], state.uid),
                                           title: BlogsUI(
+                                            currentUid: state.uid,
                                             isFollowing:
                                                 state.blogs[index].isFollowing,
                                             images: state.blogs[index].image,

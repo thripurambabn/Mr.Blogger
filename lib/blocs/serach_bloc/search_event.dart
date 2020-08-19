@@ -17,3 +17,8 @@ class SearchBlog extends SearchBlogsEvent {
   @override
   String toString() => 'Serached blog { blog: $searchkey }';
 }
+
+class InitialSearch extends SearchBlogsEvent {
+  @override
+  String toString() => 'Serached blog { blog: }';
+}

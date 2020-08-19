@@ -106,13 +106,16 @@ class RegisterScreen extends StatelessWidget {
                         Container(
                           alignment: Alignment.bottomCenter,
                           child: Container(
-                            height: MediaQuery.of(context).size.height * 0.76,
+                            height: MediaQuery.of(context).size.height * 0.70,
                             alignment: Alignment.bottomCenter,
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(60),
-                                    topRight: Radius.circular(60))),
+                                  topLeft: Radius.circular(60),
+                                  topRight: Radius.circular(60),
+                                  bottomLeft: Radius.circular(60),
+                                  bottomRight: Radius.circular(60),
+                                )),
                             child: BlocProvider<RegisterBloc>(
                               create: (context) =>
                                   RegisterBloc(userService: _userService),

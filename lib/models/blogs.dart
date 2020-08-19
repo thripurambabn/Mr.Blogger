@@ -81,18 +81,30 @@ class Blogs {
   Map<String, dynamic> toJson() => toMap(this);
 }
 
-Map<String, dynamic> toMap(Blogs blog) => <String, dynamic>{
-      'image': blog.image,
-      'uid': blog.uid,
-      'authorname': blog.authorname,
-      'title': blog.title,
-      'description': blog.description,
-      'likes': blog.likes,
-      'comments': blog.comments,
-      'isFollowing': blog.isFollowing,
-      'date': blog.date,
-      'time': blog.time,
-      'category': blog.category,
-      'timeStamp': blog.timeStamp,
-      'blogPrivacy': blog.blogPrivacy
-    };
+Map<String, dynamic> toMap(Blogs blog) {
+  convertToCommentJson(List<Comment> listOfComments) {
+    List<Object> commentListObj = new List<Object>();
+    for (Comment c in listOfComments) {
+      commentListObj.add(c.toJson());
+    }
+    return commentListObj;
+  }
+
+  var commentsData = blog.comments;
+  List<Object> convertedComments = convertToCommentJson(commentsData);
+  <String, dynamic>{
+    'image': blog.image,
+    'uid': blog.uid,
+    'authorname': blog.authorname,
+    'title': blog.title,
+    'description': blog.description,
+    'likes': blog.likes,
+    'comments': convertedComments,
+    'isFollowing': blog.isFollowing,
+    'date': blog.date,
+    'time': blog.time,
+    'category': blog.category,
+    'timeStamp': blog.timeStamp,
+    'blogPrivacy': blog.blogPrivacy
+  };
+}

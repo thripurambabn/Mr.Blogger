@@ -6,12 +6,15 @@ import 'package:mr_blogger/service/blog_service.dart';
 
 class SearchBlogsBloc extends Bloc<SearchBlogsEvent, SearchBlogsState> {
   @override
-  SearchBlogsState get initialState => SearchBlogsLoading();
+  SearchBlogsState get initialState => SearchInitialState();
 
   @override
   Stream<SearchBlogsState> mapEventToState(SearchBlogsEvent event) async* {
     if (event is SearchBlog) {
       yield* _mapSerachBlogToState(event);
+    }
+    if (event is InitialSearch) {
+      yield* _mapInitialSearchToState(event);
     }
   }
 
@@ -23,5 +26,10 @@ class SearchBlogsBloc extends Bloc<SearchBlogsEvent, SearchBlogsState> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Stream<SearchBlogsState> _mapInitialSearchToState(
+      InitialSearch event) async* {
+    yield SearchInitialState();
   }
 }

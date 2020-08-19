@@ -43,6 +43,8 @@ class SearchBlogsLoading extends SearchBlogsState {
 //empty state
 class SearchBlogsEmpty extends SearchBlogsState {}
 
+class SearchInitialState extends SearchBlogsState {}
+
 //blogs loaded state
 class SearchBlogsLoaded extends SearchBlogsState {
   final List<Blogs> blogs;

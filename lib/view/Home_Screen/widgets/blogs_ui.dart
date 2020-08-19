@@ -8,6 +8,7 @@ import 'package:mr_blogger/view/Home_Screen/widgets/like_button.dart';
 import 'package:mr_blogger/view/Comment_Screen/comment_screen.dart';
 
 class BlogsUI extends StatefulWidget {
+  final String currentUid;
   final List<String> images;
   final String uid;
   final String authorname;
@@ -34,6 +35,7 @@ class BlogsUI extends StatefulWidget {
     this.timeStamp,
     this.isFollowing,
     this.isBookMarked,
+    this.currentUid,
   }) : super(key: key);
 
   @override
@@ -56,7 +58,7 @@ class _BlogsUIState extends State<BlogsUI> {
         CachedNetworkImage(
           imageUrl: image,
           fit: BoxFit.cover,
-          height: 240,
+          height: MediaQuery.of(context).size.height / 2.5,
           width: MediaQuery.of(context).size.width / 1.2,
           placeholder: (context, url) => Center(
               child: SizedBox(
@@ -70,6 +72,7 @@ class _BlogsUIState extends State<BlogsUI> {
         ),
       );
     }
+
     return new Card(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
       elevation: 15.0,
@@ -91,25 +94,27 @@ class _BlogsUIState extends State<BlogsUI> {
                         color: Colors.purple),
                     textAlign: TextAlign.left,
                   ),
-                  FollowButton(
-                    isFollowing: widget.isFollowing,
-                    uid: widget.uid,
-                  ),
+                  widget.uid == widget.currentUid
+                      ? Container()
+                      : FollowButton(
+                          isFollowing: widget.isFollowing,
+                          uid: widget.uid,
+                        )
                 ]),
             SizedBox(height: 10.0),
             Container(
-                height: 200.0,
-                width: 350.0,
+                height: MediaQuery.of(context).size.height / 2.5,
+                width: MediaQuery.of(context).size.width / 1.2,
                 child: Carousel(
                   boxFit: BoxFit.contain,
                   images: cachednetworkImages,
                   dotSize: 8.0,
-                  dotSpacing: 15.0,
+                  dotSpacing: cachednetworkImages.length == 1 ? 0.0 : 15.0,
                   dotColor: Colors.purple[800],
                   indicatorBgPadding: 5.0,
                   autoplay: false,
                   dotBgColor: Colors.white.withOpacity(0),
-                  borderRadius: true,
+                  borderRadius: cachednetworkImages.length == 0 ?? true,
                 )),
             SizedBox(
               height: 10,
