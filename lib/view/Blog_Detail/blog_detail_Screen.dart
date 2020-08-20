@@ -76,6 +76,7 @@ class _DetailPageState extends State<DetailPage> {
       }
     }
 
+    print('details  ${widget.blogs.uid} == ${widget.uid}');
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[800],

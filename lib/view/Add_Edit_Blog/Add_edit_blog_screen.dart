@@ -116,7 +116,7 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
                                   getImage();
                                 })
                             : EnableUpload(
-                                imageUrlList: widget.blog.image,
+                                imageUrlList: imageUrlList,
                                 imageLoading: imageLoading,
                                 isbuttondisabled: isbuttondisabled,
                                 changeIt: (newdropdownValue) {
@@ -325,9 +325,11 @@ class _AddBlogScreenPage extends State<AddBlogScreen> {
   }
 
   toggleButton() {
+    print('tapped $toggleValue');
     setState(() {
       toggleValue = !toggleValue;
     });
+    print('tapped $toggleValue');
   }
 }
 // import 'dart:async';

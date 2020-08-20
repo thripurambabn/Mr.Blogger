@@ -59,7 +59,7 @@ class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
-      // print('iam connected to the internet ${uid.uid}');
+      print('iam connected to the internet ${uid.uid}');
       try {
         if (state is BlogsLoading && !_hasReachedMax(state)) {
           yield BlogsLoading();

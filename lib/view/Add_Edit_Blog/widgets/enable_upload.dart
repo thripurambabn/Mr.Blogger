@@ -69,7 +69,7 @@ class _EnableUploadState extends State<EnableUpload> {
 
     print('widget imageurl ${widget.imageUrlList}');
     List<NetworkImage> networkImages = List<NetworkImage>();
-    if (widget.imageUrlList != null) {
+    if (widget.imageUrlList.length >= 0) {
       for (var image in widget.imageUrlList) {
         //widget.imageUrlList.add(image);
         networkImages.add(
@@ -140,30 +140,31 @@ class _EnableUploadState extends State<EnableUpload> {
                                 fontSize: 20,
                                 color: Colors.purple,
                                 fontFamily: 'Paficico'))))
-                : InkWell(
-                    child: Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        height: 240.0,
-                        width: MediaQuery.of(context).size.width,
-                        child: Carousel(
-                          images: networkImages,
-                          dotSize: 8.0,
-                          dotSpacing: 15.0,
-                          dotColor: Colors.purple[800],
-                          indicatorBgPadding: 5.0,
-                          autoplay: false,
-                          dotBgColor: Colors.white.withOpacity(0),
-                          borderRadius: true,
-                        )),
+                :
+                // InkWell(
+                //     child: Container(
+                //         padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                //         height: 240.0,
+                //         width: MediaQuery.of(context).size.width,
+                //         child: Carousel(
+                //           images: networkImages,
+                //           dotSize: 8.0,
+                //           dotSpacing: 15.0,
+                //           dotColor: Colors.purple[800],
+                //           indicatorBgPadding: 5.0,
+                //           autoplay: false,
+                //           dotBgColor: Colors.white.withOpacity(0),
+                //           borderRadius: true,
+                //         )),
+                //     onTap: widget.getImage,
+                //   ),
+                InkWell(
                     onTap: widget.getImage,
-                  ),
-            // InkWell(
-            //     onTap: widget.getImage,
-            //     child: Container(
-            //         color: Colors.purple[50],
-            //         alignment: Alignment.center,
-            //         height: 240,
-            //         child: widget.gridview())),
+                    child: Container(
+                        color: Colors.purple[50],
+                        alignment: Alignment.center,
+                        height: 240,
+                        child: widget.gridview())),
             SizedBox(
               height: 10.0,
             ),

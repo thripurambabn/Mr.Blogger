@@ -58,6 +58,10 @@ class _HomepageState extends State<Homepage> {
     BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
   }
 
+  Future<Null> refreshList() async {
+    await Future.delayed(Duration(seconds: 2));
+    BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
+  }
 //loading indicator while fetching more blogs
 
   var userService = UserService();
@@ -147,91 +151,94 @@ class _HomepageState extends State<Homepage> {
         ),
 
         //handles blog list view on state change
-        body: BlocListener(
-          bloc: BlocProvider.of<BlogsBloc>(context),
-          listener: (context, state) {
-            if (state is BlogsLoaded) {
-              return ListView.builder(
-                shrinkWrap: false,
-                scrollDirection: Axis.vertical,
-                physics: ScrollPhysics(),
-                itemCount: state.hasReachedMax
-                    ? state.blogs.length
-                    : state.blogs.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  return index >= state.blogs.length
-                      ? BottomLoader()
-                      : ListTile(
-                          onTap: () => navigateToDetailPage(
-                              state.blogs[index], state.uid),
-                          title: BlogsUI(
-                            isBookMarked: state.blogs[index].isBookMarked,
-                            isFollowing: state.blogs[index].isFollowing,
-                            images: state.blogs[index].image,
-                            uid: state.blogs[index].uid,
-                            authorname: state.blogs[index].authorname,
-                            title: state.blogs[index].title,
-                            description: state.blogs[index].description,
-                            likes: state.blogs[index].likes,
-                            comments: state.blogs[index].comments,
-                            date: state.blogs[index].date,
-                            time: state.blogs[index].time,
-                            timeStamp: state.blogs[index].timeStamp,
-                          ));
+        body: RefreshIndicator(
+            child: BlocListener(
+              bloc: BlocProvider.of<BlogsBloc>(context),
+              listener: (context, state) {
+                if (state is BlogsLoaded) {
+                  return ListView.builder(
+                    shrinkWrap: false,
+                    scrollDirection: Axis.vertical,
+                    physics: ScrollPhysics(),
+                    itemCount: state.hasReachedMax
+                        ? state.blogs.length
+                        : state.blogs.length + 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return index >= state.blogs.length
+                          ? BottomLoader()
+                          : ListTile(
+                              onTap: () => navigateToDetailPage(
+                                  state.blogs[index], state.uid),
+                              title: BlogsUI(
+                                isBookMarked: state.blogs[index].isBookMarked,
+                                isFollowing: state.blogs[index].isFollowing,
+                                images: state.blogs[index].image,
+                                uid: state.blogs[index].uid,
+                                authorname: state.blogs[index].authorname,
+                                title: state.blogs[index].title,
+                                description: state.blogs[index].description,
+                                likes: state.blogs[index].likes,
+                                comments: state.blogs[index].comments,
+                                date: state.blogs[index].date,
+                                time: state.blogs[index].time,
+                                timeStamp: state.blogs[index].timeStamp,
+                              ));
+                    },
+                    controller: _scrollController,
+                  );
+                }
+              },
+              //  Container(
+              child: BlocBuilder<BlogsBloc, BlogsState>(
+                bloc: BlocProvider.of<BlogsBloc>(context),
+                builder: (context, state) {
+                  //Loading state
+                  if (state is BlogsLoading) {
+                    return Image.network(
+                      'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
+                      alignment: Alignment.center,
+                    );
+                  } //Loaded state
+                  else if (state is BlogsLoaded) {
+                    return ListView.builder(
+                      shrinkWrap: false,
+                      scrollDirection: Axis.vertical,
+                      physics: ScrollPhysics(),
+                      itemCount: state.hasReachedMax
+                          ? state.blogs.length
+                          : state.blogs.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        print('state.uid ${state.uid}');
+                        return index >= state.blogs.length
+                            ? BottomLoader()
+                            : ListTile(
+                                onTap: () => navigateToDetailPage(
+                                    state.blogs[index], state.uid),
+                                title: BlogsUI(
+                                  currentUid: state.uid,
+                                  isBookMarked: state.blogs[index].isBookMarked,
+                                  isFollowing: state.blogs[index].isFollowing,
+                                  images: state.blogs[index].image,
+                                  uid: state.blogs[index].uid,
+                                  authorname: state.blogs[index].authorname,
+                                  title: state.blogs[index].title,
+                                  description: state.blogs[index].description,
+                                  likes: state.blogs[index].likes,
+                                  comments: state.blogs[index].comments,
+                                  date: state.blogs[index].date,
+                                  time: state.blogs[index].time,
+                                  timeStamp: state.blogs[index].timeStamp,
+                                ));
+                      },
+                      controller: _scrollController,
+                    );
+                  } else if (state is BlogsNotLoaded) {
+                    return ErrorUI();
+                  }
                 },
-                controller: _scrollController,
-              );
-            }
-          },
-          //  Container(
-          child: BlocBuilder<BlogsBloc, BlogsState>(
-            bloc: BlocProvider.of<BlogsBloc>(context),
-            builder: (context, state) {
-              //Loading state
-              if (state is BlogsLoading) {
-                return Image.network(
-                  'https://www.goodtoseo.com/wp-content/uploads/2017/09/blog_sites.gif',
-                  alignment: Alignment.center,
-                );
-              } //Loaded state
-              else if (state is BlogsLoaded) {
-                return ListView.builder(
-                  shrinkWrap: false,
-                  scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
-                  itemCount: state.hasReachedMax
-                      ? state.blogs.length
-                      : state.blogs.length + 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= state.blogs.length
-                        ? BottomLoader()
-                        : ListTile(
-                            onTap: () => navigateToDetailPage(
-                                state.blogs[index], state.uid),
-                            title: BlogsUI(
-                              currentUid: state.uid,
-                              isBookMarked: state.blogs[index].isBookMarked,
-                              isFollowing: state.blogs[index].isFollowing,
-                              images: state.blogs[index].image,
-                              uid: state.blogs[index].uid,
-                              authorname: state.blogs[index].authorname,
-                              title: state.blogs[index].title,
-                              description: state.blogs[index].description,
-                              likes: state.blogs[index].likes,
-                              comments: state.blogs[index].comments,
-                              date: state.blogs[index].date,
-                              time: state.blogs[index].time,
-                              timeStamp: state.blogs[index].timeStamp,
-                            ));
-                  },
-                  controller: _scrollController,
-                ); //error state
-              } else if (state is BlogsNotLoaded) {
-                return ErrorUI();
-              }
-            },
-          ),
-        ),
+              ),
+            ),
+            onRefresh: refreshList), //error state
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.purple[800],
           onPressed: () {
