@@ -55,6 +55,7 @@ class _HomepageState extends State<Homepage> {
 
 //calls Fetch Blogs event
   void getBlogs() {
+    print('fetched ');
     BlocProvider.of<BlogsBloc>(context).add(FetchBlogs());
   }
 
@@ -208,7 +209,8 @@ class _HomepageState extends State<Homepage> {
                           ? state.blogs.length
                           : state.blogs.length + 1,
                       itemBuilder: (BuildContext context, int index) {
-                        print('state.uid ${state.uid}');
+                        print(
+                            'state.uid ${state.uid} state.title ${state.blogs[index].title}');
                         return index >= state.blogs.length
                             ? BottomLoader()
                             : ListTile(
